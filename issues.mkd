@@ -1,0 +1,6 @@
+## Resolved Issues ##
+
+
+# Open Issues ##
+
+[1] Set up Git with git labs and make sure all members have commit access.
