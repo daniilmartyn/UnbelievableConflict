@@ -1,0 +1,10 @@
+## Resolved Issues ##
+[1] Set up Git with git labs and make sure all members have commit access.
+
+
+# Open Issues ##
+
+[2] Create basic game using "Ascension" as a basis for basic movement.
+[3] Complete the movements, actions, and animation entirely for one character.
+[4] Complete the other two characters using the first as an example.
+[5] Create Main Menu, Help Menu, etc for the game.
