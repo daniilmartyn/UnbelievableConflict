@@ -18,6 +18,9 @@ public class UCGame extends StateBasedGame{
 	
 	public static final String TEST_RSC = "uc/resource/test.png";
 	public static final String STAND_LIGHT_RSC = "uc/resource/stand_light.png";
+	public static final String RUN_LIGHT_RSC = "uc/resource/run_light.png";
+	public static final String CROUCH_LIGHT_RSC = "uc/resource/crouch_light.png";
+
 
 	
 	public final int ScreenWidth;
@@ -44,6 +47,9 @@ public class UCGame extends StateBasedGame{
 		
 		ResourceManager.loadImage(TEST_RSC);
 		ResourceManager.loadImage(STAND_LIGHT_RSC);
+		ResourceManager.loadImage(RUN_LIGHT_RSC);
+		ResourceManager.loadImage(CROUCH_LIGHT_RSC);
+
 
 		
 		//archie = new Archie(ScreenWidth/2, ScreenHeight/4);

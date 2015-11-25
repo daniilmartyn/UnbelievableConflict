@@ -80,7 +80,7 @@ public class PlayState extends BasicGameState {
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
 		// TODO Auto-generated method stub
-
+		
 		Input input = container.getInput();
 		UCGame uc = (UCGame) game;
 		
@@ -94,18 +94,30 @@ public class PlayState extends BasicGameState {
 		if(input.isKeyPressed(Input.KEY_W) && !dude.isJumped()){ // make dude jump
 			dude.jump();
 			dude.setJump(true);
+			dude.setState(3);
 		}
-		if(input.isKeyDown(Input.KEY_S)){
-			dude.setY(dude.getY() + 10);
-		}
-		if(input.isKeyDown(Input.KEY_A) || input.isKeyDown(Input.KEY_D)){
+		
+		
+		if((input.isKeyDown(Input.KEY_A) || input.isKeyDown(Input.KEY_D))){
 			if(input.isKeyDown(Input.KEY_A)){
 				dude.changeRunDir(1); 			// run left
+				dude.setState(1);
 			}else if(input.isKeyDown(Input.KEY_D)){	// run right
 				dude.changeRunDir(0);
+				dude.setState(1);
 			}
-		}else
-			dude.changeRunDir(-1);			// stop
+		}else{
+			dude.changeRunDir(-1);			// set run velocity to 0.0
+			dude.setState(0);
+		}
+		
+		if(input.isKeyDown(Input.KEY_S)){
+			//System.out.println("pressing s key");
+			dude.setState(2);
+			if(!dude.isJumped())
+				dude.changeRunDir(-1);
+			
+		}
 
 		if(input.isMousePressed(0))
 			System.out.println("click!");
