@@ -1,13 +1,15 @@
 package uc;
 
+import java.util.LinkedList;
+
 import jig.ResourceManager;
+import jig.Shape;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.particles.ParticleSystem;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -15,9 +17,9 @@ import org.newdawn.slick.state.StateBasedGame;
 public class PlayState extends BasicGameState {
 
 	Char dude;
-	Image map;
+	static Image map;
 	
-	private float gravity = 0.003f;
+	public static float gravity = 0.003f;
 	
 	//private ParticleSystem particles;
 	
@@ -28,6 +30,7 @@ public class PlayState extends BasicGameState {
 	
 	int camX;
 	int camY;
+	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
@@ -74,6 +77,8 @@ public class PlayState extends BasicGameState {
 		
 		g.drawImage(map, 0, 0);
 		dude.render(g);
+		dude.renderWep(g);
+		
 	}
 
 	@Override
@@ -91,13 +96,22 @@ public class PlayState extends BasicGameState {
 		else
 			dude.changeDir(0);
 		
+		if(input.isKeyPressed(Input.KEY_1)){
+			dude.switchWep(0);
+		}
+		if(input.isKeyPressed(Input.KEY_2)){
+			dude.switchWep(1);
+		}
+		if(input.isKeyPressed(Input.KEY_3)){
+			dude.switchWep(2);
+		}
+		
 		if(input.isKeyPressed(Input.KEY_W) && !dude.isJumped()){ // make dude jump
 			dude.jump();
 			dude.setJump(true);
 			dude.setState(3);
 		}
-		
-		
+				
 		if((input.isKeyDown(Input.KEY_A) || input.isKeyDown(Input.KEY_D))){
 			if(input.isKeyDown(Input.KEY_A)){
 				dude.changeRunDir(1); 			// run left
@@ -120,26 +134,28 @@ public class PlayState extends BasicGameState {
 		}
 
 		if(input.isMousePressed(0))
-			System.out.println("click!");
+			dude.fire();
 		
-		dude.update(gravity, delta);
+		dude.update(gravity, container, camX, camY, delta);
 		
-		if(dude.getCoarseGrainedMinY() < 0){
+		LinkedList<Shape> bounds = dude.getGloballyTransformedShapes();
+		
+		if(dude.getCoarseGrainedMinY() < 0){				// if dude is higher than than the map
 			dude.setY(dude.getCoarseGrainedHeight()/2);
 		}
-		if(dude.getCoarseGrainedMaxY() > map.getHeight()){
-			dude.setY(map.getHeight() - dude.getCoarseGrainedHeight()/2);
+		if(bounds.element().getMaxY() > map.getHeight()){	// if dude is lower than the map
+			dude.setY(map.getHeight() - bounds.element().getHeight()/2);
 			dude.cancelFall();
 			dude.setJump(false);
 		}
-		while (dude.getCoarseGrainedMinX() < 0){
-			dude.goBack(delta);
+		if (bounds.element().getMinX() < bounds.element().getWidth()){			// if dude is too far left of map
+			dude.setX(bounds.element().getWidth()*1.5f);
 		}
-		while (dude.getCoarseGrainedMaxX() > map.getWidth()){
-			dude.goBack(delta);
+		if (bounds.element().getMaxX() > map.getWidth() - bounds.element().getWidth()){ // if dude is too far right of map
+			dude.setX(map.getWidth() - bounds.element().getWidth()*1.5f);
 		}
 		
-				
+		//System.out.println("minX: " + dude.getGloballyTransformedShapes());
 		
 		
 		

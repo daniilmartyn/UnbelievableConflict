@@ -2,6 +2,8 @@ package uc;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 import jig.ConvexPolygon;
@@ -31,8 +33,11 @@ public class Char extends Entity{
 	private ConvexPolygon standingBox;
 	private ConvexPolygon crouchBox;
 	
+	private Weapon weapon;
+	
 	public Char(final float x, final float y) {
 		super(x,y);
+		health = 100;
 		velocity = new Vector(0.0f, 0.0f);
 		current = standRight;
 		addImage(current);
@@ -41,6 +46,8 @@ public class Char extends Entity{
 		addShape(standingBox, Color.transparent, Color.red);
 		state = 0;
 		prevState = state;
+		
+		weapon = new Weapon(x, y);
 	}
 
 	public void changeDir(int d){ // used to change direction of char in relation to mouse location
@@ -72,6 +79,10 @@ public class Char extends Entity{
 		return state;
 	}
 	
+	public Vector getVel(){
+		return velocity;
+	}
+	
 	public void goBack(int delta){
 		translate(velocity.scale(-delta));
 	}
@@ -82,6 +93,14 @@ public class Char extends Entity{
 	
 	public void jump(){
 		velocity = new Vector(velocity.getY(), -jump);
+	}
+	
+	public void switchWep(int i){
+		weapon.changeWeapon(i);
+	}
+	
+	public void fire(){
+		weapon.fire(this);
 	}
 	
 	private void changeImg(){
@@ -156,10 +175,27 @@ public class Char extends Entity{
 		
 	}
 	
-	public void update(float gravity, int delta){
+	public void renderWep(Graphics g){
+		
+		if(weapon != null){
+			weapon.render(g);
+		}
+		
+		for(Mine m: weapon.getMines()){
+			m.render(g);
+		}
+		
+		for(Bullet b: weapon.getBullets()){
+			b.render(g);
+		}
+	}
+	
+	public void update(float gravity, GameContainer container, int camX, int camY, int delta){
 		
 		changeImg();
 		translate(velocity.scale(delta));
+		weapon.setPosition(getX(), getY());
+		weapon.update(container, camX, camY, this, delta);
 		velocity = velocity.add(new Vector(0.0f, (gravity*delta)));
 	}
 	

@@ -17,9 +17,19 @@ public class UCGame extends StateBasedGame{
 	// img string stuff here
 	
 	public static final String TEST_RSC = "uc/resource/test.png";
+	
 	public static final String STAND_LIGHT_RSC = "uc/resource/stand_light.png";
 	public static final String RUN_LIGHT_RSC = "uc/resource/run_light.png";
 	public static final String CROUCH_LIGHT_RSC = "uc/resource/crouch_light.png";
+
+	public static final String PISTOL_RSC = "uc/resource/pistol.png";
+	public static final String PIPE_RSC = "uc/resource/pipe.png";
+	public static final String PIPE_HIT_RSC = "uc/resource/pipe_hit.png";
+	public static final String MINE_RSC = "uc/resource/mine.png";
+	public static final String MINE_THROW_RSC = "uc/resource/mine_throw.png";
+	
+	public static final String THEMINE_RSC = "uc/resource/theMine.png";
+	public static final String BULLET_RSC = "uc/resource/bullet.png";
 
 
 	
@@ -35,7 +45,7 @@ public class UCGame extends StateBasedGame{
 		ScreenWidth = width;
 		ScreenHeight = height;
 		
-		Entity.setCoarseGrainedCollisionBoundary(Entity.AABB);
+		Entity.setCoarseGrainedCollisionBoundary(Entity.CIRCLE);
 
 	}
 
@@ -46,9 +56,19 @@ public class UCGame extends StateBasedGame{
 		// load imgs and sounds
 		
 		ResourceManager.loadImage(TEST_RSC);
+		
 		ResourceManager.loadImage(STAND_LIGHT_RSC);
 		ResourceManager.loadImage(RUN_LIGHT_RSC);
 		ResourceManager.loadImage(CROUCH_LIGHT_RSC);
+
+		ResourceManager.loadImage(PISTOL_RSC);
+		ResourceManager.loadImage(PIPE_RSC);
+		ResourceManager.loadImage(PIPE_HIT_RSC);
+		ResourceManager.loadImage(MINE_RSC);
+		ResourceManager.loadImage(MINE_THROW_RSC);
+		
+		ResourceManager.loadImage(THEMINE_RSC);
+		ResourceManager.loadImage(BULLET_RSC);
 
 
 		
