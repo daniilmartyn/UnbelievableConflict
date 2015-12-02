@@ -9,37 +9,40 @@ import jig.Entity;
 import jig.ResourceManager;
 import jig.Vector;
 
-public class Bullet extends Entity{
+public class Grenade extends Entity{
 
-	private boolean active;
+private boolean active;
 	
 	private Vector velocity;
-	private Image bullet;
+	private Image grenade;
 	
-	public Bullet(final float x, final float y, final Vector v) {
+	public Grenade(final float x, final float y, Vector v) {
 		super(x,y);
 		velocity = v;
-		bullet = ResourceManager.getImage(UCGame.BULLET_RSC);
-		addImage(bullet);
-		addShape(new ConvexPolygon(bullet.getHeight()), Color.transparent, Color.green);
-		active = true;
-	}
+		grenade = ResourceManager.getImage(UCGame.GRENADE_RSC);
+		addImage(grenade);
+		addShape(new ConvexPolygon(grenade.getHeight()), Color.transparent, Color.green);
+		active = true;	}
 
 	public void update(int delta){
 		translate(velocity.scale(delta));
+		velocity = velocity.add(new Vector(0.0f, (PlayState.gravity*delta)));
+		
 		if(getX() < 0 || getX() > PlayState.map.getImg().getWidth()  //////////////////change this when map creating is updated
 				|| getY() < 0 || getY() > PlayState.map.getImg().getHeight())
 			active = false;
 		
 		
 		Collision collide = null;
-		if((collide = collides(PlayState.map)) != null){
+		while((collide = collides(PlayState.map)) != null){
 			System.out.println("collision test: " + collide.getMinPenetration());
 			System.out.println("this shape: " + collide.getThisShape());
 			System.out.println("other shape: " + collide.getOtherShape());
 			
-			active = false;
+			translate(collide.getMinPenetration());
+			velocity = new Vector(velocity.getX(), 0.0f);
 		}
+		
 	}
 	
 	public boolean isActive(){
