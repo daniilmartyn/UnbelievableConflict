@@ -1,0 +1,266 @@
+package uc;
+
+import java.util.LinkedList;
+
+import jig.ResourceManager;
+import jig.Shape;
+
+import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.state.BasicGameState;
+import org.newdawn.slick.state.GameState;
+import org.newdawn.slick.state.StateBasedGame;
+
+
+public class PlayState extends BasicGameState {
+
+	static Char dude;
+	static Image map;
+	
+	public static float gravity = 0.003f;
+	
+	//private ParticleSystem particles;
+	
+	int offsetMaxX;
+	int offsetMaxY;
+	int offsetMinX;
+	int offsetMinY;
+	
+	int camX;
+	int camY;
+	
+	
+	public void init(GameContainer container, StateBasedGame game)
+			throws SlickException {
+		// TODO Auto-generated method stub
+
+		UCGame uc = (UCGame) game;
+		
+		map = ResourceManager.getImage(UCGame.TEST_RSC);
+		
+		dude = new Char(map.getWidth()/2, map.getHeight()/2);
+		dude.id = uc.id;
+		uc.players.put(uc.id, dude);
+		
+		NetworkClasses.NewPlayerRequest packetX = new NetworkClasses.NewPlayerRequest();
+		packetX.id = uc.id;
+		uc.client.sendUDP(packetX);
+		
+		uc.set = true;
+		
+//		NetworkClasses.IExist IExist = new NetworkClasses.IExist();
+//		IExist.id = uc.id;
+//		uc.client.sendUDP(IExist);
+//		
+//		NetworkClasses.NewPlayerRequest packetX = new NetworkClasses.NewPlayerRequest();
+//		packetX.id = uc.id;
+//		uc.client.sendUDP(packetX);
+		
+		
+		//particles = new ParticleSystem
+		
+		
+		offsetMaxX = map.getWidth() - uc.ScreenWidth; 		// offset min/max X/Y technique taken from nathan
+		offsetMaxY = map.getHeight() - uc.ScreenHeight;		// http://gamedev.stackexchange.com/questions/44256/how-to-add-a-scrolling-camera-to-a-2d-java-game
+		offsetMinX = 0;										//
+		offsetMinY = 0;										//
+		
+		//System.out.println("offsetX: " + offsetMaxX + " offsetY: "+offsetMaxY);
+		camX = offsetMaxX;
+		camY = 0;
+	}
+
+	private void setCam(Input input, UCGame uc){
+		
+		camX = (int) (dude.getX()  - uc.ScreenWidth/2 + (input.getAbsoluteMouseX()-uc.ScreenWidth/2)*.5f);
+		camY = (int) (dude.getY() - uc.ScreenHeight/2 + (input.getAbsoluteMouseY()-uc.ScreenHeight/2)*.5f);
+		
+		if(camX > offsetMaxX)
+			camX = offsetMaxX;
+		if(camX < offsetMinX)
+			camX = offsetMinX;
+		if(camY > offsetMaxY)
+			camY = offsetMaxY;
+		if(camY < offsetMinY)
+			camY = offsetMinY;
+		
+	}
+	
+	
+	public void render(GameContainer container, StateBasedGame game, Graphics g)
+			throws SlickException {
+		// TODO Auto-generated method stub
+		UCGame uc = (UCGame)game;
+
+		g.translate(-camX, -camY);
+		
+		g.drawImage(map, 0, 0);
+		//dude.render(g);
+	//	dude.renderWep(g);
+		for(Char Player : UCGame.players.values()){
+			Player.render(g);
+			Player.renderWep(g);
+		}
+		g.setColor(Color.red);
+
+		g.drawString("ID: " + uc.id, 800, 1000);
+		//g.drawString("Points: " + UCGame.players.get(UCGame.id).points, 10, bg.ScreenHeight-50);
+	}
+
+	public void update(GameContainer container, StateBasedGame game, int delta)
+			throws SlickException {
+		// TODO Auto-generated method stub
+		
+		Input input = container.getInput();
+		UCGame uc = (UCGame) game;
+		
+		setCam(input, uc);
+		
+		if(input.getAbsoluteMouseX() < dude.getX() - camX)
+			dude.changeDir(1);
+		else
+			dude.changeDir(0);
+		
+		if(input.isKeyPressed(Input.KEY_1)){
+			dude.switchWep(0);
+		}
+		if(input.isKeyPressed(Input.KEY_2)){
+			dude.switchWep(1);
+		}
+		if(input.isKeyPressed(Input.KEY_3)){
+			dude.switchWep(2);
+		}
+//		if(input.isKeyPressed(Input.KEY_Q)){
+//		NetworkClasses.NewPlayerRequest packetX = new NetworkClasses.NewPlayerRequest();
+//		packetX.id = uc.id;
+//		uc.client.sendUDP(packetX);
+//		}
+		
+		if(input.isKeyPressed(Input.KEY_W) && !dude.isJumped()){ // make dude jump
+			NetworkClasses.PacketUpdateY packetY = new NetworkClasses.PacketUpdateY();
+			packetY.setJump = true;
+			packetY.state = 1;
+			packetY.jump = true;
+			packetY.id = uc.id;
+			uc.client.sendUDP(packetY);
+			
+			
+//			dude.jump();
+//			dude.setJump(true);
+//			dude.setState(3);
+		}
+				
+		if((input.isKeyDown(Input.KEY_A) || input.isKeyDown(Input.KEY_D))){
+			if(input.isKeyDown(Input.KEY_A)){
+				NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
+				packetX.runDir=1;
+				packetX.state=1;
+				packetX.id = uc.id;
+
+				//System.out.println("sent");
+				
+				uc.client.sendUDP(packetX);
+				
+				//dude.changeRunDir(1); 			// run left
+				//dude.setState(1);
+			}else if(input.isKeyDown(Input.KEY_D)){	// run right
+				
+				NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
+				packetX.runDir=0;
+				packetX.state=1;
+				packetX.id = uc.id;
+
+				uc.client.sendUDP(packetX);
+				
+				//dude.changeRunDir(0);
+				//dude.setState(1);
+			}
+		}else{
+			NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
+			packetX.runDir=-1;
+			packetX.state=0;
+			packetX.id = uc.id;
+
+			uc.client.sendUDP(packetX);
+			
+//			dude.changeRunDir(-1);			// set run velocity to 0.0
+//			dude.setState(0);
+		}
+		
+		if(input.isKeyDown(Input.KEY_S)){
+			
+			NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
+			packetX.state=2;
+			packetX.runDir=9;
+			packetX.id = uc.id;
+
+			
+			//System.out.println("pressing s key");
+			//dude.setState(2);
+			if(!dude.isJumped()){
+				packetX.runDir=-1;
+			}
+			uc.client.sendUDP(packetX);
+
+		}
+
+		if(input.isMousePressed(0))
+			dude.fire();
+		
+		//System.out.println(input.getMouseX()+" "+input.getMouseY());
+		
+//		dude.update(gravity, container, camX, camY, delta);
+		
+		
+		for(Char Player : UCGame.players.values()){
+			Player.update(gravity, container, camX, camY, delta);
+		
+		
+		LinkedList<Shape> bounds = Player.getGloballyTransformedShapes();
+		
+		if(Player.getCoarseGrainedMinY() < 0){				// if dude is higher than than the map
+			Player.setY(Player.getCoarseGrainedHeight()/2);
+		}
+		if(bounds.element().getMaxY() > map.getHeight()){	// if dude is lower than the map
+			Player.setY(map.getHeight() - bounds.element().getHeight()/2);
+			Player.cancelFall();
+			Player.setJump(false);
+		}
+		if (bounds.element().getMinX() < bounds.element().getWidth()){			// if dude is too far left of map
+			Player.setX(bounds.element().getWidth()*1.5f);
+		}
+		if (bounds.element().getMaxX() > map.getWidth() - bounds.element().getWidth()){ // if dude is too far right of map
+			Player.setX(map.getWidth() - bounds.element().getWidth()*1.5f);
+		}
+		
+		//System.out.println("minX: " + dude.getGloballyTransformedShapes());
+		
+		
+		}
+		
+		
+	}
+
+	@Override
+	public void enter(GameContainer container, StateBasedGame game)
+			throws SlickException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void leave(GameContainer container, StateBasedGame game)
+			throws SlickException {
+		// TODO Auto-generated method stub
+
+	}
+
+	public int getID() {
+		// TODO Auto-generated method stub
+		return UCGame.PLAYSTATE;
+	}
+}
