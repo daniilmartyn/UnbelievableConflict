@@ -30,9 +30,17 @@ public class Mine extends Entity{
 		translate(velocity.scale(delta));
 		velocity = velocity.add(new Vector(0.0f, (PlayState.gravity*delta)));
 		
+		if(UCGame.isServer){
 		if(getX() < 0 || getX() > PlayState.map.getWidth()  //////////////////change this when map creating is updated
 				|| getY() < 0 || getY() > PlayState.map.getHeight())
 			active = false;
+		}
+		else{
+			if(getX() < 0 || getX() > PlayState2.map.getWidth()  //////////////////change this when map creating is updated
+					|| getY() < 0 || getY() > PlayState2.map.getHeight())
+				active = false;
+			
+		}
 		
 	}
 	

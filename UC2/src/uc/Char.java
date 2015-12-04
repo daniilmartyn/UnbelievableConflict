@@ -16,14 +16,17 @@ public class Char extends Entity{
 	public int id;
 	public boolean set;
 	
+	public int camX;
+	public int camY;
+	
 	private int health;
 	private float speed = 0.5f;
 	private float jump = 1.0f;
 	private boolean isJumped = true;
-	private int state; // 0 for stand, 1 for run, 2 for crouch, 3 for jump
+	public int state; // 0 for stand, 1 for run, 2 for crouch, 3 for jump
 	private int prevState;
 	
-	private int direction = 0;  // 0 for facing right, 1 for facing left
+	public int direction = 0;  // 0 for facing right, 1 for facing left
 	private int prevDirection = direction;
 	private Vector velocity;
 	private Image current;
@@ -36,7 +39,7 @@ public class Char extends Entity{
 	private ConvexPolygon standingBox;
 	private ConvexPolygon crouchBox;
 	
-	private Weapon weapon;
+	public Weapon weapon;
 	
 	public Char(final float x, final float y) {
 		super(x,y);
@@ -107,7 +110,7 @@ public class Char extends Entity{
 		weapon.fire(this);
 	}
 	
-	private void changeImg(){
+	public void changeImg(){
 		
 		//System.out.println("state is: " + state);
 		
@@ -189,9 +192,9 @@ public class Char extends Entity{
 			m.render(g);
 		}
 		
-		for(Bullet b: weapon.getBullets()){
-			b.render(g);
-		}
+	//	for(Bullet b: weapon.getBullets()){
+	///		b.render(g);
+	//	}
 	}
 	
 	public void update(float gravity, GameContainer container, int camX, int camY, int delta){

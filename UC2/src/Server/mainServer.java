@@ -86,6 +86,10 @@ public class mainServer {
 		kryo.register(NetworkClasses.HitRequest.class);
 		kryo.register(NetworkClasses.NewPlayerRequest.class);
 		kryo.register(NetworkClasses.IExist.class);
+		kryo.register(NetworkClasses.SetXY.class);
+		kryo.register(NetworkClasses.FiredGun.class);
+		kryo.register(NetworkClasses.MouseMoved.class);
+		kryo.register(NetworkClasses.UpdateChar.class);
 
 		
 	}

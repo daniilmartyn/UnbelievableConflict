@@ -22,7 +22,7 @@ public class Weapon extends Entity{
 	private Image weaponRight;
 	private Image weaponLeft;
 	private Image weapon;
-	private int select; // 0 for primary, 1 for secondary, 2 for melee
+	public int select; // 0 for primary, 1 for secondary, 2 for melee
 	
 	private Animation hit;
 	
@@ -31,10 +31,10 @@ public class Weapon extends Entity{
 	private Vector wepOffSetRight;
 	private Vector wepOffSetLeft;
 	
-	private Vector mouse;
+	public Vector mouse;
 	private Vector wep;
-	private float angle = 0;
-	private int direction = 0;
+	public float angle = 0;
+	public int direction = 0;
 	private int prevDirection = direction;
 	
 	private ArrayList<Mine> mines;
@@ -49,7 +49,7 @@ public class Weapon extends Entity{
 		offsetCrouch = new Vector(10f, -15f);
 		weaponRight = primary;
 		weaponLeft = primary.getFlippedCopy(true, false);
-		
+		mouse = new Vector(0,0);
 		weapon = weaponRight;
 		wepOffSetRight = new Vector(primary.getWidth()/2 - 5, primary.getHeight()/2 - 5);
 		wepOffSetLeft = new Vector(-wepOffSetRight.getX(), wepOffSetRight.getY());
@@ -64,9 +64,9 @@ public class Weapon extends Entity{
 		return mines;
 	}
 	
-	public ArrayList<Bullet> getBullets(){
-		return bullets;
-	}
+//	public ArrayList<Bullet> getBullets(){
+//		return bullets;
+//	}
 	
 	public void fire(Char dude){
 		
@@ -82,10 +82,11 @@ public class Weapon extends Entity{
 				bullet = new Bullet(getX() + bulletOffSet.getX(), getY() + bulletOffSet.getY(), Vector.getUnit(angle).scale(.5f).add(dude.getVel()));
 			}
 			bullet.setRotation(angle);
-			bullets.add(bullet);
+			UCGame.bullet.add(bullet);
 			
-			System.out.println("array of bullets: " + bullets);
-			
+			//System.out.println("array of bullets: " + UCGame.bullet);
+			System.out.println(bullet.getX() +" "+bullet.getY());
+
 			break;
 		case 1:
 			
@@ -198,8 +199,10 @@ public class Weapon extends Entity{
 			setPosition(getPosition().add(offsetStand));
 		
 		
+		if(dude.id == 1){
 		mouse = new Vector(input.getMouseX(), input.getMouseY()); // get mouse location
-		wep = new Vector(getX() - camX, getY() - camY); 		  // get weapon pivot point
+		}
+		wep = new Vector(getX() - dude.camX, getY() - dude.camY); 		  // get weapon pivot point
 		
 		angle = (float) wep.angleTo(mouse);						  // find angle of weapon aim
 				
@@ -261,13 +264,7 @@ public class Weapon extends Entity{
 			b.update(delta);
 		}
 		*/
-		for(Iterator<Bullet> b = bullets.iterator(); b.hasNext();){
-			Bullet bullet = b.next();
-			if(!bullet.isActive())
-				b.remove();
-			else
-				bullet.update(delta);
-		}
+
 		
 		for(Iterator<Mine> m = mines.iterator(); m.hasNext();){
 			Mine mine = m.next();

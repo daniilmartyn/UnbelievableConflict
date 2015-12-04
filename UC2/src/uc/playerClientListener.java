@@ -5,12 +5,16 @@ import NetworkClasses.LoginResponse;
 
 import NetworkClasses.CollideRequest;
 import NetworkClasses.CreatePellet;
+import NetworkClasses.FiredGun;
 import NetworkClasses.HitRequest;
 import NetworkClasses.IExist;
+import NetworkClasses.MouseMoved;
 import NetworkClasses.PacketAddPlayer;
 import NetworkClasses.PacketRemovePlayer;
 import NetworkClasses.PacketUpdateX;
 import NetworkClasses.PacketUpdateY;
+import NetworkClasses.SetXY;
+import NetworkClasses.UpdateChar;
 import NetworkClasses.UpdatePellet;
 
 import com.esotericsoftware.kryonet.Connection;
@@ -64,91 +68,98 @@ public class playerClientListener extends Listener {
 			
 			for(Char Player : UCGame.players.values()){
 				System.out.println(Player.id);
-				
 			}
-			
 		}
-		//else 
-//			if(object instanceof PacketRemovePlayer){
-//			PacketRemovePlayer packet = (PacketRemovePlayer) object;
-//			BounceGameClient.players2.remove(packet.id);
-//			
-//		}
+		else 
+			if(object instanceof PacketRemovePlayer){
+			PacketRemovePlayer packet = (PacketRemovePlayer) object;
+			UCGame.players.remove(packet.id);
+		}
 		else
 			if(object instanceof PacketUpdateX){
 			PacketUpdateX packet = (PacketUpdateX) object;
-			//System.out.println("recived");
-
-			if(packet.runDir >3){
-				
-			}
+				if(packet.runDir >3){
+				}
 			else{
-	//			UCGame.players.get(packet.id)PlayState.dude.changeRunDir(packet.runDir);			// set run velocity to 0.0
-
 				UCGame.players.get(packet.id).changeRunDir(packet.runDir);			// set run velocity to 0.0
 			}
-			//PlayState.dude.setState(packet.state);
 			UCGame.players.get(packet.id).setState(packet.state);
 		}else if(object instanceof PacketUpdateY){
 			PacketUpdateY packet = (PacketUpdateY) object;
-			
-//			PlayState.dude.jump();
-//			PlayState.dude.setJump(true);
-//			PlayState.dude.setState(packet.state);
 	
 			UCGame.players.get(packet.id).jump();
 			UCGame.players.get(packet.id).setJump(true);
 			UCGame.players.get(packet.id).setState(packet.state);
 		}
-//		else if(object instanceof CollideRequest){
-//			CollideRequest packet = (CollideRequest) object;
-//			
-//			UCGame.players2.get(packet.id).setPosition(300, 300);
-//			UCGame.players2.get(packet.id2).points =- 1;
+		else if(object instanceof SetXY){
+			SetXY packet = (SetXY) object;
+			
+//			if(packet.run == 0){
+//				UCGame.players.get(packet.id).weapon.setRotation(packet.rotate);
 //
-//			UCGame.players2.get(packet.id).setPosition(100, 100);
-//			UCGame.players2.get(packet.id2).points += 1;
-//		}
-//		else if(object instanceof CreatePellet){
-//			CreatePellet packet = (CreatePellet) object;
-//			
-//			//if(packet.id == BounceGameClient.id){
-//				BounceGameClient.bullet.add(new Bullet(packet.x, packet.y, new Vector(packet.vx, packet.vy)));
-//			//}
-//			//else{
-//			//	BounceGameClient.otherPellet.add(new Pellet(packet.x, packet.y, packet.vx ,packet.vy));
-//			//}
-//
-//		}
-//		else if(object instanceof UpdatePellet){
-//			UpdatePellet packet = (UpdatePellet) object;
-//			
-//			if(packet.id == BounceGameClient.id){
-//				//BounceGameClient.myPellet.get(packet.numPel).translate(5, 0);
-//				BounceGameClient.myPellet.get(packet.numPel).update(packet.delta);
 //			}
 //			else{
-//				BounceGameClient.otherPellet.get(packet.numPel).update(packet.delta);
-//			}
+//				UCGame.players.get(packet.id).weapon.setRotation(packet.rotate);
+//				//UCGame.players.get(packet.id).weapon.;
 //
-//		}
-//		else if(object instanceof HitRequest){
-//			HitRequest packet = (HitRequest) object;
-//			
-//			BounceGameClient.players2.get(packet.id).points--;
-//			
-//			if(packet.id == BounceGameClient.id){
-//				BounceGameClient.myPellet.remove(packet.numPel);
 //			}
-//			else{
-//				BounceGameClient.otherPellet.remove(packet.numPel);
-//			}
-//
-//		}
-		
+			UCGame.players.get(packet.id).weapon.setRotation(packet.rotate);
+			UCGame.players.get(packet.id).weapon.angle = (packet.rotate);
+			UCGame.players.get(packet.id).setX(packet.x);
+			UCGame.players.get(packet.id).setY(packet.y);
+			UCGame.players.get(packet.id).weapon.setX(packet.x);
+			UCGame.players.get(packet.id).weapon.setY(packet.y);
+			UCGame.players.get(packet.id).setJump(packet.jumped);
+			
+			UCGame.players.get(packet.id).changeDir(packet.run);
+			UCGame.players.get(packet.id).state= (packet.state);
+			UCGame.players.get(packet.id).changeImg();
+		}		
+		else if(object instanceof UpdateChar){
+			UpdateChar packet = (UpdateChar) object;
+			
+			UCGame.players.get(packet.id).camX =((packet.camx));
+			UCGame.players.get(packet.id).camY =((packet.camy));
+
+			UCGame.players.get(packet.id).changeDir((packet.changeDir));
+			UCGame.players.get(packet.id).weapon.mouse = (new Vector(packet.mousex,packet.mousey));
+
+			if(packet.runDir >3){
+			}
+			else{
+				UCGame.players.get(packet.id).changeRunDir(packet.runDir);			// set run velocity to 0.0
+			}
+			
+			UCGame.players.get(packet.id).setState(packet.state);
+	
+			if(packet.jump){
+				UCGame.players.get(packet.id).jump();
+				UCGame.players.get(packet.id).setJump(true);
+				UCGame.players.get(packet.id).setState(packet.state);
+			}
+			if(packet.fire){
+			//	UCGame.players.get(packet.id).weapon.angle = packet.angle;
+			//	UCGame.players.get(packet.id).weapon.direction = packet.direction;
+			///	UCGame.players.get(packet.id).weapon.select = packet.select;
+				UCGame.players.get(packet.id).weapon.fire(UCGame.players.get(packet.id));		
+			}
+
+		}
+		else if(object instanceof FiredGun){
+			FiredGun packet = (FiredGun) object;
+	
+			UCGame.players.get(packet.id).weapon.angle = packet.angle;
+			UCGame.players.get(packet.id).weapon.direction = packet.direction;
+			UCGame.players.get(packet.id).weapon.select = packet.select;
+			UCGame.players.get(packet.id).weapon.fire(UCGame.players.get(packet.id));
+		}
+		else if(object instanceof MouseMoved){
+			MouseMoved packet = (MouseMoved) object;
+	
+			UCGame.players.get(packet.id).weapon.mouse = packet.mouse;
 		}
 	}
-
+	}
 
 }
 	

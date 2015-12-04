@@ -1,11 +1,10 @@
 package uc;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import jig.ResourceManager;
 import jig.Shape;
-import NetworkClasses.SetXY;
+import jig.Vector;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -18,7 +17,7 @@ import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 
-public class PlayState extends BasicGameState {
+public class PlayState2 extends BasicGameState {
 
 	static Char dude;
 	static Image map;
@@ -57,6 +56,7 @@ public class PlayState extends BasicGameState {
 		if(camY < offsetMinY)
 			camY = offsetMinY;
 		
+		
 	}
 	
 	
@@ -78,6 +78,7 @@ public class PlayState extends BasicGameState {
 		for(Bullet bullet : UCGame.bullet){
 			bullet.render(g);
 		}
+		
 		g.setColor(Color.red);
 
 		g.drawString("ID: " + uc.id, 800, 1000);
@@ -92,155 +93,109 @@ public class PlayState extends BasicGameState {
 		UCGame uc = (UCGame) game;
 		
 		setCam(input, uc);
-		if(dude.id == 1){
-			dude.camX =camX;
-			dude.camY = camY;
+		
+		//dude.weapon.mouse = new Vector(input.getMouseX(),input.getMouseY());
+		
+		NetworkClasses.UpdateChar packet = new NetworkClasses.UpdateChar();
+		
+		if(input.getAbsoluteMouseX() < dude.getX() - camX){
+			//dude.changeDir(1);
+			packet.changeDir = 1;
 		}
-//		if(uc.players.get(2) != null){
-//		//System.out.println("server " +uc.players.get(2).weapon.mouse.getX() +" "+uc.players.get(2).weapon.mouse.getX());
-//		}
-		if(input.getAbsoluteMouseX() < dude.getX() - camX)
-			dude.changeDir(1);
-		else
-			dude.changeDir(0);
+		else{
+//			dude.changeDir(0);
+			packet.changeDir = 0;
+		}
 		
 		if(input.isKeyPressed(Input.KEY_1)){
-			dude.switchWep(0);
+			packet.switchWep = 0;
+			//dude.switchWep(0);
 		}
 		if(input.isKeyPressed(Input.KEY_2)){
-			dude.switchWep(1);
+			packet.switchWep = 1;
+
+//			dude.switchWep(1);
 		}
 		if(input.isKeyPressed(Input.KEY_3)){
-			dude.switchWep(2);
-		}
-		
+//			dude.switchWep(2);
+			packet.switchWep = 1;
+		}		
 		if(input.isKeyPressed(Input.KEY_W) && !dude.isJumped()){ // make dude jump
-			NetworkClasses.PacketUpdateY packetY = new NetworkClasses.PacketUpdateY();
-			packetY.setJump = true;
-			packetY.state = 1;
-			packetY.jump = true;
-			packetY.id = uc.id;
-			uc.client.sendUDP(packetY);
-			
-			
-//			dude.jump();
-//			dude.setJump(true);
-//			dude.setState(3);
+			//NetworkClasses.PacketUpdateY packetY = new NetworkClasses.PacketUpdateY();
+			packet.setJump = true;
+			packet.state = 1;
+			packet.jump = true;
+			packet.id = uc.id;
+			//uc.client.sendUDP(packetY);
 		}
 				
 		if((input.isKeyDown(Input.KEY_A) || input.isKeyDown(Input.KEY_D))){
 			if(input.isKeyDown(Input.KEY_A)){
-				NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
-				packetX.runDir=1;
-				packetX.state=1;
-				packetX.id = uc.id;
-
-				//System.out.println("sent");
-				
-				uc.client.sendUDP(packetX);
-				
-				//dude.changeRunDir(1); 			// run left
-				//dude.setState(1);
+			//	NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
+				packet.runDir=1;
+				packet.state=1;
+				packet.id = uc.id;				
+				//uc.client.sendUDP(packetX);
 			}else if(input.isKeyDown(Input.KEY_D)){	// run right
 				
-				NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
-				packetX.runDir=0;
-				packetX.state=1;
-				packetX.id = uc.id;
-
-				uc.client.sendUDP(packetX);
-				
-				//dude.changeRunDir(0);
-				//dude.setState(1);
+			//	NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
+				packet.runDir=0;
+				packet.state=1;
+				packet.id = uc.id;
+				//uc.client.sendUDP(packetX);
 			}
 		}else{
-			NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
-			packetX.runDir=-1;
-			packetX.state=0;
-			packetX.id = uc.id;
-
-			uc.client.sendUDP(packetX);
-			
-//			dude.changeRunDir(-1);			// set run velocity to 0.0
-//			dude.setState(0);
+			//NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
+			packet.runDir=-1;
+			packet.state=0;
+			packet.id = uc.id;
+		//	uc.client.sendUDP(packetX);
 		}
 		
 		if(input.isKeyDown(Input.KEY_S)){
 			
-			NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
-			packetX.state=2;
-			packetX.runDir=9;
-			packetX.id = uc.id;
-
-			
-			//System.out.println("pressing s key");
-			//dude.setState(2);
+		//	NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
+			packet.state=2;
+			packet.runDir=9;
+			packet.id = uc.id;
 			if(!dude.isJumped()){
-				packetX.runDir=-1;
+				packet.runDir=-1;
 			}
-			uc.client.sendUDP(packetX);
+		//	uc.client.sendUDP(packetX);
 
 		}
 
-		if(input.isMousePressed(0))
-			dude.fire();
-		
-		//System.out.println(input.getMouseX()+" "+input.getMouseY());
-		
-//		dude.update(gravity, container, camX, camY, delta);
-		
+		if(input.isMousePressed(0)){
 			
-		for(Iterator<Bullet> b = UCGame.bullet.iterator(); b.hasNext();){
-			Bullet bullet = b.next();
-			if(!bullet.isActive())
-				b.remove();
-			else
-				bullet.update(delta);
-		}
-		
-		
-		for(Char Player : UCGame.players.values()){
-			Player.update(gravity, container, camX, camY, delta);
-		
+		//	NetworkClasses.FiredGun packet = new NetworkClasses.FiredGun();
+			packet.fire = true;
+			packet.angle=dude.weapon.angle;
+			packet.direction=dude.weapon.direction;
+			packet.select=dude.weapon.select;
+			packet.id = uc.id;
 
-		LinkedList<Shape> bounds = Player.getGloballyTransformedShapes();
-		
-		if(Player.getCoarseGrainedMinY() < 0){				// if dude is higher than than the map
-			Player.setY(Player.getCoarseGrainedHeight()/2);
-		}
-		if(bounds.element().getMaxY() > map.getHeight()){	// if dude is lower than the map
-			Player.setY(map.getHeight() - bounds.element().getHeight()/2);
-			Player.cancelFall();
-			Player.setJump(false);
-		}
-		if (bounds.element().getMinX() < bounds.element().getWidth()){			// if dude is too far left of map
-			Player.setX(bounds.element().getWidth()*1.5f);
-		}
-		if (bounds.element().getMaxX() > map.getWidth() - bounds.element().getWidth()){ // if dude is too far right of map
-			Player.setX(map.getWidth() - bounds.element().getWidth()*1.5f);
+			//uc.client.sendUDP(packet);
+			
+			//dude.fire();
 		}
 		
-		//System.out.println("minX: " + dude.getGloballyTransformedShapes());
+		packet.mousey = input.getMouseY();
+		packet.mousex = input.getMouseX();
 		
-		NetworkClasses.SetXY packet = new NetworkClasses.SetXY();
-		packet.x=Player.getX();
-		packet.y=Player.getY();
-		packet.x1 = Player.weapon.getX();
-		packet.y1 = Player.weapon.getY();
-		packet.jumped = Player.isJumped();
-		packet.state = Player.state;
-		packet.run = Player.direction;
-
-		packet.rotate = Player.weapon.angle;
-		packet.id = Player.id;
+		packet.camx = camX;
+		packet.camy = camY;
+		
+		//System.out.println(dude.weapon.mouse);
 
 		uc.client.sendUDP(packet);
+
 		
-		
-		
-		}
-		
-		
+//		Vector mouse = new Vector(input.getMouseX(), input.getMouseY()); // get mouse location
+//		packetM.mouse = mouse;
+//		NetworkClasses.MouseMoved packetM = new NetworkClasses.MouseMoved();
+//		packetM.id = uc.id;
+//		packetM.mouse = mouse;
+//		uc.client.sendUDP(packetM);
 	}
 
 	@Override
@@ -253,7 +208,8 @@ public class PlayState extends BasicGameState {
 		dude = new Char(map.getWidth()/2, map.getHeight()/2);
 		dude.id = uc.id;
 		uc.players.put(uc.id, dude);
-		
+		//dude.setJump(false);
+
 		NetworkClasses.NewPlayerRequest packetX = new NetworkClasses.NewPlayerRequest();
 		packetX.id = uc.id;
 		uc.client.sendUDP(packetX);
@@ -291,6 +247,6 @@ public class PlayState extends BasicGameState {
 
 	public int getID() {
 		// TODO Auto-generated method stub
-		return UCGame.PLAYSTATE;
+		return UCGame.PLAYSTATE2;
 	}
 }

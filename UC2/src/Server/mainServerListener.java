@@ -16,7 +16,8 @@ import NetworkClasses.IExist;
 import NetworkClasses.LoginRequest;
 import NetworkClasses.LoginResponse;
 import NetworkClasses.NewPlayerRequest;
-
+import NetworkClasses.NewPlayerRequest;
+import NetworkClasses.SetXY;
 
 import NetworkClasses.PacketAddPlayer;
 
@@ -98,7 +99,7 @@ public class mainServerListener extends Listener  {
 		//	System.out.println("sent back");
 
 				//packet.id = connection.getID();
-				mainServer.server.sendToAllUDP( packet);
+				mainServer.server.sendToUDP( 1,packet);
 		//	}
 
 //			System.out.println("received and sent an update X packet");
@@ -113,10 +114,26 @@ public class mainServerListener extends Listener  {
 //				mainServer.ServerGame.players2.get(packet.id).translate(0,packet.y);
 				
 				//packet.id = connection.getID();
-				mainServer.server.sendToAllUDP(packet);
+				mainServer.server.sendToUDP(1,packet);
 		//	}	
 		}
 		
+		else if(object instanceof NetworkClasses.SetXY){
+			NetworkClasses.SetXY packet = (NetworkClasses.SetXY) object;
+			mainServer.server.sendToAllExceptUDP(1,packet);
+		}
+		else if(object instanceof NetworkClasses.FiredGun){
+			NetworkClasses.FiredGun packet = (NetworkClasses.FiredGun) object;
+			mainServer.server.sendToUDP(1,packet);
+		}
+		else if(object instanceof NetworkClasses.UpdateChar){
+			NetworkClasses.UpdateChar packet = (NetworkClasses.UpdateChar) object;
+			mainServer.server.sendToUDP(1,packet);
+		}
+		else if(object instanceof NetworkClasses.MouseMoved){
+			NetworkClasses.MouseMoved packet = (NetworkClasses.MouseMoved) object;
+			mainServer.server.sendToUDP(1,packet);
+		}
 		else if(object instanceof NetworkClasses.CreatePellet){
 			NetworkClasses.CreatePellet packet = (NetworkClasses.CreatePellet) object;
 							

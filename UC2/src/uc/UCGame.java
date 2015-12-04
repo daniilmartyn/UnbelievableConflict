@@ -3,6 +3,7 @@ package uc;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jig.Entity;
@@ -26,7 +27,9 @@ import com.esotericsoftware.minlog.Log;
 
 public class UCGame extends StateBasedGame{
 	
-	public static final int PLAYSTATE = 0;
+	public static final int PLAYSTATE = 1;
+	public static final int PLAYSTATE2 = 2;
+	public static final int BUTTONSTATE = 0;
 
 	// img string stuff here
 	
@@ -50,6 +53,7 @@ public class UCGame extends StateBasedGame{
 	
 	public static boolean set;
 	
+	public static boolean isServer;
 	
 	private int tcpPort;
 	private int udpPort;
@@ -58,10 +62,11 @@ public class UCGame extends StateBasedGame{
 	public static Input inputHandler;
 	
 	public static Client client;
-	private Kryo kryo;
+	public Kryo kryo;
 	public static int id;
 	
 	public static Map<Integer,Char> players = new HashMap<Integer,Char>(); 
+	public final static List<Bullet> bullet = new ArrayList<Bullet>();
 
 	
 	boolean sound = true;
@@ -75,10 +80,10 @@ public class UCGame extends StateBasedGame{
 		this.udpPort = udpPort;
 		this.timeout = timeout;
 		
-		client = new Client();
-		kryo = client.getKryo();
-		registerKryoClasses();
-		connect("127.0.0.1");
+//		client = new Client();
+//		kryo = client.getKryo();
+//		registerKryoClasses();
+//		connect("127.0.0.1");
 		
 		Entity.setCoarseGrainedCollisionBoundary(Entity.CIRCLE);
 
@@ -113,7 +118,7 @@ public void connect(String ip){
 		client.stop();
 	}
 	
-	private void registerKryoClasses(){
+	public void registerKryoClasses(){
 		kryo.register(LoginRequest.class);
 		kryo.register(LoginResponse.class);
 		kryo.register(Message.class);
@@ -129,15 +134,20 @@ public void connect(String ip){
 		kryo.register(NetworkClasses.UpdatePellet.class);
 		kryo.register(NetworkClasses.HitRequest.class);
 		kryo.register(NetworkClasses.NewPlayerRequest.class);
-		
 		kryo.register(NetworkClasses.IExist.class);
+		kryo.register(NetworkClasses.SetXY.class);
+		kryo.register(NetworkClasses.FiredGun.class);
+		kryo.register(NetworkClasses.MouseMoved.class);
+		kryo.register(NetworkClasses.UpdateChar.class);
 
 	}
 
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
+		addState(new ButtonState());	
+		addState(new PlayState2());		
 		addState(new PlayState());		
-		
+
 		// load imgs and sounds
 		
 		ResourceManager.loadImage(TEST_RSC);
@@ -165,12 +175,12 @@ public void connect(String ip){
 		try {
 			UCGame pClient = new UCGame("Oh, the conflict!", 1024, 576,55555, 55556, 5000);	
 			
-			if(client.isConnected()){
+			//if(client.isConnected()){
 				app = new AppGameContainer(pClient);
 				app.setDisplayMode(1024, 576, false);
 				app.setVSync(true);
 				app.start();
-			}
+			//}
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
