@@ -15,7 +15,6 @@ import NetworkClasses.PacketUpdateX;
 import NetworkClasses.PacketUpdateY;
 import NetworkClasses.SetXY;
 import NetworkClasses.UpdateChar;
-import NetworkClasses.UpdatePellet;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;

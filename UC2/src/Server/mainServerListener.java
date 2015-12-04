@@ -141,12 +141,6 @@ public class mainServerListener extends Listener  {
 				mainServer.server.sendToAllUDP( packet);
 		}
 		
-		else if(object instanceof NetworkClasses.UpdatePellet){
-			NetworkClasses.UpdatePellet packet = (NetworkClasses.UpdatePellet) object;
-							
-				packet.id = connection.getID();
-				mainServer.server.sendToAllUDP( packet);
-		}
 		else if(object instanceof NetworkClasses.HitRequest){
 			NetworkClasses.HitRequest packet = (NetworkClasses.HitRequest) object;
 							

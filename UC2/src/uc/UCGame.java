@@ -131,7 +131,6 @@ public void connect(String ip){
 		kryo.register(NetworkClasses.PacketRemovePlayer.class);
 		kryo.register(NetworkClasses.CollideRequest.class);
 		kryo.register(NetworkClasses.CreatePellet.class);
-		kryo.register(NetworkClasses.UpdatePellet.class);
 		kryo.register(NetworkClasses.HitRequest.class);
 		kryo.register(NetworkClasses.NewPlayerRequest.class);
 		kryo.register(NetworkClasses.IExist.class);
