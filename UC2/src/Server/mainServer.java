@@ -3,6 +3,7 @@ package Server;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -17,6 +18,7 @@ import NetworkClasses.LoginResponse;
 import NetworkClasses.Message;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryonet.*;
 import com.esotericsoftware.minlog.Log;
 
@@ -89,8 +91,8 @@ public class mainServer {
 		kryo.register(NetworkClasses.FiredGun.class);
 		kryo.register(NetworkClasses.MouseMoved.class);
 		kryo.register(NetworkClasses.UpdateChar.class);
-
-		
+		kryo.register(NetworkClasses.UpdateBullet.class);
+		kryo.register(ArrayList.class);
 	}
 	
 	public void update( ){

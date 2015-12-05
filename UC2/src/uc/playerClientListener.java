@@ -14,8 +14,8 @@ import NetworkClasses.PacketRemovePlayer;
 import NetworkClasses.PacketUpdateX;
 import NetworkClasses.PacketUpdateY;
 import NetworkClasses.SetXY;
+import NetworkClasses.UpdateBullet;
 import NetworkClasses.UpdateChar;
-
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
@@ -143,6 +143,22 @@ public class playerClientListener extends Listener {
 				UCGame.players.get(packet.id).weapon.fire(UCGame.players.get(packet.id));		
 			}
 
+		}
+		else if(object instanceof UpdateBullet){
+			UpdateBullet packet = (UpdateBullet) object;
+	
+//			UCGame.bullet.clear();
+//			for(int i =0; i < packet.bullet.size(); i++){
+//				UCGame.bullet.add(new Bullet(packet.bullet.get(i).x,
+//						packet.bullet.get(i).x,packet.bullet.get(i).vector));
+//			}
+			
+			UCGame.bullet.clear();
+			for(int i =0; i < packet.bullet.size(); i+=2){
+				UCGame.bullet.add(new Bullet(packet.bullet.get(i),
+						packet.bullet.get(i+1), new Vector(0,0)));
+			}
+			
 		}
 		else if(object instanceof FiredGun){
 			FiredGun packet = (FiredGun) object;

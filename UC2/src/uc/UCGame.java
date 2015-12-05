@@ -138,6 +138,8 @@ public void connect(String ip){
 		kryo.register(NetworkClasses.FiredGun.class);
 		kryo.register(NetworkClasses.MouseMoved.class);
 		kryo.register(NetworkClasses.UpdateChar.class);
+		kryo.register(NetworkClasses.UpdateBullet.class);
+		kryo.register(ArrayList.class);
 
 	}
 

@@ -122,6 +122,11 @@ public class mainServerListener extends Listener  {
 			NetworkClasses.SetXY packet = (NetworkClasses.SetXY) object;
 			mainServer.server.sendToAllExceptUDP(1,packet);
 		}
+		else if(object instanceof NetworkClasses.UpdateBullet){
+			NetworkClasses.UpdateBullet packet = (NetworkClasses.UpdateBullet) object;
+			mainServer.server.sendToAllExceptTCP(1,packet);
+		}
+		
 		else if(object instanceof NetworkClasses.FiredGun){
 			NetworkClasses.FiredGun packet = (NetworkClasses.FiredGun) object;
 			mainServer.server.sendToUDP(1,packet);

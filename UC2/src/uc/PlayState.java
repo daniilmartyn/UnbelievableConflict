@@ -1,5 +1,6 @@
 package uc;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -189,16 +190,38 @@ public class PlayState extends BasicGameState {
 		
 //		dude.update(gravity, container, camX, camY, delta);
 		
-			
+		NetworkClasses.UpdateBullet packetB = new NetworkClasses.UpdateBullet();
+	//	packetB.bullet = new ArrayList<UpdateBulletInfo>();
+		packetB.bullet = new ArrayList<Float>();
+
 		for(Iterator<Bullet> b = UCGame.bullet.iterator(); b.hasNext();){
 			Bullet bullet = b.next();
-			if(!bullet.isActive())
+			if(!bullet.isActive()){
 				b.remove();
-			else
+			}
+			else{
 				bullet.update(delta);
+			//  UpdateBulletInfo news = new UpdateBulletInfo();				
+			//	news.x =bullet.getX();
+			//	news.y =bullet.getY();
+			//	news.vector = bullet.velocity;
+			//	packetB.bullet.add(news);
+				
+				packetB.bullet.add(bullet.getX());
+				packetB.bullet.add(bullet.getY());
+
+//				packetB.bullet[q ]=((int)bullet.getX());
+//				packetB.bullet[q+1] =((int)bullet.getY());
+				//packetB.x = bullet.getX();
+			//	packetB.y = bullet.getY();
+			}
 		}
+		if(packetB.bullet.size()>0){
+		uc.client.sendUDP(packetB);
+		}
+
 		
-		
+
 		for(Char Player : UCGame.players.values()){
 			Player.update(gravity, container, camX, camY, delta);
 		
@@ -235,9 +258,6 @@ public class PlayState extends BasicGameState {
 		packet.id = Player.id;
 
 		uc.client.sendUDP(packet);
-		
-		
-		
 		}
 		
 		

@@ -13,7 +13,7 @@ public class Bullet extends Entity{
 
 	private boolean active;
 	
-	private Vector velocity;
+	public Vector velocity;
 	private Image bullet;
 	public int id;
 	

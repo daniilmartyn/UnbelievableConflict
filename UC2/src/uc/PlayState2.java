@@ -70,14 +70,26 @@ public class PlayState2 extends BasicGameState {
 		g.drawImage(map, 0, 0);
 		//dude.render(g);
 	//	dude.renderWep(g);
+		
+//		for( int i =0; i< UCGame.players.size(); i++){
+//			 Char Player = UCGame.players.get(i);
+//			Player.render(g);
+//			Player.renderWep(g);
+//		}
+		
 		for(Char Player : UCGame.players.values()){
 			Player.render(g);
 			Player.renderWep(g);
 		}
 		
-		for(Bullet bullet : UCGame.bullet){
+		for( int i =0; i< UCGame.bullet.size(); i++){
+			Bullet bullet = UCGame.bullet.get(i);
 			bullet.render(g);
 		}
+		
+//		for(Bullet bullet : UCGame.bullet){
+//			bullet.render(g);
+//		}
 		
 		g.setColor(Color.red);
 
