@@ -81,6 +81,7 @@ public class Weapon extends Entity{
 			else{
 				bullet = new Bullet(getX() + bulletOffSet.getX(), getY() + bulletOffSet.getY(), Vector.getUnit(angle).scale(.5f).add(dude.getVel()));
 			}
+			bullet.rotation = angle;
 			bullet.setRotation(angle);
 			UCGame.bullet.add(bullet);
 			

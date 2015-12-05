@@ -154,9 +154,10 @@ public class playerClientListener extends Listener {
 //			}
 			
 			UCGame.bullet.clear();
-			for(int i =0; i < packet.bullet.size(); i+=2){
-				UCGame.bullet.add(new Bullet(packet.bullet.get(i),
-						packet.bullet.get(i+1), new Vector(0,0)));
+			for(int i =0; i < packet.bulletx.size(); i++){
+				UCGame.bullet.add(new Bullet(packet.bulletx.get(i),
+						packet.bullety.get(i), new Vector(0,0)));
+				UCGame.bullet.get(i).rotate(packet.rot.get(i));
 			}
 			
 		}

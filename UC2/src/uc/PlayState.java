@@ -192,7 +192,9 @@ public class PlayState extends BasicGameState {
 		
 		NetworkClasses.UpdateBullet packetB = new NetworkClasses.UpdateBullet();
 	//	packetB.bullet = new ArrayList<UpdateBulletInfo>();
-		packetB.bullet = new ArrayList<Float>();
+		packetB.bulletx = new ArrayList<Float>();
+		packetB.bullety = new ArrayList<Float>();
+		packetB.rot = new ArrayList<Float>();
 
 		for(Iterator<Bullet> b = UCGame.bullet.iterator(); b.hasNext();){
 			Bullet bullet = b.next();
@@ -207,16 +209,17 @@ public class PlayState extends BasicGameState {
 			//	news.vector = bullet.velocity;
 			//	packetB.bullet.add(news);
 				
-				packetB.bullet.add(bullet.getX());
-				packetB.bullet.add(bullet.getY());
-
+				packetB.bulletx.add(bullet.getX());
+				packetB.bullety.add(bullet.getY());
+				
+				packetB.rot.add(bullet.rotation);
 //				packetB.bullet[q ]=((int)bullet.getX());
 //				packetB.bullet[q+1] =((int)bullet.getY());
 				//packetB.x = bullet.getX();
 			//	packetB.y = bullet.getY();
 			}
 		}
-		if(packetB.bullet.size()>0){
+		if(packetB.bulletx.size()>0){
 		uc.client.sendUDP(packetB);
 		}
 

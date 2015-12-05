@@ -16,6 +16,7 @@ public class Bullet extends Entity{
 	public Vector velocity;
 	private Image bullet;
 	public int id;
+	public float rotation;
 	
 	public Bullet(final float x, final float y, final Vector v) {
 		super(x,y);
