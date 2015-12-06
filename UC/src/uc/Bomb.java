@@ -16,8 +16,9 @@ public class Bomb extends Entity{
 	private Vector velocity;
 	private Animation bomb;
 	
+	//private int id;
+	
 	public Bomb(final float x, final float y, Vector v) {
-		super(x,y);
 		velocity = v;
 		bomb = new Animation(ResourceManager.getSpriteSheet(UCGame.BOMB_RSC, 24, 36), 0, 0, 3, 0, true, 100, true);
 		addAnimation(bomb);

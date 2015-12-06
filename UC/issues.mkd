@@ -4,11 +4,11 @@
 [2] Complete the movements, actions, and animation entirely for one character.
 [3] Complete the other two characters using the first as an example.
 [4] Create playable map
+[5] Create Main Menu, Help Menu, etc for the game.
 
 
 # Open Issues ##
 
-[5] Create Main Menu, Help Menu, etc for the game.
 [6] Add object to map: health kits, ammo, power-ups
 
 /// replace bullet/bomb/mine/etc classes with 'projectile' class?
