@@ -15,8 +15,10 @@ import jig.Vector;
 
 public class Char extends Entity{
 
+	//public int id;
+	
 	private int health;
-	private float speed = 0.5f;
+	private float speed;
 	private float jump = 1.0f;
 	private boolean isJumped = true;
 	private int state; // 0 for stand, 1 for run, 2 for crouch, 3 for jump

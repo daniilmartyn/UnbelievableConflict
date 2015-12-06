@@ -12,9 +12,21 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class UCGame extends StateBasedGame{
 	
-	public static final int PLAYSTATE = 0;
+	public static final int MENUSTATE = 0;
+	public static final int PLAYSTATE = 1;
+	public static final int GAMEOVER = 2;
 
 	// img string stuff here
+	
+	public static final String MAINMENU_RSC = "uc/resource/main.png";
+	public static final String CONTROLS_RSC = "uc/resource/controls.png";
+	public static final String CLASSES_RSC = "uc/resource/classes.png";
+	public static final String OBJECTS_RSC = "uc/resource/objects.png";
+	public static final String JOIN_RSC = "uc/resource/join.png";
+	public static final String HOST_RSC = "uc/resource/host.png";
+	public static final String OVER_RSC = "uc/resource/over.png";
+	public static final String ARROW_RSC = "uc/resource/arrow.png";
+
 	
 	public static final String TEST_RSC = "uc/resource/test.png";
 	public static final String DESERT_RSC = "uc/resource/desert.png";
@@ -59,9 +71,8 @@ public class UCGame extends StateBasedGame{
 	public final int ScreenWidth;
 	public final int ScreenHeight;
 	
-	public static int character = 2; // 0 for light, 1 for medium, 2 for heavy
-	
-	boolean sound = true;
+	public static int character = 1; // 0 for light, 1 for medium, 2 for heavy
+	public static boolean sound = true;
 
 	public UCGame(String name, int width, int height) {
 		super(name);
@@ -74,10 +85,23 @@ public class UCGame extends StateBasedGame{
 
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
-		addState(new PlayState());		
+		addState(new MenuState());
+		addState(new PlayState());	
+		addState(new GameOver());
+		
 		
 		// load imgs and sounds
 		
+		ResourceManager.loadImage(MAINMENU_RSC);
+		ResourceManager.loadImage(CONTROLS_RSC);
+		ResourceManager.loadImage(CLASSES_RSC);
+		ResourceManager.loadImage(OBJECTS_RSC);
+		ResourceManager.loadImage(JOIN_RSC);
+		ResourceManager.loadImage(HOST_RSC);
+		ResourceManager.loadImage(OVER_RSC);
+		ResourceManager.loadImage(ARROW_RSC);
+
+
 		ResourceManager.loadImage(TEST_RSC);
 		ResourceManager.loadImage(DESERT_RSC);
 

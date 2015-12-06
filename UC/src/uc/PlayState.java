@@ -134,8 +134,7 @@ public class PlayState extends BasicGameState {
 			dude.setState(0);
 		}
 		
-		if(input.isKeyDown(Input.KEY_S)){
-			//System.out.println("pressing s key");
+		if(input.isKeyDown(Input.KEY_S)){ 	// make dude crouch
 			dude.setState(2);
 			if(!dude.isJumped())
 				dude.changeRunDir(-1);
