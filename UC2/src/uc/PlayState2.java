@@ -16,7 +16,6 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-
 public class PlayState2 extends BasicGameState {
 
 	static Char dude;

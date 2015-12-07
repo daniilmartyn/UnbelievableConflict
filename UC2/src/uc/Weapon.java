@@ -38,7 +38,7 @@ public class Weapon extends Entity{
 	private int prevDirection = direction;
 	
 	private ArrayList<Mine> mines;
-	private ArrayList<Bullet> bullets;
+//	private ArrayList<Bullet> bullets;
 	
 	public Weapon(final float x, final float y) { // Use a seperate weapons class per character
 		super(x,y);
@@ -57,7 +57,7 @@ public class Weapon extends Entity{
 		addImage(weapon, wepOffSetRight);
 		addShape(new ConvexPolygon(50.0f, 10.0f), Color.transparent, Color.transparent);
 		mines = new ArrayList<Mine>(5);
-		bullets = new ArrayList<Bullet>(5);
+	//	bullets = new ArrayList<Bullet>(5);
 	}
 
 	public ArrayList<Mine> getMines(){

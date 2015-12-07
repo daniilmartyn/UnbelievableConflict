@@ -39,7 +39,7 @@ public class mainServerListener extends Listener  {
 		addPacket.x = 800;
 		addPacket.y = 800;
 		addPacket.id = connection.getID();
-		mainServer.server.sendToAllExceptTCP(connection.getID(), addPacket);
+	//	mainServer.server.sendToAllExceptTCP(connection.getID(), addPacket);
 //		for(playerChar p : players.values()){
 //			PacketAddPlayer addPacket2 = new PacketAddPlayer();
 //			addPacket2.x = p.x;
@@ -154,10 +154,10 @@ public class mainServerListener extends Listener  {
 		}
 		else if(object instanceof NetworkClasses.NewPlayerRequest){
 			
-			
+
 			for(playerChar p : players.values()){
 				if(p.c.getID() == connection.getID()){
-					
+				//System.out.println("fucking here");	
 				}
 				else{
 					PacketAddPlayer addPacket2 = new PacketAddPlayer();
@@ -167,6 +167,12 @@ public class mainServerListener extends Listener  {
 					connection.sendTCP(addPacket2);
 				}
 			}
+			PacketAddPlayer addPacket2 = new PacketAddPlayer();
+			addPacket2.x = 200;
+			addPacket2.y = 200;
+			addPacket2.id = connection.getID();
+			mainServer.server.sendToAllExceptTCP(connection.getID(),addPacket2);
+
 		}
 		else if(object instanceof NetworkClasses.IExist){
 			

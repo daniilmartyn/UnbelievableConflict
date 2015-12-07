@@ -97,9 +97,7 @@ public class PlayState extends BasicGameState {
 			dude.camX =camX;
 			dude.camY = camY;
 		}
-//		if(uc.players.get(2) != null){
-//		//System.out.println("server " +uc.players.get(2).weapon.mouse.getX() +" "+uc.players.get(2).weapon.mouse.getX());
-//		}
+		
 		if(input.getAbsoluteMouseX() < dude.getX() - camX)
 			dude.changeDir(1);
 		else
@@ -116,75 +114,35 @@ public class PlayState extends BasicGameState {
 		}
 		
 		if(input.isKeyPressed(Input.KEY_W) && !dude.isJumped()){ // make dude jump
-			NetworkClasses.PacketUpdateY packetY = new NetworkClasses.PacketUpdateY();
-			packetY.setJump = true;
-			packetY.state = 1;
-			packetY.jump = true;
-			packetY.id = uc.id;
-			uc.client.sendUDP(packetY);
-			
-			
-//			dude.jump();
-//			dude.setJump(true);
-//			dude.setState(3);
+			dude.jump();
+			dude.setJump(true);
+			dude.setState(3);
 		}
 				
 		if((input.isKeyDown(Input.KEY_A) || input.isKeyDown(Input.KEY_D))){
 			if(input.isKeyDown(Input.KEY_A)){
-				NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
-				packetX.runDir=1;
-				packetX.state=1;
-				packetX.id = uc.id;
-
-				//System.out.println("sent");
-				
-				uc.client.sendUDP(packetX);
-				
-				//dude.changeRunDir(1); 			// run left
-				//dude.setState(1);
+				dude.changeRunDir(1); 			// run left
+				dude.setState(1);
 			}else if(input.isKeyDown(Input.KEY_D)){	// run right
-				
-				NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
-				packetX.runDir=0;
-				packetX.state=1;
-				packetX.id = uc.id;
-
-				uc.client.sendUDP(packetX);
-				
-				//dude.changeRunDir(0);
-				//dude.setState(1);
+				dude.changeRunDir(0);
+				dude.setState(1);
 			}
 		}else{
-			NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
-			packetX.runDir=-1;
-			packetX.state=0;
-			packetX.id = uc.id;
-
-			uc.client.sendUDP(packetX);
-			
-//			dude.changeRunDir(-1);			// set run velocity to 0.0
-//			dude.setState(0);
+			dude.changeRunDir(-1);			// set run velocity to 0.0
+			dude.setState(0);
 		}
 		
-		if(input.isKeyDown(Input.KEY_S)){
+		if(input.isKeyDown(Input.KEY_S)){ 	// make dude crouch
+			dude.setState(2);
+			if(!dude.isJumped())
+				dude.changeRunDir(-1);
 			
-			NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
-			packetX.state=2;
-			packetX.runDir=9;
-			packetX.id = uc.id;
-
-			
-			//System.out.println("pressing s key");
-			//dude.setState(2);
-			if(!dude.isJumped()){
-				packetX.runDir=-1;
-			}
-			uc.client.sendUDP(packetX);
-
 		}
 
-		if(input.isMousePressed(0))
+		if(input.isMousePressed(0)){
 			dude.fire();
+		//	System.out.println("hey mouse is clicked");
+		}
 		
 		//System.out.println(input.getMouseX()+" "+input.getMouseY());
 		
@@ -229,38 +187,38 @@ public class PlayState extends BasicGameState {
 			Player.update(gravity, container, camX, camY, delta);
 		
 
-		LinkedList<Shape> bounds = Player.getGloballyTransformedShapes();
-		
-		if(Player.getCoarseGrainedMinY() < 0){				// if dude is higher than than the map
-			Player.setY(Player.getCoarseGrainedHeight()/2);
-		}
-		if(bounds.element().getMaxY() > map.getHeight()){	// if dude is lower than the map
-			Player.setY(map.getHeight() - bounds.element().getHeight()/2);
-			Player.cancelFall();
-			Player.setJump(false);
-		}
-		if (bounds.element().getMinX() < bounds.element().getWidth()){			// if dude is too far left of map
-			Player.setX(bounds.element().getWidth()*1.5f);
-		}
-		if (bounds.element().getMaxX() > map.getWidth() - bounds.element().getWidth()){ // if dude is too far right of map
-			Player.setX(map.getWidth() - bounds.element().getWidth()*1.5f);
-		}
-		
+			LinkedList<Shape> bounds = Player.getGloballyTransformedShapes();
+			
+			if(Player.getCoarseGrainedMinY() < 0){				// if dude is higher than than the map
+				Player.setY(Player.getCoarseGrainedHeight()/2);
+			}
+			if(bounds.element().getMaxY() > map.getHeight()){	// if dude is lower than the map
+				Player.setY(map.getHeight() - bounds.element().getHeight()/2);
+				Player.cancelFall();
+				Player.setJump(false);
+			}
+			if (bounds.element().getMinX() < bounds.element().getWidth()){			// if dude is too far left of map
+				Player.setX(bounds.element().getWidth()*1.5f);
+			}
+			if (bounds.element().getMaxX() > map.getWidth() - bounds.element().getWidth()){ // if dude is too far right of map
+				Player.setX(map.getWidth() - bounds.element().getWidth()*1.5f);
+			}
+			
 		//System.out.println("minX: " + dude.getGloballyTransformedShapes());
 		
-		NetworkClasses.SetXY packet = new NetworkClasses.SetXY();
-		packet.x=Player.getX();
-		packet.y=Player.getY();
-		packet.x1 = Player.weapon.getX();
-		packet.y1 = Player.weapon.getY();
-		packet.jumped = Player.isJumped();
-		packet.state = Player.state;
-		packet.run = Player.direction;
-
-		packet.rotate = Player.weapon.angle;
-		packet.id = Player.id;
-
-		uc.client.sendUDP(packet);
+			NetworkClasses.SetXY packet = new NetworkClasses.SetXY();
+			packet.x=Player.getX();
+			packet.y=Player.getY();
+			packet.x1 = Player.weapon.getX();
+			packet.y1 = Player.weapon.getY();
+			packet.jumped = Player.isJumped();
+			packet.state = Player.state;
+			packet.run = Player.direction;
+	
+			packet.rotate = Player.weapon.angle;
+			packet.id = Player.id;
+	
+			uc.client.sendUDP(packet);
 		}
 		
 		
