@@ -1,7 +1,7 @@
 package uc;
 
+import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Image;
 
 import jig.Collision;
 import jig.ConvexPolygon;
@@ -9,38 +9,39 @@ import jig.Entity;
 import jig.ResourceManager;
 import jig.Vector;
 
-public class Bullet extends Entity{
+public class Bomb extends Entity{
 
 	private boolean active;
-	
-	public Vector velocity;
-	private Image bullet;
 	public int id;
-	public Float rotation;
+	private Vector velocity;
+	private Animation bomb;
 	
-	public Bullet(final float x, final float y, final Vector v) {
-		super(x,y);
+	//private int id;
+	
+	public Bomb(final float x, final float y, Vector v) {
 		velocity = v;
-		bullet = ResourceManager.getImage(UCGame.BULLET_RSC);
-		addImage(bullet);
-		addShape(new ConvexPolygon(bullet.getHeight()), Color.transparent, Color.green);
+		bomb = new Animation(ResourceManager.getSpriteSheet(UCGame.BOMB_RSC, 24, 36), 0, 0, 3, 0, true, 100, true);
+		addAnimation(bomb);
+		addShape(new ConvexPolygon(11f), new Vector(0.0f, 7.0f), Color.transparent, Color.green);
 		active = true;
 	}
 
 	public void update(int delta){
 		translate(velocity.scale(delta));
+		velocity = velocity.add(new Vector(0.0f, (PlayState.gravity*delta)));
+		
 		if(getX() < 0 || getX() > PlayState.map.getImg().getWidth()  //////////////////change this when map creating is updated
 				|| getY() < 0 || getY() > PlayState.map.getImg().getHeight())
 			active = false;
 		
-		
 		Collision collide = null;
-		if((collide = collides(PlayState.map)) != null){
+		while((collide = collides(PlayState.map)) != null){
 			System.out.println("collision test: " + collide.getMinPenetration());
 			System.out.println("this shape: " + collide.getThisShape());
 			System.out.println("other shape: " + collide.getOtherShape());
 			
-			active = false;
+			translate(collide.getMinPenetration());
+			velocity = new Vector(velocity.getX(), 0.0f);
 		}
 	}
 	

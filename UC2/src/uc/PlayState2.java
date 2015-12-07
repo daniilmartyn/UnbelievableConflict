@@ -4,9 +4,7 @@ import java.util.LinkedList;
 
 import jig.ResourceManager;
 import jig.Shape;
-import jig.Vector;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -18,8 +16,8 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class PlayState2 extends BasicGameState {
 
-	static Char dude;
-	static Image map;
+	Char dude;
+	public static Map map;
 	
 	public static float gravity = 0.003f;
 	
@@ -55,47 +53,58 @@ public class PlayState2 extends BasicGameState {
 		if(camY < offsetMinY)
 			camY = offsetMinY;
 		
-		
 	}
 	
 	
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
 		// TODO Auto-generated method stub
-		UCGame uc = (UCGame)game;
 
 		g.translate(-camX, -camY);
 		
-		g.drawImage(map, 0, 0);
-		//dude.render(g);
-	//	dude.renderWep(g);
+		g.drawImage(map.getImg(), 0, 0);
+		map.render(g);
 		
-//		for( int i =0; i< UCGame.players.size(); i++){
-//			 Char Player = UCGame.players.get(i);
+//		for(Char Player : UCGame.players.values()){
 //			Player.render(g);
 //			Player.renderWep(g);
 //		}
 		
-		for(Char Player : UCGame.players.values()){
+		
+		for( int i =1; i< UCGame.players.size()+1; i++){
+			Char Player = UCGame.players.get(i);
 			Player.render(g);
 			Player.renderWep(g);
 		}
 		
-		for( int i =0; i< UCGame.bullet.size(); i++){
-			Bullet bullet = UCGame.bullet.get(i);
+		for( int i =0; i< UCGame.bullets.size(); i++){
+			//System.out.println("bullet "+i+" max "+UCGame.bullets.size());
+			Bullet bullet = UCGame.bullets.get(i);
 			bullet.render(g);
 		}
 		
-//		for(Bullet bullet : UCGame.bullet){
-//			bullet.render(g);
-//		}
+		for( int i =0; i< UCGame.mines.size(); i++){
+			Mine mine = UCGame.mines.get(i);
+			mine.render(g);
+		}
 		
-		g.setColor(Color.red);
-
-		g.drawString("ID: " + uc.id, 800, 1000);
-		//g.drawString("Points: " + UCGame.players.get(UCGame.id).points, 10, bg.ScreenHeight-50);
+		for( int i =0; i< UCGame.bombs.size(); i++){
+			Bomb bomb = UCGame.bombs.get(i);
+			bomb.render(g);
+		}
+		
+		for( int i =0; i< UCGame.grenades.size(); i++){
+			Grenade grenade = UCGame.grenades.get(i);
+			grenade.render(g);
+		}
+	
+		
+//		dude.render(g);
+//		dude.renderWep(g);
+		
 	}
 
+	
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
 		// TODO Auto-generated method stub
@@ -105,9 +114,8 @@ public class PlayState2 extends BasicGameState {
 		
 		setCam(input, uc);
 		
-		//dude.weapon.mouse = new Vector(input.getMouseX(),input.getMouseY());
-		
 		NetworkClasses.UpdateChar packet = new NetworkClasses.UpdateChar();
+
 		
 		if(input.getAbsoluteMouseX() < dude.getX() - camX){
 			//dude.changeDir(1);
@@ -122,125 +130,114 @@ public class PlayState2 extends BasicGameState {
 			packet.switchWep = 0;
 			//dude.switchWep(0);
 		}
-		if(input.isKeyPressed(Input.KEY_2)){
+		else if(input.isKeyPressed(Input.KEY_2)){
 			packet.switchWep = 1;
-
 //			dude.switchWep(1);
 		}
-		if(input.isKeyPressed(Input.KEY_3)){
+		else if(input.isKeyPressed(Input.KEY_3)){
 //			dude.switchWep(2);
-			packet.switchWep = 1;
-		}		
+			packet.switchWep = 2;
+		}
+		else{
+			packet.switchWep  = dude.weapon.select;
+		}
+		
 		if(input.isKeyPressed(Input.KEY_W) && !dude.isJumped()){ // make dude jump
-			//NetworkClasses.PacketUpdateY packetY = new NetworkClasses.PacketUpdateY();
+//			dude.jump();
+//			dude.setJump(true);
+//			dude.setState(3);
 			packet.setJump = true;
 			packet.state = 1;
 			packet.jump = true;
-			packet.id = uc.id;
-			//uc.client.sendUDP(packetY);
 		}
 				
 		if((input.isKeyDown(Input.KEY_A) || input.isKeyDown(Input.KEY_D))){
 			if(input.isKeyDown(Input.KEY_A)){
-			//	NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
+//				dude.changeRunDir(1); 			// run left
+//				dude.setState(1);
 				packet.runDir=1;
 				packet.state=1;
-				packet.id = uc.id;				
-				//uc.client.sendUDP(packetX);
 			}else if(input.isKeyDown(Input.KEY_D)){	// run right
-				
-			//	NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
+//				dude.changeRunDir(0);
+//				dude.setState(1);
 				packet.runDir=0;
 				packet.state=1;
-				packet.id = uc.id;
-				//uc.client.sendUDP(packetX);
 			}
 		}else{
-			//NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
+//			dude.changeRunDir(-1);			// set run velocity to 0.0
+//			dude.setState(0);
 			packet.runDir=-1;
 			packet.state=0;
-			packet.id = uc.id;
-		//	uc.client.sendUDP(packetX);
 		}
 		
-		if(input.isKeyDown(Input.KEY_S)){
+		if(input.isKeyDown(Input.KEY_S)){ 	// make dude crouch
+//			dude.setState(2);
+//			if(!dude.isJumped())
+//				dude.changeRunDir(-1);
 			
-		//	NetworkClasses.PacketUpdateX packetX = new NetworkClasses.PacketUpdateX();
 			packet.state=2;
 			packet.runDir=9;
 			packet.id = uc.id;
 			if(!dude.isJumped()){
 				packet.runDir=-1;
 			}
-		//	uc.client.sendUDP(packetX);
-
 		}
 
 		if(input.isMousePressed(0)){
-			
-		//	NetworkClasses.FiredGun packet = new NetworkClasses.FiredGun();
+			dude.fire();
+			System.out.println("hey mouse is clicked");
 			packet.fire = true;
 			packet.angle=dude.weapon.angle;
 			packet.direction=dude.weapon.direction;
 			packet.select=dude.weapon.select;
-			packet.id = uc.id;
-
-			//uc.client.sendUDP(packet);
-			
-			//dude.fire();
 		}
 		
+		packet.id = uc.id;
 		packet.mousey = input.getMouseY();
 		packet.mousex = input.getMouseX();
 		
 		packet.camx = camX;
 		packet.camy = camY;
 		
-		//System.out.println(dude.weapon.mouse);
-
 		uc.client.sendUDP(packet);
-
 		
-//		Vector mouse = new Vector(input.getMouseX(), input.getMouseY()); // get mouse location
-//		packetM.mouse = mouse;
-//		NetworkClasses.MouseMoved packetM = new NetworkClasses.MouseMoved();
-//		packetM.id = uc.id;
-//		packetM.mouse = mouse;
-//		uc.client.sendUDP(packetM);
+		/*if(input.isMouseButtonDown(0)){
+			dude.fire();
+			System.out.println("hey mouse button is down");
+		}*/
+		
 	}
 
 	@Override
 	public void enter(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		UCGame uc = (UCGame) game;
+		map = new Map(0,0);
 		
-		map = ResourceManager.getImage(UCGame.TEST_RSC);
+		switch(UCGame.character){
+		case 0:
+			dude = new Char(map.getImg().getWidth()/2, map.getImg().getHeight()/2, 0);
+			break;
+		case 1: 
+			dude = new Char(map.getImg().getWidth()/2, map.getImg().getHeight()/2, 1);
+			break;
+		case 2:
+			dude = new Char(map.getImg().getWidth()/2, map.getImg().getHeight()/2, 2);
+			break;
+		}
 		
-		dude = new Char(map.getWidth()/2, map.getHeight()/2);
 		dude.id = uc.id;
 		uc.players.put(uc.id, dude);
-		//dude.setJump(false);
-
+		
 		NetworkClasses.NewPlayerRequest packetX = new NetworkClasses.NewPlayerRequest();
 		packetX.id = uc.id;
 		uc.client.sendUDP(packetX);
 		
 		uc.set = true;
+
 		
-//		NetworkClasses.IExist IExist = new NetworkClasses.IExist();
-//		IExist.id = uc.id;
-//		uc.client.sendUDP(IExist);
-//		
-//		NetworkClasses.NewPlayerRequest packetX = new NetworkClasses.NewPlayerRequest();
-//		packetX.id = uc.id;
-//		uc.client.sendUDP(packetX);
-		
-		
-		//particles = new ParticleSystem
-		
-		
-		offsetMaxX = map.getWidth() - uc.ScreenWidth; 		// offset min/max X/Y technique taken from nathan
-		offsetMaxY = map.getHeight() - uc.ScreenHeight;		// http://gamedev.stackexchange.com/questions/44256/how-to-add-a-scrolling-camera-to-a-2d-java-game
+		offsetMaxX = map.getImg().getWidth() - uc.ScreenWidth; 		// offset min/max X/Y technique taken from nathan
+		offsetMaxY = map.getImg().getHeight() - uc.ScreenHeight;		// http://gamedev.stackexchange.com/questions/44256/how-to-add-a-scrolling-camera-to-a-2d-java-game
 		offsetMinX = 0;										//
 		offsetMinY = 0;										//
 		

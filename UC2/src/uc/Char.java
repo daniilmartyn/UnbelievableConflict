@@ -6,21 +6,20 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
+import jig.Collision;
 import jig.ConvexPolygon;
 import jig.Entity;
 import jig.ResourceManager;
+import jig.Shape;
 import jig.Vector;
 
 public class Char extends Entity{
 
 	public int id;
 	public boolean set;
-	
-	public int camX;
-	public int camY;
-	
+
 	private int health;
-	private float speed = 0.5f;
+	private float speed;
 	private float jump = 1.0f;
 	private boolean isJumped = true;
 	public int state; // 0 for stand, 1 for run, 2 for crouch, 3 for jump
@@ -30,31 +29,106 @@ public class Char extends Entity{
 	private int prevDirection = direction;
 	private Vector velocity;
 	private Image current;
-	private Image standRight = ResourceManager.getImage(UCGame.STAND_LIGHT_RSC);
-	private Image standLeft = standRight.getFlippedCopy(true, false);
-	private Image crouchRight = ResourceManager.getImage(UCGame.CROUCH_LIGHT_RSC);
-	private Image crouchLeft = crouchRight.getFlippedCopy(true, false);
+	private Image standRight;
+	private Image standLeft;
+	private Image crouchRight;
+	private Image crouchLeft;
+	
 	private Animation running;
+	private Animation runLeft;
+	private Animation runRight;
 	
 	private ConvexPolygon standingBox;
 	private ConvexPolygon crouchBox;
 	
 	public Weapon weapon;
-	
-	public Char(final float x, final float y) {
+
+	public int camX;
+	public int camY;
+
+	public Char(final float x, final float y, int character) {
 		super(x,y);
 		set = false;
-		health = 100;
-		velocity = new Vector(0.0f, 0.0f);
-		current = standRight;
-		addImage(current);
-		standingBox = new ConvexPolygon((float) current.getWidth() - 2, (float) current.getHeight() - 2);
-		crouchBox = new ConvexPolygon((float) crouchRight.getWidth() - 20, (float) crouchRight.getHeight() - 5);
-		addShape(standingBox, Color.transparent, Color.red);
-		state = 0;
-		prevState = state;
-		
-		weapon = new Weapon(x, y);
+
+		switch(character){
+		case 0:
+			speed = 0.5f;
+			jump = 1.0f;
+			standRight = ResourceManager.getImage(UCGame.STAND_LIGHT_RSC);
+			standLeft = standRight.getFlippedCopy(true, false);
+			crouchRight = ResourceManager.getImage(UCGame.CROUCH_LIGHT_RSC);
+			crouchLeft = crouchRight.getFlippedCopy(true, false);
+			
+			runRight = new Animation(ResourceManager.getSpriteSheet(UCGame.RUN_LIGHT_RSC, 118, 131),
+					0,0,7,0,true, 100, true);
+			runLeft = new Animation(ResourceManager.getSpriteSheet(UCGame.RUN_LIGHT_RSC, 118, 131),
+					0,1,7,1,true, 100, true);
+			
+			health = 100;
+			velocity = new Vector(0.0f, 0.0f);
+			current = standRight;
+			addImage(current);
+			standingBox = new ConvexPolygon((float) current.getWidth() - 2, (float) current.getHeight() - 2);
+			crouchBox = new ConvexPolygon((float) crouchRight.getWidth() - 20, (float) crouchRight.getHeight() - 5);
+			addShape(standingBox, Color.transparent, Color.red);
+			state = 0;
+			prevState = state;
+
+			weapon = new Weapon(x, y, character);
+			break;
+		case 1:
+			speed = 0.3f;
+			jump = 1.0f;
+			standRight = ResourceManager.getImage(UCGame.STAND_MED_RSC);
+			standLeft = standRight.getFlippedCopy(true, false);
+			crouchRight = ResourceManager.getImage(UCGame.CROUCH_MED_RSC);
+			crouchLeft = crouchRight.getFlippedCopy(true, false);
+			
+			runRight = new Animation(ResourceManager.getSpriteSheet(UCGame.RUN_MED_RSC, 92, 151),
+					0,0,7,0,true, 100, true);
+			runLeft = new Animation(ResourceManager.getSpriteSheet(UCGame.RUN_MED_RSC, 92, 151),
+					0,1,7,1,true, 100, true);
+			
+			health = 150;
+			velocity = new Vector(0.0f, 0.0f);
+			current = standRight;
+			addImage(current);
+			standingBox = new ConvexPolygon((float) current.getWidth() - 2, (float) current.getHeight() - 2);
+			crouchBox = new ConvexPolygon((float) crouchRight.getWidth() - 5, (float) crouchRight.getHeight() - 5);
+			addShape(standingBox, Color.transparent, Color.red);
+			state = 0;
+			prevState = state;
+			
+			weapon = new Weapon(x, y, character);
+			break;
+		case 2:
+			speed = 0.1f;
+			jump = 1.0f;
+			standRight = ResourceManager.getImage(UCGame.STAND_HEV_RSC);
+			standLeft = standRight.getFlippedCopy(true, false);
+			crouchRight = ResourceManager.getImage(UCGame.CROUCH_HEV_RSC);
+			crouchLeft = crouchRight.getFlippedCopy(true, false);
+			
+			runRight = new Animation(ResourceManager.getSpriteSheet(UCGame.RUN_HEV_RSC, 175, 131),
+					0,0,3,0,true, 100, true);
+			runLeft = new Animation(ResourceManager.getSpriteSheet(UCGame.RUN_HEV_RSC, 175, 131),
+					0,1,3,1,true, 100, true);
+			
+			health = 200;
+			velocity = new Vector(0.0f, 0.0f);
+			current = standRight;
+			addImage(current);
+			float[] stand = {87.5f,65 ,0, -65, -87.5f, 65};
+			float[] crouch = {88f,65 ,0, -45, -88f, 65};
+			standingBox = new ConvexPolygon(stand);
+			crouchBox = new ConvexPolygon(crouch);
+			addShape(standingBox, Color.transparent, Color.red);
+			state = 0;
+			prevState = state;
+			
+			weapon = new Weapon(x, y, character);
+			break;
+		}
 	}
 
 	public void changeDir(int d){ // used to change direction of char in relation to mouse location
@@ -146,16 +220,14 @@ public class Char extends Entity{
 			if(direction == 0 && (prevDirection != direction || prevState != state)){
 				removeImage(current);
 				removeAnimation(running);
-				running = new Animation(ResourceManager.getSpriteSheet(UCGame.RUN_LIGHT_RSC, 118, 131),
-						0,0,7,0,true, 100, true);
+				running = runRight;
 				addAnimation(running);
 				prevDirection = direction;
 				prevState = state;
 			}else if( direction == 1 && (prevDirection != direction || prevState != state)){
 				removeImage(current);
 				removeAnimation(running);
-				running = new Animation(ResourceManager.getSpriteSheet(UCGame.RUN_LIGHT_RSC, 118, 131),
-						0,1,7,1,true, 100, true);
+				running = runLeft;
 				addAnimation(running);
 				prevDirection = direction;
 				prevState = state;
@@ -182,28 +254,54 @@ public class Char extends Entity{
 		
 	}
 	
-	public void renderWep(Graphics g){
+	public void renderWep(Graphics g){ //************* will need to create probaly a speperate method for rendering projectiles//
 		
 		if(weapon != null){
 			weapon.render(g);
-		}
-		
-		for(Mine m: weapon.getMines()){
-			m.render(g);
-		}
-		
-	//	for(Bullet b: weapon.getBullets()){
-	///		b.render(g);
-	//	}
+			
+//			if(UCGame.character == 0){
+//				for(Mine m: weapon.getMines()){
+//					m.render(g);
+//				}
+//			}
+//			
+//			if(UCGame.character == 1){
+//				for(Grenade gre: weapon.getGrenades()){
+//					gre.render(g);
+//				}
+//			}
+			
+//			if(UCGame.character == 2){
+//				for(Bomb b: weapon.getBombs()){
+//					b.render(g);
+//				}
+//			}
+			
+//			for(Bullet b: weapon.getBullets()){
+//				b.render(g);
+//			}
+		}		
 	}
 	
-	public void update(float gravity, GameContainer container, int camX, int camY, int delta){
+	public void update(GameContainer container, int camX, int camY, int delta){
 		
 		changeImg();
 		translate(velocity.scale(delta));
+		
+		Collision collide = null;
+		while((collide = collides(PlayState.map)) != null){
+//			System.out.println("collision test: " + collide.getMinPenetration());
+//			System.out.println("this shape: " + collide.getThisShape());
+//			System.out.println("other shape: " + collide.getOtherShape());
+			
+			translate(collide.getMinPenetration());
+			velocity = new Vector(velocity.getX(), 0.0f);
+			isJumped = false;
+		}
+		
 		weapon.setPosition(getX(), getY());
 		weapon.update(container, camX, camY, this, delta);
-		velocity = velocity.add(new Vector(0.0f, (gravity*delta)));
+		velocity = velocity.add(new Vector(0.0f, (PlayState.gravity*delta)));
 	}
 	
 }

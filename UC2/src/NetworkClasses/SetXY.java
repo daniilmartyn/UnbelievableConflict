@@ -11,5 +11,7 @@ public class SetXY {
 	public int run, state;
 	
 	public float rotate;
+	
+	public int weapon;
 
 }

@@ -78,18 +78,11 @@ public class mainServer {
 		kryo.register(playerChar.class);
 		kryo.register(org.newdawn.slick.geom.Rectangle.class);
 		kryo.register(float[].class);
-		kryo.register(NetworkClasses.PacketUpdateX.class);
-		kryo.register(NetworkClasses.PacketUpdateY.class);
 		kryo.register(NetworkClasses.PacketAddPlayer.class);
 		kryo.register(NetworkClasses.PacketRemovePlayer.class);	
 		kryo.register(NetworkClasses.CollideRequest.class);	
-		kryo.register(NetworkClasses.CreatePellet.class);
-		kryo.register(NetworkClasses.HitRequest.class);
 		kryo.register(NetworkClasses.NewPlayerRequest.class);
-		kryo.register(NetworkClasses.IExist.class);
 		kryo.register(NetworkClasses.SetXY.class);
-		kryo.register(NetworkClasses.FiredGun.class);
-		kryo.register(NetworkClasses.MouseMoved.class);
 		kryo.register(NetworkClasses.UpdateChar.class);
 		kryo.register(NetworkClasses.UpdateBullet.class);
 		kryo.register(ArrayList.class);
@@ -116,8 +109,8 @@ public class mainServer {
 		
 		jFrame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e){
-                int i=JOptionPane.showConfirmDialog(null, "You want to shut down the Server?");
-                if(i==0)
+                //int i=JOptionPane.showConfirmDialog(null, "You want to shut down the Server?");
+               // if(i==0)
                 	
                 	stopServer();
                     System.exit(0);
