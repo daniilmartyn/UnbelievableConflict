@@ -172,18 +172,34 @@ public class PlayState extends BasicGameState {
 		
 		packetB.rot = new ArrayList<Float>();
 
-		for(Iterator<Bullet> b = UCGame.bullets.iterator(); b.hasNext();){
-			Bullet bullet = b.next();
+		
+		for( int i =0; i< UCGame.bullets.size(); i++){
+			Bullet bullet = UCGame.bullets.get(i);
 			if(!bullet.isActive()){
-				b.remove();
+				UCGame.bullets.remove(i);
+				i--;
 			}
 			else{
 				bullet.update(delta);
 				packetB.bulletx.add(bullet.getX());
 				packetB.bullety.add(bullet.getY());
 				packetB.rot.add(bullet.rotation);
-			}
+			}		
 		}
+		
+		
+//		for(Iterator<Bullet> b = UCGame.bullets.iterator(); b.hasNext();){
+//			Bullet bullet = b.next();
+//			if(!bullet.isActive()){
+//				b.remove();
+//			}
+//			else{
+//				bullet.update(delta);
+//				packetB.bulletx.add(bullet.getX());
+//				packetB.bullety.add(bullet.getY());
+//				packetB.rot.add(bullet.rotation);
+//			}
+//		}
 		
 		for(Iterator<Bomb> b = UCGame.bombs.iterator(); b.hasNext();){
 			Bomb bomb = b.next();
@@ -209,18 +225,19 @@ public class PlayState extends BasicGameState {
 			}
 		}
 		
-		for(Iterator<Grenade> b = UCGame.grenades.iterator(); b.hasNext();){
-			Grenade grenade = b.next();
+		
+		for( int i =0; i< UCGame.grenades.size(); i++){
+			Grenade grenade = UCGame.grenades.get(i);
 			if(!grenade.isActive()){
-				b.remove();
+				UCGame.grenades.remove(i);
+				i--;
 			}
 			else{
 				grenade.update(delta);
 				packetB.grenadex.add(grenade.getX());
 				packetB.grenadey.add(grenade.getY());
-			}
+			}		
 		}
-		
 		
 		
 //		if(packetB.bulletx.size()>0 ||
@@ -266,6 +283,16 @@ public class PlayState extends BasicGameState {
 			packet.state = Player.state;
 			packet.run = Player.direction;
 	
+//			if(Player.weapon.hit != null){
+//				packet.hit =true;
+//				packet.hitisStopped = Player.weapon.hit.isStopped();
+//
+//			}
+//			else{
+//				packet.hit =false;
+//				packet.hitisStopped = true;
+//			}
+			
 			packet.weapon = Player.weapon.select;
 			packet.rotate = Player.weapon.angle;
 			packet.id = Player.id;

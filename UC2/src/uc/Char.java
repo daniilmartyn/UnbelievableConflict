@@ -43,6 +43,8 @@ public class Char extends Entity{
 	
 	public Weapon weapon;
 
+	public int playingCharacter;
+	
 	public int camX;
 	public int camY;
 
@@ -129,6 +131,7 @@ public class Char extends Entity{
 			weapon = new Weapon(x, y, character);
 			break;
 		}
+		playingCharacter = character;
 	}
 
 	public void changeDir(int d){ // used to change direction of char in relation to mouse location
@@ -257,6 +260,7 @@ public class Char extends Entity{
 	public void renderWep(Graphics g){ //************* will need to create probaly a speperate method for rendering projectiles//
 		
 		if(weapon != null){
+			//Weapon wep = weapon;
 			weapon.render(g);
 			
 //			if(UCGame.character == 0){

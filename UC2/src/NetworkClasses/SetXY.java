@@ -13,5 +13,7 @@ public class SetXY {
 	public float rotate;
 	
 	public int weapon;
+	
+	public  boolean hit, hitisStopped;
 
 }

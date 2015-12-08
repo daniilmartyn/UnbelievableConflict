@@ -70,32 +70,45 @@ public class PlayState2 extends BasicGameState {
 //			Player.renderWep(g);
 //		}
 		
+
 		
 		for( int i =1; i< UCGame.players.size()+1; i++){
 			Char Player = UCGame.players.get(i);
-			Player.render(g);
-			Player.renderWep(g);
+			if(Player != null){
+				Player.render(g);
+				
+				Player.renderWep(g);
+			}
+
 		}
 		
 		for( int i =0; i< UCGame.bullets.size(); i++){
 			//System.out.println("bullet "+i+" max "+UCGame.bullets.size());
 			Bullet bullet = UCGame.bullets.get(i);
-			bullet.render(g);
+			if(bullet != null){
+				bullet.render(g);
+			}
 		}
 		
 		for( int i =0; i< UCGame.mines.size(); i++){
 			Mine mine = UCGame.mines.get(i);
-			mine.render(g);
+			if(mine != null){
+				mine.render(g);
+			}
 		}
 		
 		for( int i =0; i< UCGame.bombs.size(); i++){
 			Bomb bomb = UCGame.bombs.get(i);
-			bomb.render(g);
+			if(bomb != null){
+				bomb.render(g);
+			}
 		}
 		
 		for( int i =0; i< UCGame.grenades.size(); i++){
 			Grenade grenade = UCGame.grenades.get(i);
-			grenade.render(g);
+			if(grenade != null){
+				grenade.render(g);
+			}		
 		}
 	
 		
@@ -113,6 +126,19 @@ public class PlayState2 extends BasicGameState {
 		UCGame uc = (UCGame) game;
 		
 		setCam(input, uc);
+		
+		
+		
+//		if(dude.weapon.hit != null && dude.weapon.hit.isStopped()){
+//			dude.weapon.removeAnimation(dude.weapon.hit);
+//			dude.weapon.hit = null;
+//			//dude.weapon.changeWeapon(dude.weapon.select);
+//		}
+////		else if (dude.weapon.hit != null && !dude.weapon.hit.isStopped()){
+//			if(dude.weapon.weapon != null){
+//				dude.weapon.weapon = null;
+//			}
+//		}
 		
 		NetworkClasses.UpdateChar packet = new NetworkClasses.UpdateChar();
 
@@ -184,7 +210,7 @@ public class PlayState2 extends BasicGameState {
 		}
 
 		if(input.isMousePressed(0)){
-			dude.fire();
+			//dude.fire();
 			System.out.println("hey mouse is clicked");
 			packet.fire = true;
 			packet.angle=dude.weapon.angle;

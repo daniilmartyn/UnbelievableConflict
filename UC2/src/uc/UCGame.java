@@ -85,7 +85,7 @@ public class UCGame extends StateBasedGame{
 	public final int ScreenWidth;
 	public final int ScreenHeight;
 	
-	public static int character = 2; // 0 for light, 1 for medium, 2 for heavy
+	public static int character = 0; // 0 for light, 1 for medium, 2 for heavy
 	public static boolean sound = true;
 	
 	

@@ -20,17 +20,17 @@ public class Weapon extends Entity{
 	private Image primary;
 	private Image secondary;
 	private Image melee;
-	private Image weaponRight;
-	private Image weaponLeft;
-	private Image weapon;
+	public Image weaponRight;
+	public Image weaponLeft;
+	public Image weapon;
 	public int select; // 0 for primary, 1 for secondary, 2 for melee
 	
-	private Animation hit;
+	public Animation hit;
 	
-	private Vector offsetStand; // for offsetting weapon entity from char
+	public Vector offsetStand; // for offsetting weapon entity from char
 	private Vector offsetCrouch; // for offsetting weapon entity from char when crouched
-	private Vector wepOffSetRight;	// for offsetting the weapon image
-	private Vector wepOffSetLeft; // for offsetthing the weapon image
+	public Vector wepOffSetRight;	// for offsetting the weapon image
+	public Vector wepOffSetLeft; // for offsetthing the weapon image
 	
 	public Vector mouse;
 	private Vector wep;
@@ -155,7 +155,7 @@ public class Weapon extends Entity{
 
 			UCGame.bullets.add(bullet);
 
-			System.out.println("array of bullets: " + UCGame.bullets);
+			//System.out.println("array of bullets: " + UCGame.bullets);
 			
 			break;
 		case 1:
@@ -228,7 +228,7 @@ public class Weapon extends Entity{
 				bullet.id = dude.id;
 				UCGame.bullets.add(bullet);
 			}
-			System.out.println("array of bullets: " + UCGame.bullets);
+			//System.out.println("array of bullets: " + UCGame.bullets);
 			break;
 		case 4: 
 			
@@ -266,6 +266,8 @@ public class Weapon extends Entity{
 			}
 			
 			hit.setLooping(false);
+			//removeAnimation(hit);
+			//removeImage(hit);
 			break;
 		case 6:
 			

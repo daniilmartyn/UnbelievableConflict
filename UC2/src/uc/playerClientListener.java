@@ -54,13 +54,43 @@ public class playerClientListener extends Listener {
 		else if(object instanceof SetXY){
 			SetXY packet = (SetXY) object;
 			
-			UCGame.players.get(packet.id).weapon.changeWeapon(packet.weapon);
-		//	UCGame.players.get(packet.id).weapon.select =(packet.weapon);
+			
+			if(UCGame.players.get(packet.id).weapon.hit != null && UCGame.players.get(packet.id).weapon.hit.isStopped()){
+				UCGame.players.get(packet.id).weapon.removeAnimation(UCGame.players.get(packet.id).weapon.hit);
+				UCGame.players.get(packet.id).weapon.hit = null;
+				UCGame.players.get(packet.id).weapon.weapon = null;
+				//dude.weapon.changeWeapon(dude.weapon.select);
+			}
+			if(UCGame.players.get(packet.id).weapon.hit == null){
+				if(UCGame.players.get(packet.id).weapon.weapon == null){
+					if(packet.run == 1){
+					UCGame.players.get(packet.id).weapon.weapon = UCGame.players.get(packet.id).weapon.weaponLeft;
+					UCGame.players.get(packet.id).weapon.addImage(UCGame.players.get(packet.id).weapon.weapon, 
+							UCGame.players.get(packet.id).weapon.wepOffSetLeft);
+					}
+					else{
+						UCGame.players.get(packet.id).weapon.weapon = UCGame.players.get(packet.id).weapon.weaponRight;
+						UCGame.players.get(packet.id).weapon.addImage(UCGame.players.get(packet.id).weapon.weapon, 
+								UCGame.players.get(packet.id).weapon.wepOffSetRight);
+					}
+					//UCGame.players.get(packet.id).weapon.addImage(UCGame.players.get(packet.id).weapon.weapon);
+
+					
+					
+				}
+			}
+			
+			if(UCGame.players.get(packet.id).weapon.select != (packet.weapon)){
+				UCGame.players.get(packet.id).weapon.changeWeapon(packet.weapon);
+				UCGame.players.get(packet.id).weapon.select =(packet.weapon);
+			}
+			
+
 
 			UCGame.players.get(packet.id).weapon.setRotation(packet.rotate);
 			UCGame.players.get(packet.id).weapon.angle = (packet.rotate);
 			UCGame.players.get(packet.id).setX(packet.x);
-			UCGame.players.get(packet.id).setY(packet.y);
+			UCGame.players.get(packet.id).setY(packet.y+30);
 			UCGame.players.get(packet.id).weapon.setX(packet.x);
 			UCGame.players.get(packet.id).weapon.setY(packet.y);
 			UCGame.players.get(packet.id).setJump(packet.jumped);
@@ -73,7 +103,7 @@ public class playerClientListener extends Listener {
 			UpdateChar packet = (UpdateChar) object;
 			
 			UCGame.players.get(packet.id).weapon.select =((packet.switchWep  ));
-			//UCGame.players.get(packet.id).weapon.changeWeapon(packet.switchWep);
+			UCGame.players.get(packet.id).weapon.changeWeapon(packet.switchWep);
 
 			UCGame.players.get(packet.id).camX =((packet.camx));
 			UCGame.players.get(packet.id).camY =((packet.camy));
@@ -98,7 +128,17 @@ public class playerClientListener extends Listener {
 			//	UCGame.players.get(packet.id).weapon.angle = packet.angle;
 			//	UCGame.players.get(packet.id).weapon.direction = packet.direction;
 			///	UCGame.players.get(packet.id).weapon.select = packet.select;
-				UCGame.players.get(packet.id).weapon.fire(UCGame.players.get(packet.id));		
+				
+//				if(packet.select == 2){
+//					if(UCGame.players.get(packet.id).weapon.hit != null){
+//						UCGame.players.get(packet.id).weapon.removeImage(UCGame.players.get(packet.id).weapon.weapon);
+//						System.out.println("got her");
+//						UCGame.players.get(packet.id).weapon.fire(UCGame.players.get(packet.id));		
+//					}
+//				}
+//				else{
+					UCGame.players.get(packet.id).weapon.fire(UCGame.players.get(packet.id));		
+//				}
 			}
 
 		}
