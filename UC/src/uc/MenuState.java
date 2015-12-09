@@ -83,10 +83,34 @@ public class MenuState extends BasicGameState {
 			g.drawImage(ResourceManager.getImage(UCGame.JOIN_RSC), 0f, 0f);
 			name.render(container, g);
 			address.render(container,g);
+			
+			switch(UCGame.character){
+			case 0:
+				g.drawImage(arrow, 565, 265);
+				break;
+			case 1:
+				g.drawImage(arrow, 695, 265);
+				break;
+			case 2:
+				g.drawImage(arrow, 885, 265);
+				break;
+			}
 			break;
 		case 2:
 			g.drawImage(ResourceManager.getImage(UCGame.HOST_RSC), 0f, 0f);
 			name.render(container, g);
+			
+			switch(UCGame.character){
+			case 0:
+				g.drawImage(arrow, 858, 198);
+				break;
+			case 1:
+				g.drawImage(arrow, 858, 293);
+				break;
+			case 2:
+				g.drawImage(arrow, 864, 396);
+				break;
+			}
 			
 			switch(timeLim){
 			case 0:
@@ -202,6 +226,23 @@ public class MenuState extends BasicGameState {
 					// This is where the client launching code will be called and all that jazz....
 				}
 			}
+			
+			if((mouseX > 535 && mouseX < 575) && (mouseY < 335 && mouseY > 270)){
+				if(input.isMousePressed(0)){
+					UCGame.character = 0;
+				}
+			}
+			if((mouseX > 650 && mouseX < 700) && (mouseY < 340 && mouseY > 260)){
+				if(input.isMousePressed(0)){
+					UCGame.character = 1;
+				}
+			}
+			if((mouseX > 780 && mouseX < 890) && (mouseY < 335 && mouseY > 260)){
+				if(input.isMousePressed(0)){
+					UCGame.character = 2;
+				}
+			}
+			
 						
 			break;
 		case 2: // Host game menu
@@ -220,6 +261,22 @@ public class MenuState extends BasicGameState {
 					System.out.println("Begin/Host the Game!");
 					System.out.println("The player's name is: " + name.getText());
 					// This is where the server launching code will be called and all that jazz....
+				}
+			}
+			
+			if((mouseX > 830 && mouseX < 860) && (mouseY < 265 && mouseY > 200)){
+				if(input.isMousePressed(0)){
+					UCGame.character = 0;
+				}
+			}
+			if((mouseX > 813 && mouseX < 860) && (mouseY < 360 && mouseY > 288)){
+				if(input.isMousePressed(0)){
+					UCGame.character = 1;
+				}
+			}
+			if((mouseX > 764 && mouseX < 871) && (mouseY < 457 && mouseY > 386)){
+				if(input.isMousePressed(0)){
+					UCGame.character = 2;
 				}
 			}
 			
