@@ -30,6 +30,27 @@ public class UCGame extends StateBasedGame{
 	public static final int PLAYSTATE2 = 2;
 	public static final int GAMEOVER = 3;
 
+	// snd string stuff here
+	public static final String GAME_STARTSOUND_RSC = "uc/sound/start.ogg";
+	public static final String GAME_MUSICSOUND_RSC = "uc/sound/boss.ogg";
+	public static final String PLAYER_PISTOLSOUND_RSC = "uc/sound/pistol1.wav";
+	public static final String PLAYER_RIFLESOUND_RSC = "uc/sound/rifle.wav";
+	public static final String PLAYER_SHOTGUNSOUND_RSC = "uc/sound/shotgun.wav";
+	public static final String PLAYER_BOMBSOUND_RSC = "uc/sound/boom.wav";
+	public static final String PLAYER_MINELAYSOUND_RSC = "uc/sound/beep.ogg";
+	public static final String PLAYER_JUMPSOUND_RSC = "uc/sound/jump.wav";
+
+	public static final String PLAYER_HEAVYMELEESOUND_RSC = "uc/sound/heavy melee sound.wav";
+	public static final String PLAYER_MEDIUMMELEESOUND_RSC = "uc/sound/medium melee sound.wav";
+	public static final String PLAYER_LIGHTMELEESOUND_RSC = "uc/sound/light melee sound.wav";
+
+//	public static final String PLAYER_LASERSOUND_RSC = "BounceShootBounce/soundResource/LaserShot.wav";
+//	public static final String PLAYER_NOLASERSOUND_RSC = "BounceShootBounce/soundResource/noLaserSound.wav";
+//	public static final String ENEMY_SNIPERSOUND_RSC = "BounceShootBounce/soundResource/sniperShot.wav";
+//	public static final String ENEMY_LASERSOUND_RSC = "BounceShootBounce/soundResource/enemyLaser.wav";
+//	public static final String ENEMY_BOMBSOUND_RSC = "BounceShootBounce/soundResource/bomb.wav";
+//	public static final String ENEMY_DEADSOUND_RSC = "BounceShootBounce/soundResource/enemyDead.wav";
+	
 	// img string stuff here
 	
 	public static final String MAINMENU_RSC = "uc/resource/main.png";
@@ -85,7 +106,7 @@ public class UCGame extends StateBasedGame{
 	public final int ScreenWidth;
 	public final int ScreenHeight;
 	
-	public static int character = 0; // 0 for light, 1 for medium, 2 for heavy
+	public static int character = 2; // 0 for light, 1 for medium, 2 for heavy
 	public static boolean sound = true;
 	
 	
@@ -227,7 +248,19 @@ public void connect(String ip){
 		ResourceManager.loadImage(BOMB_RSC);
 		ResourceManager.loadImage(GRENADE_RSC);
 
-		
+		ResourceManager.loadSound(GAME_STARTSOUND_RSC);
+		ResourceManager.loadSound(GAME_MUSICSOUND_RSC);
+		ResourceManager.loadSound(PLAYER_PISTOLSOUND_RSC);
+		ResourceManager.loadSound(PLAYER_RIFLESOUND_RSC);
+		ResourceManager.loadSound(PLAYER_SHOTGUNSOUND_RSC);
+		ResourceManager.loadSound(PLAYER_BOMBSOUND_RSC);
+		ResourceManager.loadSound(PLAYER_MINELAYSOUND_RSC);
+		ResourceManager.loadSound(PLAYER_JUMPSOUND_RSC);
+
+		ResourceManager.loadSound(PLAYER_MEDIUMMELEESOUND_RSC);
+		ResourceManager.loadSound(PLAYER_HEAVYMELEESOUND_RSC);
+		ResourceManager.loadSound(PLAYER_LIGHTMELEESOUND_RSC);
+
 		//archie = new Archie(ScreenWidth/2, ScreenHeight/4);
 		//shield = new Shield(archie.getCoarseGrainedMaxX() + 10, archie.getY());
 	}

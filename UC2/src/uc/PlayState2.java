@@ -84,31 +84,42 @@ public class PlayState2 extends BasicGameState {
 		
 		for( int i =0; i< UCGame.bullets.size(); i++){
 			//System.out.println("bullet "+i+" max "+UCGame.bullets.size());
-			Bullet bullet = UCGame.bullets.get(i);
-			if(bullet != null){
-				bullet.render(g);
+			if(UCGame.bullets.get(i) != null){
+				Bullet bullet = UCGame.bullets.get(i);
+				if(bullet != null){
+					bullet.render(g);
+				}
 			}
+
 		}
 		
 		for( int i =0; i< UCGame.mines.size(); i++){
+			if(UCGame.mines.get(i) != null){
+
 			Mine mine = UCGame.mines.get(i);
 			if(mine != null){
 				mine.render(g);
 			}
+			}
 		}
 		
 		for( int i =0; i< UCGame.bombs.size(); i++){
+			if(UCGame.bombs.get(i) != null){
 			Bomb bomb = UCGame.bombs.get(i);
 			if(bomb != null){
 				bomb.render(g);
 			}
+			}
 		}
 		
 		for( int i =0; i< UCGame.grenades.size(); i++){
+			if(UCGame.grenades.get(i) != null){
+
 			Grenade grenade = UCGame.grenades.get(i);
 			if(grenade != null){
 				grenade.render(g);
 			}		
+			}
 		}
 	
 		
@@ -210,7 +221,7 @@ public class PlayState2 extends BasicGameState {
 		}
 
 		if(input.isMousePressed(0)){
-			//dude.fire();
+			dude.fire();
 			System.out.println("hey mouse is clicked");
 			packet.fire = true;
 			packet.angle=dude.weapon.angle;

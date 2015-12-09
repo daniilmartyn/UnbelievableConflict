@@ -345,6 +345,15 @@ public class MenuState extends BasicGameState {
 		}
 		
 	}
+	
+	public void enter(GameContainer container, StateBasedGame game)
+			throws SlickException {
+		UCGame uc = (UCGame) game;
+		ResourceManager.getSound(uc.GAME_STARTSOUND_RSC).play();
+
+		
+		
+	}
 
 	@Override
 	public int getID() {

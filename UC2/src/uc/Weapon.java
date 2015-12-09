@@ -154,6 +154,7 @@ public class Weapon extends Entity{
 			bullet.id = dude.id;
 
 			UCGame.bullets.add(bullet);
+			ResourceManager.getSound(UCGame.PLAYER_PISTOLSOUND_RSC).play();
 
 			//System.out.println("array of bullets: " + UCGame.bullets);
 			
@@ -180,7 +181,9 @@ public class Weapon extends Entity{
 			mine.id = dude.id;
 			UCGame.mines.add(mine);
 			
-			System.out.println("array of mines: " + UCGame.mines);
+			ResourceManager.getSound(UCGame.PLAYER_MINELAYSOUND_RSC).play();
+
+	//		System.out.println("array of mines: " + UCGame.mines);
 
 			break;
 		case 2:
@@ -197,7 +200,8 @@ public class Weapon extends Entity{
 				hit = new Animation(ResourceManager.getSpriteSheet(UCGame.PIPE_HIT_RSC, 99, 80),0,1,6,1,true,50,true);
 				addAnimation(hit, new Vector(-45f, -23.0f));
 			}
-			
+			ResourceManager.getSound(UCGame.PLAYER_LIGHTMELEESOUND_RSC).play();
+
 			hit.setLooping(false);
 			break;
 			
@@ -228,6 +232,9 @@ public class Weapon extends Entity{
 				bullet.id = dude.id;
 				UCGame.bullets.add(bullet);
 			}
+			
+			ResourceManager.getSound(UCGame.PLAYER_SHOTGUNSOUND_RSC).play();
+
 			//System.out.println("array of bullets: " + UCGame.bullets);
 			break;
 		case 4: 
@@ -248,8 +255,9 @@ public class Weapon extends Entity{
 			grenade.id = dude.id;
 			UCGame.grenades.add(grenade);
 			
-			
-			System.out.println("array of grenades: " + UCGame.grenades);
+			ResourceManager.getSound(UCGame.PLAYER_BOMBSOUND_RSC).play();
+
+	//		System.out.println("array of grenades: " + UCGame.grenades);
 			break;
 		case 5:
 			if(hit != null)
@@ -264,7 +272,8 @@ public class Weapon extends Entity{
 				hit = new Animation(ResourceManager.getSpriteSheet(UCGame.SWORDCHOP_RSC, 149, 134),0,1,11,1,true,30,true);
 				addAnimation(hit, new Vector(-38f, -12.0f));
 			}
-			
+			ResourceManager.getSound(UCGame.PLAYER_MEDIUMMELEESOUND_RSC).play();
+
 			hit.setLooping(false);
 			//removeAnimation(hit);
 			//removeImage(hit);
@@ -305,8 +314,10 @@ public class Weapon extends Entity{
 			bullet.id = dude.id;
 			UCGame.bullets.add(bullet);
 			
-			System.out.println("array of bullets: " + UCGame.bullets);
 			
+		//	System.out.println("array of bullets: " + UCGame.bullets);
+			ResourceManager.getSound(UCGame.PLAYER_RIFLESOUND_RSC).play();
+
 			break;
 			
 		case 7:
@@ -318,6 +329,8 @@ public class Weapon extends Entity{
 			UCGame.bombs.add(bomb);
 			
 			System.out.println("array of bombs: " + UCGame.bombs);
+			ResourceManager.getSound(UCGame.PLAYER_BOMBSOUND_RSC).play();
+
 			break;
 		case 8:
 			if(hit != null)
@@ -332,7 +345,8 @@ public class Weapon extends Entity{
 				hit = new Animation(ResourceManager.getSpriteSheet(UCGame.HAMMERHIT_RSC, 126, 201),0,1,5,1,true,60,true);
 				addAnimation(hit, new Vector(-63f, 0f));
 			}
-			
+			ResourceManager.getSound(UCGame.PLAYER_HEAVYMELEESOUND_RSC).play();
+
 			hit.setLooping(false);
 			break;
 		}

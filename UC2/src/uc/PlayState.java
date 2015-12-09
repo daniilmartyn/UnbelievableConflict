@@ -124,6 +124,8 @@ public class PlayState extends BasicGameState {
 			dude.jump();
 			dude.setJump(true);
 			dude.setState(3);
+			ResourceManager.getSound(uc.PLAYER_JUMPSOUND_RSC).play();
+
 		}
 				
 		if((input.isKeyDown(Input.KEY_A) || input.isKeyDown(Input.KEY_D))){
@@ -209,7 +211,7 @@ public class PlayState extends BasicGameState {
 			else{
 				bomb.update(delta);
 				packetB.bombx.add(bomb.getX());
-				packetB.bombx.add(bomb.getY());
+				packetB.bomby.add(bomb.getY());
 			}
 		}
 		
@@ -328,6 +330,9 @@ public class PlayState extends BasicGameState {
 		// TODO Auto-generated method stub
 
 		UCGame uc = (UCGame) game;
+		
+		ResourceManager.getSound(uc.GAME_MUSICSOUND_RSC).loop();
+
 		map = new Map(0,0);
 		
 		switch(UCGame.character){
