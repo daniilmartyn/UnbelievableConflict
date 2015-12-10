@@ -34,9 +34,6 @@ public class PlayState2 extends BasicGameState {
 	
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
-		// TODO Auto-generated method stub
-
-
 	}
 
 	private void setCam(Input input, UCGame uc){
@@ -73,59 +70,52 @@ public class PlayState2 extends BasicGameState {
 
 		
 		for( int i =1; i< UCGame.players.size()+1; i++){
-			Char Player = UCGame.players.get(i);
-			if(Player != null){
-				Player.render(g);
+			Char player = UCGame.players.get(i);
+			if(player != null){
+				player.render(g);
 				
-				Player.renderWep(g);
+				player.renderWep(g);
 			}
 
 		}
 		
 		for( int i =0; i< UCGame.bullets.size(); i++){
-			//System.out.println("bullet "+i+" max "+UCGame.bullets.size());
 			if(UCGame.bullets.get(i) != null){
 				Bullet bullet = UCGame.bullets.get(i);
 				if(bullet != null){
 					bullet.render(g);
 				}
 			}
-
 		}
 		
 		for( int i =0; i< UCGame.mines.size(); i++){
 			if(UCGame.mines.get(i) != null){
 
-			Mine mine = UCGame.mines.get(i);
-			if(mine != null){
-				mine.render(g);
-			}
+				Mine mine = UCGame.mines.get(i);
+				if(mine != null){
+					mine.render(g);
+				}
 			}
 		}
 		
 		for( int i =0; i< UCGame.bombs.size(); i++){
 			if(UCGame.bombs.get(i) != null){
-			Bomb bomb = UCGame.bombs.get(i);
-			if(bomb != null){
-				bomb.render(g);
-			}
+				Bomb bomb = UCGame.bombs.get(i);
+				if(bomb != null){
+					bomb.render(g);
+				}
 			}
 		}
 		
 		for( int i =0; i< UCGame.grenades.size(); i++){
 			if(UCGame.grenades.get(i) != null){
 
-			Grenade grenade = UCGame.grenades.get(i);
-			if(grenade != null){
-				grenade.render(g);
-			}		
+				Grenade grenade = UCGame.grenades.get(i);
+				if(grenade != null){
+					grenade.render(g);
+				}		
 			}
-		}
-	
-		
-//		dude.render(g);
-//		dude.renderWep(g);
-		
+		}		
 	}
 
 	
@@ -245,7 +235,7 @@ public class PlayState2 extends BasicGameState {
 		packet.camx = camX;
 		packet.camy = camY;
 		
-		uc.client.sendUDP(packet);
+		uc.client.sendTCP(packet);
 		
 		/*if(input.isMouseButtonDown(0)){
 			dude.fire();
@@ -293,13 +283,6 @@ public class PlayState2 extends BasicGameState {
 		//System.out.println("offsetX: " + offsetMaxX + " offsetY: "+offsetMaxY);
 		camX = offsetMaxX;
 		camY = 0;
-	}
-
-	@Override
-	public void leave(GameContainer container, StateBasedGame game)
-			throws SlickException {
-		// TODO Auto-generated method stub
-
 	}
 
 	public int getID() {

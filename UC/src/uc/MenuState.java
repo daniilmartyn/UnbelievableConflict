@@ -231,8 +231,8 @@ public class MenuState extends BasicGameState {
 					
 					uc.enterState(UCGame.PLAYSTATE2);
 										
-					uc.client = new Client();
-					uc.kryo = uc.client.getKryo();
+					UCGame.client = new Client();
+					uc.kryo = UCGame.client.getKryo();
 					uc.registerKryoClasses();
 					uc.connect("127.0.0.1");
 
@@ -274,10 +274,10 @@ public class MenuState extends BasicGameState {
 					// This is where the server launching code will be called and all that jazz....
 					uc.enterState(UCGame.PLAYSTATE);
 
-					uc.isServer =true;
+					UCGame.isServer =true;
 					
-					uc.client = new Client();
-					uc.kryo = uc.client.getKryo();
+					UCGame.client = new Client();
+					uc.kryo = UCGame.client.getKryo();
 					uc.registerKryoClasses();
 					uc.connect("127.0.0.1");
 				}
@@ -405,11 +405,9 @@ public class MenuState extends BasicGameState {
 	
 	public void enter(GameContainer container, StateBasedGame game)
 			throws SlickException {
-		UCGame uc = (UCGame) game;
+		
 		container.setSoundOn(UCGame.sound);
-
-		ResourceManager.getSound(uc.GAME_STARTSOUND_RSC).play();
-				
+		ResourceManager.getSound(UCGame.GAME_STARTSOUND_RSC).play();
 	}
 
 	@Override

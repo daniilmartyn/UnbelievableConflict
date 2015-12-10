@@ -1,8 +1,5 @@
 package uc;
 
-import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.geom.Shape;
-
 import com.esotericsoftware.kryonet.Connection;
 
 

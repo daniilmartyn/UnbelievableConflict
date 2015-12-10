@@ -5,10 +5,10 @@
 [3] Complete the other two characters using the first as an example.
 [4] Create playable map
 [5] Create Main Menu, Help Menu, etc for the game.
-
+[6a] Map is in final version, collisions for server side are smooth.
 
 # Open Issues ##
-
-[6] Add object to map: health kits, ammo, power-ups
+[6b] Game mechanics
+[7] Add object to map: health kits, ammo, power-ups
 
 /// replace bullet/bomb/mine/etc classes with 'projectile' class?

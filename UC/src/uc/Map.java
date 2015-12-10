@@ -17,9 +17,14 @@ public class Map extends Entity{
 		super(x,y);
 		
 		map = ResourceManager.getImage(UCGame.DESERT_RSC);
-		//addImage(map);
 		
+		//the following are floor tiles and side of map boundaries
 		addShape(new ConvexPolygon(map.getWidth(), 50f), new Vector(map.getWidth()/2, map.getHeight() - 20f), Color.transparent, Color.white);
+		addShape(new ConvexPolygon(40f, (float)map.getHeight()), new Vector(0f, map.getHeight()/2), Color.transparent, Color.white);
+		addShape(new ConvexPolygon(40f, (float)map.getHeight()), new Vector(map.getWidth(), map.getHeight()/2), Color.transparent, Color.white);
+		
+		
+		//these are the platforms found in the map
 		addShape(new ConvexPolygon(250f, 40f), new Vector(120f, 940f), Color.transparent, Color.white);
 		addShape(new ConvexPolygon(50f, 110f), new Vector(410f, map.getHeight()-100), Color.transparent, Color.white);
 		
@@ -27,6 +32,10 @@ public class Map extends Entity{
 		addShape(new ConvexPolygon(95f, 35f), new Vector(170f, 640f), Color.transparent, Color.white);
 		addShape(new ConvexPolygon(70f, 23f), new Vector(705f, 650f), Color.transparent, Color.white);
 		addShape(new ConvexPolygon(320f, 40f), new Vector(1020f, 585f), Color.transparent, Color.white);
+		addShape(new ConvexPolygon(166f, 62f), new Vector(1679f, 937f), Color.transparent, Color.white);
+		addShape(new ConvexPolygon(266f, 28f), new Vector(1909f, 791f), Color.transparent, Color.white);
+		addShape(new ConvexPolygon(278f, 26f), new Vector(1487f, 413f), Color.transparent, Color.white);
+		addShape(new ConvexPolygon(190f, 42f), new Vector(1952f, 449f), Color.transparent, Color.white);	
 
 	}
 

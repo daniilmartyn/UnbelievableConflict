@@ -2,18 +2,14 @@ package uc;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 import jig.ResourceManager;
-import jig.Shape;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
-import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class PlayState extends BasicGameState {
@@ -22,9 +18,7 @@ public class PlayState extends BasicGameState {
 	public static Map map;
 	
 	public static float gravity = 0.003f;
-	
-	//private ParticleSystem particles;
-	
+		
 	int offsetMaxX;
 	int offsetMaxY;
 	int offsetMinX;
@@ -62,8 +56,8 @@ public class PlayState extends BasicGameState {
 
 		g.translate(-camX, -camY);
 		
-		g.drawImage(map.getImg(), 0, 0);
-		map.render(g);
+		g.drawImage(map.getImg(), 0, 0); // the actual map image
+		map.render(g);					// render the collision/shapes
 		
 		for(Char Player : UCGame.players.values()){
 			Player.render(g);
@@ -84,11 +78,7 @@ public class PlayState extends BasicGameState {
 		
 		for(Grenade grenade : UCGame.grenades){
 			grenade.render(g);
-		}
-		
-//		dude.render(g);
-//		dude.renderWep(g);
-		
+		}		
 	}
 
 	
@@ -128,8 +118,7 @@ public class PlayState extends BasicGameState {
 			dude.setJump(true);
 			dude.setState(3);
 			dude.justjumped = true;
-			ResourceManager.getSound(uc.PLAYER_JUMPSOUND_RSC).play();
-
+			ResourceManager.getSound(UCGame.PLAYER_JUMPSOUND_RSC).play();
 		}
 				
 		if((input.isKeyDown(Input.KEY_A) || input.isKeyDown(Input.KEY_D))){
@@ -256,7 +245,7 @@ public class PlayState extends BasicGameState {
 //		packetB.grenadex.size()>0 ||
 //		packetB.minex.size()>0 ||
 //		packetB.bombx.size()>0){
-			uc.client.sendUDP(packetB);
+			UCGame.client.sendTCP(packetB);
 //		}
 		
 	
@@ -266,25 +255,6 @@ public class PlayState extends BasicGameState {
 		
 		for(Char Player : UCGame.players.values()){
 			Player.update( container, camX, camY, delta);
-
-			LinkedList<Shape> bounds = Player.getGloballyTransformedShapes();
-			
-			if(Player.getCoarseGrainedMinY() < 0){				// if dude is higher than than the map
-				Player.setY(Player.getCoarseGrainedHeight()/2);
-			}
-			if(bounds.element().getMaxY() > map.getImg().getHeight()){	// if dude is lower than the map
-				Player.setY(map.getImg().getHeight() - bounds.element().getHeight()/2);
-				Player.cancelFall();
-				Player.setJump(false);
-			}
-			if (bounds.element().getMinX() < bounds.element().getWidth()){			// if dude is too far left of map
-				Player.setX(bounds.element().getWidth()*1.5f);
-			}
-			if (bounds.element().getMaxX() > map.getImg().getWidth() - bounds.element().getWidth()){ // if dude is too far right of map
-				Player.setX(map.getImg().getWidth() - bounds.element().getWidth()*1.5f);
-			}
-			
-		//System.out.println("minX: " + dude.getGloballyTransformedShapes());
 		
 			NetworkClasses.SetXY packet = new NetworkClasses.SetXY();
 			packet.x=Player.getX();
@@ -319,7 +289,7 @@ public class PlayState extends BasicGameState {
 			packet.rotate = Player.weapon.angle;
 			packet.id = Player.id;
 	
-			uc.client.sendUDP(packet);
+			UCGame.client.sendUDP(packet);
 		}
 		
 //		dude.update(container, camX, camY, delta);
@@ -353,33 +323,33 @@ public class PlayState extends BasicGameState {
 		
 		container.setSoundOn(UCGame.sound);
 		
-		ResourceManager.getSound(uc.GAME_MUSICSOUND_RSC).loop();
+		ResourceManager.getSound(UCGame.GAME_MUSICSOUND_RSC).loop();
 
 		map = new Map(0,0);
 		
 		switch(UCGame.character){
 		case 0:
-			dude = new Char(map.getImg().getWidth()/2, map.getImg().getHeight()/2, 0);
+			dude = new Char(map.getImg().getWidth()/2, map.getImg().getHeight()/4*3, 0);
 			break;
 		case 1: 
-			dude = new Char(map.getImg().getWidth()/2, map.getImg().getHeight()/2, 1);
+			dude = new Char(map.getImg().getWidth()/2, map.getImg().getHeight()/4*3, 1);
 			break;
 		case 2:
-			dude = new Char(map.getImg().getWidth()/2, map.getImg().getHeight()/2, 2);
+			dude = new Char(map.getImg().getWidth()/2, map.getImg().getHeight()/4*3, 2);
 			break;
 		}
 		
 		dude.id = 1;
-		uc.players.put(uc.id, dude);
+		UCGame.players.put(UCGame.id, dude);
 		
 		NetworkClasses.NewPlayerRequest packetX = new NetworkClasses.NewPlayerRequest();
-		packetX.id = uc.id;
-		packetX.player = uc.character;
+		packetX.player = UCGame.character;
 		packetX.x = map.getImg().getWidth()/2;
 		packetX.y = map.getImg().getHeight()/2;
-		uc.client.sendUDP(packetX);
+		packetX.id = UCGame.id;
+		UCGame.client.sendTCP(packetX);
 		
-		uc.set = true;
+		UCGame.set = true;
 
 		offsetMaxX = map.getImg().getWidth() - uc.ScreenWidth; 		// offset min/max X/Y technique taken from nathan
 		offsetMaxY = map.getImg().getHeight() - uc.ScreenHeight;		// http://gamedev.stackexchange.com/questions/44256/how-to-add-a-scrolling-camera-to-a-2d-java-game

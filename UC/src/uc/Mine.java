@@ -16,6 +16,7 @@ public class Mine extends Entity{
 	private Vector velocity;
 	public int id;
 	private Image mine;
+	private int damage = 30;
 	
 	public Mine(final float x, final float y, final Vector v) {
 		super(x,y);
@@ -26,26 +27,35 @@ public class Mine extends Entity{
 		active = true;
 	}
 
+	public int getDamage(){
+		return damage;
+	}
 	
 	public void update(int delta){
 		
 		translate(velocity.scale(delta));
-		velocity = velocity.add(new Vector(0.0f, (PlayState.gravity*delta)));
 		
 		if(getX() < 0 || getX() > PlayState.map.getImg().getWidth()  //////////////////change this when map creating is updated
 				|| getY() < 0 || getY() > PlayState.map.getImg().getHeight())
 			active = false;
 		
 		
-		Collision collide = null;
-		while((collide = collides(PlayState.map)) != null){
-			System.out.println("collision test: " + collide.getMinPenetration());
-			System.out.println("this shape: " + collide.getThisShape());
-			System.out.println("other shape: " + collide.getOtherShape());
+		Collision initial = collides(PlayState.map);
+		Collision resolve = null;
+		
+		if(initial != null){
 			
-			translate(collide.getMinPenetration());
+			while((resolve = collides(PlayState.map)) != null){ // collision resolution
+				if(resolve.getMinPenetration().getX() != 0)		// need to move bomb horizontally
+					setPosition(getX()+ resolve.getMinPenetration().getX(),getY());
+				if(resolve.getMinPenetration().getY() != 0)		// need to move bomb vertically
+					setPosition(getX(),getY()+(velocity.getY()* -delta));
+			}
+			
 			velocity = new Vector(0.0f, 0.0f);
 		}
+		
+		velocity = velocity.add(new Vector(0.0f, (PlayState.gravity*delta)));
 	}
 	
 	public boolean isActive(){

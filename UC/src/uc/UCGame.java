@@ -107,7 +107,7 @@ public class UCGame extends StateBasedGame{
 	public final int ScreenHeight;
 	
 	public static int character = 2; // 0 for light, 1 for medium, 2 for heavy
-	public static boolean sound = true;
+	public static boolean sound = false;
 	
 	
 	public static boolean set;
@@ -261,13 +261,11 @@ public void connect(String ip){
 		ResourceManager.loadSound(PLAYER_HEAVYMELEESOUND_RSC);
 		ResourceManager.loadSound(PLAYER_LIGHTMELEESOUND_RSC);
 
-		//archie = new Archie(ScreenWidth/2, ScreenHeight/4);
-		//shield = new Shield(archie.getCoarseGrainedMaxX() + 10, archie.getY());
 	}
 	
 	public static void main(String[] args) {
 		try {
-			UCGame pClient = new UCGame("Oh, the conflict!", 1024, 576,55555, 55556, 5000);	
+			UCGame pClient = new UCGame("Oh, the conflict!", 1024, 576, 55555, 55556, 5000);	
 			
 			app = new AppGameContainer(pClient);
 			app.setDisplayMode(1024, 576, false);
