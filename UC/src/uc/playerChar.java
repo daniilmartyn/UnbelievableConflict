@@ -10,7 +10,8 @@ public class playerChar  {
 	
 	public float x;
 	public float y;
-
+	
+	public int Char;
 	public Connection c;
 	
 	public playerChar(float x1, float y1){

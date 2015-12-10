@@ -34,7 +34,7 @@ public class playerClientListener extends Listener {
 		
 		if(object instanceof PacketAddPlayer){
 			PacketAddPlayer packet = (PacketAddPlayer) object;
-			Char newPlayer = new Char(packet.x,packet.y, UCGame.character);
+			Char newPlayer = new Char(packet.x,packet.y, packet.Char);
 			newPlayer.id = packet.id;
 			System.out.println(packet.x+" "+packet.y);
 			UCGame.players.put(packet.id, newPlayer);
@@ -73,20 +73,16 @@ public class playerClientListener extends Listener {
 						UCGame.players.get(packet.id).weapon.addImage(UCGame.players.get(packet.id).weapon.weapon, 
 								UCGame.players.get(packet.id).weapon.wepOffSetRight);
 					}
-					//UCGame.players.get(packet.id).weapon.addImage(UCGame.players.get(packet.id).weapon.weapon);
-
-					
-					
 				}
 			}
-			
+			if(packet.fired){
+				UCGame.players.get(packet.id).readytofire = true;
+			}
 			if(UCGame.players.get(packet.id).weapon.select != (packet.weapon)){
 				UCGame.players.get(packet.id).weapon.changeWeapon(packet.weapon);
 				UCGame.players.get(packet.id).weapon.select =(packet.weapon);
 			}
 			
-
-
 			UCGame.players.get(packet.id).weapon.setRotation(packet.rotate);
 			UCGame.players.get(packet.id).weapon.angle = (packet.rotate);
 			UCGame.players.get(packet.id).setX(packet.x);
@@ -94,6 +90,11 @@ public class playerClientListener extends Listener {
 			UCGame.players.get(packet.id).weapon.setX(packet.x);
 			UCGame.players.get(packet.id).weapon.setY(packet.y);
 			UCGame.players.get(packet.id).setJump(packet.jumped);
+			
+			if(packet.justjumped){
+				ResourceManager.getSound(UCGame.PLAYER_JUMPSOUND_RSC).play();
+
+			}
 			
 			UCGame.players.get(packet.id).changeDir(packet.run);
 			UCGame.players.get(packet.id).state= (packet.state);
@@ -123,6 +124,7 @@ public class playerClientListener extends Listener {
 				UCGame.players.get(packet.id).jump();
 				UCGame.players.get(packet.id).setJump(true);
 				UCGame.players.get(packet.id).setState(packet.state);
+				ResourceManager.getSound(UCGame.PLAYER_JUMPSOUND_RSC).play();
 			}
 			if(packet.fire){
 			//	UCGame.players.get(packet.id).weapon.angle = packet.angle;
@@ -137,7 +139,7 @@ public class playerClientListener extends Listener {
 //					}
 //				}
 //				else{
-					UCGame.players.get(packet.id).weapon.fire(UCGame.players.get(packet.id));		
+				UCGame.players.get(packet.id).readytofire = true;		
 //				}
 			}
 

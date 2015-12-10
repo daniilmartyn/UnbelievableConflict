@@ -31,10 +31,7 @@ public class mainServerListener extends Listener  {
 	List<playerChar> laserList = new ArrayList<playerChar>();
 
 	public void connected(Connection connection){
-		playerChar player = new playerChar(1600,800);
-		player.c = connection;
-		players.put(connection.getID(), player);
-		
+
 		mainServer.jTextArea.append(connection.getID() + " (ID) joined the server (Player.enity)");
 		mainServer.jTextArea.append("\n");
 	}
@@ -87,7 +84,11 @@ public class mainServerListener extends Listener  {
 			mainServer.server.sendToUDP(1,packet);
 		}
 		else if(object instanceof NetworkClasses.NewPlayerRequest){
-			
+			NetworkClasses.NewPlayerRequest packet = (NetworkClasses.NewPlayerRequest) object;
+			playerChar player = new playerChar(packet.x,packet.y);
+			player.c = connection;
+			player.Char = packet.player;
+			players.put(connection.getID(), player);
 
 			for(playerChar p : players.values()){
 				if(p.c.getID() == connection.getID()){
@@ -96,25 +97,17 @@ public class mainServerListener extends Listener  {
 					PacketAddPlayer addPacket2 = new PacketAddPlayer();
 					addPacket2.x = p.x;
 					addPacket2.y = p.y;
+					addPacket2.Char = p.Char;
 					addPacket2.id = p.c.getID();
 					connection.sendTCP(addPacket2);
 				}
 			}
 			PacketAddPlayer addPacket2 = new PacketAddPlayer();
-			addPacket2.x = 200;
-			addPacket2.y = 200;
+			addPacket2.x = packet.x;
+			addPacket2.y = packet.y;
+			addPacket2.Char = packet.player;
 			addPacket2.id = connection.getID();
 			mainServer.server.sendToAllExceptTCP(connection.getID(),addPacket2);
-
 		}
 	}
-	
-
-			
 }
-			
-			
-
-
-	
-

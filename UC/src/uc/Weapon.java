@@ -49,7 +49,8 @@ public class Weapon extends Entity{
 		super(x,y);
 		
 		// Start off weapon as being primary
-		
+		rn = new Random();
+
 		switch(type){
 		case 0:
 			primary = ResourceManager.getImage(UCGame.PISTOL_RSC);
@@ -136,7 +137,7 @@ public class Weapon extends Entity{
 	
 	public void fire(Char dude){
 		
-		switch(UCGame.character*3 + select){
+		switch(dude.playingCharacter*3 + select){
 		case 0:
 			Bullet bullet;
 			

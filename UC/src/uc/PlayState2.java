@@ -229,6 +229,15 @@ public class PlayState2 extends BasicGameState {
 			packet.select=dude.weapon.select;
 		}
 		
+		for(Char Player : UCGame.players.values()){
+			if(Player.readytofire){
+				Player.fire();
+				Player.readytofire = false;
+			}
+			
+
+		}
+		
 		packet.id = uc.id;
 		packet.mousey = input.getMouseY();
 		packet.mousex = input.getMouseX();
@@ -268,7 +277,10 @@ public class PlayState2 extends BasicGameState {
 		
 		NetworkClasses.NewPlayerRequest packetX = new NetworkClasses.NewPlayerRequest();
 		packetX.id = uc.id;
-		uc.client.sendUDP(packetX);
+		packetX.player = uc.character;
+		packetX.x = map.getImg().getWidth()/2;
+		packetX.y = map.getImg().getHeight()/2;
+		uc.client.sendTCP(packetX);
 		
 		uc.set = true;
 

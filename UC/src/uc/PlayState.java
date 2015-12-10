@@ -127,6 +127,7 @@ public class PlayState extends BasicGameState {
 			dude.jump();
 			dude.setJump(true);
 			dude.setState(3);
+			dude.justjumped = true;
 			ResourceManager.getSound(uc.PLAYER_JUMPSOUND_RSC).play();
 
 		}
@@ -160,7 +161,13 @@ public class PlayState extends BasicGameState {
 			dude.fire();
 			System.out.println("hey mouse button is down");
 		}*/
-		
+		for(Char Player : UCGame.players.values()){
+			if(Player.readytofire){
+				Player.fire();
+				Player.readytofire = false;
+				Player.fired = true;
+			}
+		}
 		
 		NetworkClasses.UpdateBullet packetB = new NetworkClasses.UpdateBullet();
 		packetB.bulletx = new ArrayList<Float>();
@@ -285,6 +292,10 @@ public class PlayState extends BasicGameState {
 			packet.x1 = Player.weapon.getX();
 			packet.y1 = Player.weapon.getY();
 			packet.jumped = Player.isJumped();
+			if(Player.justjumped){
+				packet.justjumped =true;
+				Player.justjumped = false;
+			}
 			packet.state = Player.state;
 			packet.run = Player.direction;
 	
@@ -297,7 +308,13 @@ public class PlayState extends BasicGameState {
 //				packet.hit =false;
 //				packet.hitisStopped = true;
 //			}
-			
+			if(Player.fired){
+				packet.fired = true;
+				Player.fired = false;
+			}
+			else{
+				packet.fired = false;
+			}
 			packet.weapon = Player.weapon.select;
 			packet.rotate = Player.weapon.angle;
 			packet.id = Player.id;
@@ -357,6 +374,9 @@ public class PlayState extends BasicGameState {
 		
 		NetworkClasses.NewPlayerRequest packetX = new NetworkClasses.NewPlayerRequest();
 		packetX.id = uc.id;
+		packetX.player = uc.character;
+		packetX.x = map.getImg().getWidth()/2;
+		packetX.y = map.getImg().getHeight()/2;
 		uc.client.sendUDP(packetX);
 		
 		uc.set = true;

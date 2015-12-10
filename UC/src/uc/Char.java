@@ -17,7 +17,10 @@ public class Char extends Entity{
 
 	public int id;
 	public boolean set;
-
+	
+	public boolean readytofire = false;
+	public boolean fired = false;
+	public boolean justjumped = false;
 	private int health;
 	private float speed;
 	private float jump = 1.0f;

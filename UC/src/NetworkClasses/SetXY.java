@@ -16,4 +16,7 @@ public class SetXY {
 	
 	public  boolean hit, hitisStopped;
 
+	public boolean fired;
+
+	public boolean justjumped;
 }
