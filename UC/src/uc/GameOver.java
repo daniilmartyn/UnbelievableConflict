@@ -10,13 +10,12 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class GameOver extends BasicGameState {
 
-	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		
 	}
 
-	@Override
+	
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
 		
@@ -27,7 +26,7 @@ public class GameOver extends BasicGameState {
 		
 	}
 
-	@Override
+	
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
 		

@@ -14,6 +14,7 @@ public class Grenade extends Entity{
 private boolean active;
 	
 	private Vector velocity;
+	public int id;
 	private Image grenade;
 	
 	public Grenade(final float x, final float y, Vector v) {

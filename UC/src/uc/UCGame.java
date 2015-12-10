@@ -1,21 +1,56 @@
 package uc;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import jig.Entity;
 import jig.ResourceManager;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
+
+import NetworkClasses.LoginRequest;
+import NetworkClasses.LoginResponse;
+import NetworkClasses.Message;
+
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.minlog.Log;
 
 public class UCGame extends StateBasedGame{
 	
 	public static final int MENUSTATE = 0;
 	public static final int PLAYSTATE = 1;
-	public static final int GAMEOVER = 2;
+	public static final int PLAYSTATE2 = 2;
+	public static final int GAMEOVER = 3;
 
+	// snd string stuff here
+	public static final String GAME_STARTSOUND_RSC = "uc/sound/start.ogg";
+	public static final String GAME_MUSICSOUND_RSC = "uc/sound/boss.ogg";
+	public static final String PLAYER_PISTOLSOUND_RSC = "uc/sound/pistol1.wav";
+	public static final String PLAYER_RIFLESOUND_RSC = "uc/sound/rifle.wav";
+	public static final String PLAYER_SHOTGUNSOUND_RSC = "uc/sound/shotgun.wav";
+	public static final String PLAYER_BOMBSOUND_RSC = "uc/sound/boom.wav";
+	public static final String PLAYER_MINELAYSOUND_RSC = "uc/sound/beep.ogg";
+	public static final String PLAYER_JUMPSOUND_RSC = "uc/sound/jump.wav";
+
+	public static final String PLAYER_HEAVYMELEESOUND_RSC = "uc/sound/heavy melee sound.wav";
+	public static final String PLAYER_MEDIUMMELEESOUND_RSC = "uc/sound/medium melee sound.wav";
+	public static final String PLAYER_LIGHTMELEESOUND_RSC = "uc/sound/light melee sound.wav";
+
+//	public static final String PLAYER_LASERSOUND_RSC = "BounceShootBounce/soundResource/LaserShot.wav";
+//	public static final String PLAYER_NOLASERSOUND_RSC = "BounceShootBounce/soundResource/noLaserSound.wav";
+//	public static final String ENEMY_SNIPERSOUND_RSC = "BounceShootBounce/soundResource/sniperShot.wav";
+//	public static final String ENEMY_LASERSOUND_RSC = "BounceShootBounce/soundResource/enemyLaser.wav";
+//	public static final String ENEMY_BOMBSOUND_RSC = "BounceShootBounce/soundResource/bomb.wav";
+//	public static final String ENEMY_DEADSOUND_RSC = "BounceShootBounce/soundResource/enemyDead.wav";
+	
 	// img string stuff here
 	
 	public static final String MAINMENU_RSC = "uc/resource/main.png";
@@ -71,22 +106,94 @@ public class UCGame extends StateBasedGame{
 	public final int ScreenWidth;
 	public final int ScreenHeight;
 	
-	public static int character = 1; // 0 for light, 1 for medium, 2 for heavy
+	public static int character = 2; // 0 for light, 1 for medium, 2 for heavy
 	public static boolean sound = true;
+	
+	
+	public static boolean set;
+	
+	public static boolean isServer;
+	
+	private int tcpPort;
+	private int udpPort;
+	private int timeout;	
+	public static AppGameContainer app;
+	public static Input inputHandler;
+	
+	public static Client client;
+	public Kryo kryo;
+	public static int id;
+	
+	public static Map<Integer,Char> players = new HashMap<Integer,Char>(); 
+	public final static List<Bullet> bullets = new ArrayList<Bullet>();
+	public final static List<Mine> mines = new ArrayList<Mine>();
+	public final static List<Bomb> bombs = new ArrayList<Bomb>();
+	public final static List<Grenade> grenades = new ArrayList<Grenade>();
 
-	public UCGame(String name, int width, int height) {
+
+	public UCGame(String name, int width, int height,int tcpPort, int udpPort, int timeout) {
 		super(name);
 		ScreenWidth = width;
 		ScreenHeight = height;
 		
+		this.tcpPort = tcpPort;
+		this.udpPort = udpPort;
+		this.timeout = timeout;
+		
 		Entity.setCoarseGrainedCollisionBoundary(Entity.CIRCLE);
 
 	}
+public void connect(String ip){
+		
+		try {
+			Log.info("connecting..");
+			client.start();
+			client.connect(timeout, ip, tcpPort, udpPort);
+			client.addListener(new playerClientListener());
+					
+			LoginRequest req = new LoginRequest();
+			req.setUserName("raLa");
+			req.setUserPassword("test");
+			client.sendTCP(req);
+			
+			
+			Log.info("Connected.");
+		
+			
+		} catch (IOException e) {
+			Log.info("Eingabe falsch / Server offline");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void disconnect(){
+		Log.info("disconnecting..");
+		client.stop();
+	}
+	
+	public void registerKryoClasses(){
+		kryo.register(LoginRequest.class);
+		kryo.register(LoginResponse.class);
+		kryo.register(Message.class);
+		kryo.register(playerChar.class);
+		kryo.register(org.newdawn.slick.geom.Rectangle.class);
+		kryo.register(float[].class);
+		kryo.register(NetworkClasses.PacketAddPlayer.class);
+		kryo.register(NetworkClasses.PacketRemovePlayer.class);
+		kryo.register(NetworkClasses.CollideRequest.class);
+		kryo.register(NetworkClasses.NewPlayerRequest.class);
+		kryo.register(NetworkClasses.SetXY.class);
+		kryo.register(NetworkClasses.UpdateChar.class);
+		kryo.register(NetworkClasses.UpdateBullet.class);
+		kryo.register(ArrayList.class);
 
-	@Override
+	}
+	
 	public void initStatesList(GameContainer container) throws SlickException {
 		addState(new MenuState());
-		addState(new PlayState());	
+		addState(new PlayState());
+		addState(new PlayState2());		
 		addState(new GameOver());
 		
 		
@@ -141,15 +248,28 @@ public class UCGame extends StateBasedGame{
 		ResourceManager.loadImage(BOMB_RSC);
 		ResourceManager.loadImage(GRENADE_RSC);
 
-		
+		ResourceManager.loadSound(GAME_STARTSOUND_RSC);
+		ResourceManager.loadSound(GAME_MUSICSOUND_RSC);
+		ResourceManager.loadSound(PLAYER_PISTOLSOUND_RSC);
+		ResourceManager.loadSound(PLAYER_RIFLESOUND_RSC);
+		ResourceManager.loadSound(PLAYER_SHOTGUNSOUND_RSC);
+		ResourceManager.loadSound(PLAYER_BOMBSOUND_RSC);
+		ResourceManager.loadSound(PLAYER_MINELAYSOUND_RSC);
+		ResourceManager.loadSound(PLAYER_JUMPSOUND_RSC);
+
+		ResourceManager.loadSound(PLAYER_MEDIUMMELEESOUND_RSC);
+		ResourceManager.loadSound(PLAYER_HEAVYMELEESOUND_RSC);
+		ResourceManager.loadSound(PLAYER_LIGHTMELEESOUND_RSC);
+
 		//archie = new Archie(ScreenWidth/2, ScreenHeight/4);
 		//shield = new Shield(archie.getCoarseGrainedMaxX() + 10, archie.getY());
 	}
 	
 	public static void main(String[] args) {
-		AppGameContainer app;
 		try {
-			app = new AppGameContainer(new UCGame("Oh, the conflict!", 1024, 576));
+			UCGame pClient = new UCGame("Oh, the conflict!", 1024, 576,55555, 55556, 5000);	
+			
+			app = new AppGameContainer(pClient);
 			app.setDisplayMode(1024, 576, false);
 			app.setVSync(true);
 			app.start();

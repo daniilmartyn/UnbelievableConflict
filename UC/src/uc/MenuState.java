@@ -16,6 +16,8 @@ import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.esotericsoftware.kryonet.Client;
+
 public class MenuState extends BasicGameState {
 
 	private int menu; // which menu screen.    0 for main menu
@@ -38,7 +40,7 @@ public class MenuState extends BasicGameState {
 	
 	
 	
-	@Override
+	
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		menu = 0;
@@ -67,7 +69,7 @@ public class MenuState extends BasicGameState {
 		arrow = ResourceManager.getImage(UCGame.ARROW_RSC);
 	}
 
-	@Override
+	
 	public void render(GameContainer container, StateBasedGame game, Graphics g)
 			throws SlickException {
 		
@@ -161,13 +163,15 @@ public class MenuState extends BasicGameState {
 		
 	}
 
-	@Override
+	
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
 		
 		Input input = container.getInput();
 		int mouseX = input.getMouseX();
 		int mouseY = input.getMouseY();
+		UCGame uc = (UCGame) game;
+
 		
 		switch(menu){
 		case 0:	// main menu
@@ -224,6 +228,14 @@ public class MenuState extends BasicGameState {
 					System.out.println("The player's name is: " + name.getText());
 					System.out.println("The IP/Hostname is: " + address.getText());
 					// This is where the client launching code will be called and all that jazz....
+					
+					uc.enterState(UCGame.PLAYSTATE2);
+										
+					uc.client = new Client();
+					uc.kryo = uc.client.getKryo();
+					uc.registerKryoClasses();
+					uc.connect("127.0.0.1");
+
 				}
 			}
 			
@@ -242,7 +254,6 @@ public class MenuState extends BasicGameState {
 					UCGame.character = 2;
 				}
 			}
-			
 						
 			break;
 		case 2: // Host game menu
@@ -261,8 +272,17 @@ public class MenuState extends BasicGameState {
 					System.out.println("Begin/Host the Game!");
 					System.out.println("The player's name is: " + name.getText());
 					// This is where the server launching code will be called and all that jazz....
+					uc.enterState(UCGame.PLAYSTATE);
+
+					uc.isServer =true;
+					
+					uc.client = new Client();
+					uc.kryo = uc.client.getKryo();
+					uc.registerKryoClasses();
+					uc.connect("127.0.0.1");
 				}
 			}
+			
 			
 			if((mouseX > 830 && mouseX < 860) && (mouseY < 265 && mouseY > 200)){
 				if(input.isMousePressed(0)){
@@ -279,7 +299,6 @@ public class MenuState extends BasicGameState {
 					UCGame.character = 2;
 				}
 			}
-			
 		/*
 		 * now comes the part of lots of mouse checks to toggle the arrow.....
 		 */
@@ -382,6 +401,15 @@ public class MenuState extends BasicGameState {
 			break;
 		}
 		
+	}
+	
+	public void enter(GameContainer container, StateBasedGame game)
+			throws SlickException {
+		UCGame uc = (UCGame) game;
+		container.setSoundOn(UCGame.sound);
+
+		ResourceManager.getSound(uc.GAME_STARTSOUND_RSC).play();
+				
 	}
 
 	@Override

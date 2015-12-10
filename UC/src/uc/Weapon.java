@@ -20,28 +20,28 @@ public class Weapon extends Entity{
 	private Image primary;
 	private Image secondary;
 	private Image melee;
-	private Image weaponRight;
-	private Image weaponLeft;
-	private Image weapon;
-	private int select; // 0 for primary, 1 for secondary, 2 for melee
+	public Image weaponRight;
+	public Image weaponLeft;
+	public Image weapon;
+	public int select; // 0 for primary, 1 for secondary, 2 for melee
 	
-	private Animation hit;
+	public Animation hit;
 	
-	private Vector offsetStand; // for offsetting weapon entity from char
+	public Vector offsetStand; // for offsetting weapon entity from char
 	private Vector offsetCrouch; // for offsetting weapon entity from char when crouched
-	private Vector wepOffSetRight;	// for offsetting the weapon image
-	private Vector wepOffSetLeft; // for offsetthing the weapon image
+	public Vector wepOffSetRight;	// for offsetting the weapon image
+	public Vector wepOffSetLeft; // for offsetthing the weapon image
 	
-	private Vector mouse;
+	public Vector mouse;
 	private Vector wep;
-	private float angle = 0;
-	private int direction = 0;
+	public float angle = 0;
+	public int direction = 0;
 	private int prevDirection = direction;
 	
-	private ArrayList<Mine> mines;
-	private ArrayList<Bullet> bullets;
-	private ArrayList<Bomb> bombs;
-	private ArrayList<Grenade> grenades;
+//	private ArrayList<Mine> mines;
+//	private ArrayList<Bullet> bullets;
+//	private ArrayList<Bomb> bombs;
+//	private ArrayList<Grenade> grenades;
 	
 	private Random rn;
 	
@@ -67,8 +67,8 @@ public class Weapon extends Entity{
 			
 			addImage(weapon, wepOffSetRight);
 			addShape(new ConvexPolygon(50.0f, 10.0f), Color.transparent, Color.green);
-			mines = new ArrayList<Mine>(5);
-			bullets = new ArrayList<Bullet>(5);
+//			mines = new ArrayList<Mine>(5);
+//			bullets = new ArrayList<Bullet>(5);
 			break;
 		case 1:
 			primary = ResourceManager.getImage(UCGame.SHOTGUN_RSC);
@@ -87,8 +87,8 @@ public class Weapon extends Entity{
 			addImage(weapon, wepOffSetRight);
 			addShape(new ConvexPolygon(50.0f, 10.0f), Color.transparent, Color.green);
 			
-			bullets = new ArrayList<Bullet>(5);
-			grenades = new ArrayList<Grenade>(5);
+//			bullets = new ArrayList<Bullet>(5);
+//			grenades = new ArrayList<Grenade>(5);
 			
 			rn = new Random();
 			break;
@@ -109,8 +109,8 @@ public class Weapon extends Entity{
 			addImage(weapon, wepOffSetRight);
 			addShape(new ConvexPolygon(50.0f, 10.0f), Color.transparent, Color.green);
 			
-			bombs = new ArrayList<Bomb>(5);
-			bullets = new ArrayList<Bullet>(5);
+	//		bombs = new ArrayList<Bomb>(5);
+	//		bullets = new ArrayList<Bullet>(5);
 			
 			rn = new Random();
 			break;
@@ -118,21 +118,21 @@ public class Weapon extends Entity{
 		
 	}
 
-	public ArrayList<Mine> getMines(){
-		return mines;
-	}
-	
-	public ArrayList<Bomb> getBombs(){
-		return bombs;
-	}
-	
-	public ArrayList<Bullet> getBullets(){
-		return bullets;
-	}
-	
-	public ArrayList<Grenade> getGrenades(){
-		return grenades;
-	}
+//	public ArrayList<Mine> getMines(){
+//		return mines;
+//	}
+//	
+//	public ArrayList<Bomb> getBombs(){
+//		return bombs;
+//	}
+//	
+//	public ArrayList<Bullet> getBullets(){
+//		return bullets;
+//	}
+//	
+//	public ArrayList<Grenade> getGrenades(){
+//		return grenades;
+//	}
 	
 	public void fire(Char dude){
 		
@@ -148,9 +148,15 @@ public class Weapon extends Entity{
 				bullet = new Bullet(getX() + bulletOffSet.getX(), getY() + bulletOffSet.getY(), Vector.getUnit(angle).scale(.5f));
 			}
 			bullet.setRotation(angle);
-			bullets.add(bullet);
-			
-			System.out.println("array of bullets: " + bullets);
+					
+			bullet.rotation = angle;
+			bullet.setRotation(angle);
+			bullet.id = dude.id;
+
+			UCGame.bullets.add(bullet);
+			ResourceManager.getSound(UCGame.PLAYER_PISTOLSOUND_RSC).play();
+
+			//System.out.println("array of bullets: " + UCGame.bullets);
 			
 			break;
 		case 1:
@@ -171,10 +177,13 @@ public class Weapon extends Entity{
 			hit.setLooping(false);
 			
 			Vector mineOffSet = Vector.getUnit(angle).scale(15);
+			Mine mine = new Mine(getX() + mineOffSet.getX(), getY() + mineOffSet.getY(), Vector.getUnit(angle).add(dude.getVel()));
+			mine.id = dude.id;
+			UCGame.mines.add(mine);
 			
-			mines.add(new Mine(getX() + mineOffSet.getX(), getY() + mineOffSet.getY(), Vector.getUnit(angle).add(dude.getVel())));
-			
-			System.out.println("array of mines: " + mines);
+			ResourceManager.getSound(UCGame.PLAYER_MINELAYSOUND_RSC).play();
+
+	//		System.out.println("array of mines: " + UCGame.mines);
 
 			break;
 		case 2:
@@ -191,7 +200,8 @@ public class Weapon extends Entity{
 				hit = new Animation(ResourceManager.getSpriteSheet(UCGame.PIPE_HIT_RSC, 99, 80),0,1,6,1,true,50,true);
 				addAnimation(hit, new Vector(-45f, -23.0f));
 			}
-			
+			ResourceManager.getSound(UCGame.PLAYER_LIGHTMELEESOUND_RSC).play();
+
 			hit.setLooping(false);
 			break;
 			
@@ -212,10 +222,20 @@ public class Weapon extends Entity{
 					bullet = new Bullet(getX() + bulletOffSet.getX(), getY() + bulletOffSet.getY(), Vector.getUnit(angle+rnAngle).scale(.5f));
 				}
 
+//				bullet.setRotation(angle+rnAngle);
+//				bullet.id = dude.id;
+//
+//				UCGame.bullets.add(bullet);
+				
+				bullet.rotation = angle+rnAngle;
 				bullet.setRotation(angle+rnAngle);
-				bullets.add(bullet);
+				bullet.id = dude.id;
+				UCGame.bullets.add(bullet);
 			}
-			System.out.println("array of bullets: " + bullets);
+			
+			ResourceManager.getSound(UCGame.PLAYER_SHOTGUNSOUND_RSC).play();
+
+			//System.out.println("array of bullets: " + UCGame.bullets);
 			break;
 		case 4: 
 			
@@ -232,10 +252,12 @@ public class Weapon extends Entity{
 			}
 			
 			grenade.setRotation(angle);
-			grenades.add(grenade);
+			grenade.id = dude.id;
+			UCGame.grenades.add(grenade);
 			
-			
-			System.out.println("array of grenades: " + grenades);
+			ResourceManager.getSound(UCGame.PLAYER_BOMBSOUND_RSC).play();
+
+	//		System.out.println("array of grenades: " + UCGame.grenades);
 			break;
 		case 5:
 			if(hit != null)
@@ -250,8 +272,11 @@ public class Weapon extends Entity{
 				hit = new Animation(ResourceManager.getSpriteSheet(UCGame.SWORDCHOP_RSC, 149, 134),0,1,11,1,true,30,true);
 				addAnimation(hit, new Vector(-38f, -12.0f));
 			}
-			
+			ResourceManager.getSound(UCGame.PLAYER_MEDIUMMELEESOUND_RSC).play();
+
 			hit.setLooping(false);
+			//removeAnimation(hit);
+			//removeImage(hit);
 			break;
 		case 6:
 			
@@ -281,20 +306,31 @@ public class Weapon extends Entity{
 				bullet = new Bullet(getX() + bulletOffSet.getX(), getY() + bulletOffSet.getY(), Vector.getUnit(angle+rnAngle).scale(.5f));
 			}
 			
+//			bullet.setRotation(angle+rnAngle);
+//			UCGame.bullets.add(bullet);
+			
+			bullet.rotation = angle+rnAngle;
 			bullet.setRotation(angle+rnAngle);
-			bullets.add(bullet);
+			bullet.id = dude.id;
+			UCGame.bullets.add(bullet);
 			
-			System.out.println("array of bullets: " + bullets);
 			
+		//	System.out.println("array of bullets: " + UCGame.bullets);
+			ResourceManager.getSound(UCGame.PLAYER_RIFLESOUND_RSC).play();
+
 			break;
 			
 		case 7:
 						
 			Vector bombOffSet = Vector.getUnit(angle).scale(50);
 			
-			bombs.add(new Bomb(getX() + bombOffSet.getX(), getY() + bombOffSet.getY(), Vector.getUnit(angle).add(dude.getVel()).scale(1.3f)));
+			Bomb bomb = new Bomb(getX() + bombOffSet.getX(), getY() + bombOffSet.getY(), Vector.getUnit(angle).add(dude.getVel()).scale(1.3f));
+			bomb.id = dude.id;
+			UCGame.bombs.add(bomb);
 			
-			System.out.println("array of bombs: " + bombs);
+			System.out.println("array of bombs: " + UCGame.bombs);
+			ResourceManager.getSound(UCGame.PLAYER_BOMBSOUND_RSC).play();
+
 			break;
 		case 8:
 			if(hit != null)
@@ -309,7 +345,8 @@ public class Weapon extends Entity{
 				hit = new Animation(ResourceManager.getSpriteSheet(UCGame.HAMMERHIT_RSC, 126, 201),0,1,5,1,true,60,true);
 				addAnimation(hit, new Vector(-63f, 0f));
 			}
-			
+			ResourceManager.getSound(UCGame.PLAYER_HEAVYMELEESOUND_RSC).play();
+
 			hit.setLooping(false);
 			break;
 		}
@@ -492,12 +529,14 @@ public class Weapon extends Entity{
 			setPosition(getPosition().add(offsetStand));
 		
 		
+		if(dude.id == 1){
 		mouse = new Vector(input.getMouseX(), input.getMouseY()); // get mouse location
+		}
 		
 		if(dude.getState() == 2)
-			wep = new Vector(dude.getX() - camX, dude.getY() - camY + offsetCrouch.getY()); 		  // get weapon pivot point
+			wep = new Vector(dude.getX() - dude.camX, dude.getY() - dude.camY + offsetCrouch.getY()); 		  // get weapon pivot point
 		else
-			wep = new Vector(dude.getX() - camX, dude.getY() - camY + offsetStand.getY());
+			wep = new Vector(dude.getX() - dude.camX, dude.getY() - dude.camY + offsetStand.getY());
 		
 		angle = (float) wep.angleTo(mouse);						  // find angle of weapon aim
 				
@@ -549,43 +588,43 @@ public class Weapon extends Entity{
 			setRotation(angle + 180);
 		}
 		
-		for(Iterator<Bullet> b = bullets.iterator(); b.hasNext();){
-			Bullet bullet = b.next();
-			if(!bullet.isActive())
-				b.remove();
-			else
-				bullet.update(delta);
-		}
+//		for(Iterator<Bullet> b = bullets.iterator(); b.hasNext();){
+//			Bullet bullet = b.next();
+//			if(!bullet.isActive())
+//				b.remove();
+//			else
+//				bullet.update(delta);
+//		}
 		
-		if(UCGame.character == 0){
-			for(Iterator<Mine> m = mines.iterator(); m.hasNext();){
-				Mine mine = m.next();
-				if(!mine.isActive())
-					m.remove();
-				else
-					mine.update(delta);
-			}
-		}
-		
-		if(UCGame.character == 1){
-			for(Iterator<Grenade> gre = grenades.iterator(); gre.hasNext();){
-				Grenade grenade = gre.next();
-				if(!grenade.isActive())
-					gre.remove();
-				else
-					grenade.update(delta);
-			}
-		}
-		
-		if(UCGame.character == 2){
-			for(Iterator<Bomb> b = bombs.iterator(); b.hasNext();){
-				Bomb bomb = b.next();
-				if(!bomb.isActive())
-					b.remove();
-				else
-					bomb.update(delta);
-			}
-		}
+//		if(UCGame.character == 0){
+//			for(Iterator<Mine> m = mines.iterator(); m.hasNext();){
+//				Mine mine = m.next();
+//				if(!mine.isActive())
+//					m.remove();
+//				else
+//					mine.update(delta);
+//			}
+//		}
+//		
+//		if(UCGame.character == 1){
+//			for(Iterator<Grenade> gre = grenades.iterator(); gre.hasNext();){
+//				Grenade grenade = gre.next();
+//				if(!grenade.isActive())
+//					gre.remove();
+//				else
+//					grenade.update(delta);
+//			}
+//		}
+//		
+//		if(UCGame.character == 2){
+//			for(Iterator<Bomb> b = bombs.iterator(); b.hasNext();){
+//				Bomb bomb = b.next();
+//				if(!bomb.isActive())
+//					b.remove();
+//				else
+//					bomb.update(delta);
+//			}
+//		}
 	}
 	
 }

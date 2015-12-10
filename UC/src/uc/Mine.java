@@ -14,6 +14,7 @@ public class Mine extends Entity{
 	private boolean active;
 	
 	private Vector velocity;
+	public int id;
 	private Image mine;
 	
 	public Mine(final float x, final float y, final Vector v) {

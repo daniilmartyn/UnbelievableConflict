@@ -15,16 +15,17 @@ import jig.Vector;
 
 public class Char extends Entity{
 
-	//public int id;
-	
+	public int id;
+	public boolean set;
+
 	private int health;
 	private float speed;
 	private float jump = 1.0f;
 	private boolean isJumped = true;
-	private int state; // 0 for stand, 1 for run, 2 for crouch, 3 for jump
+	public int state; // 0 for stand, 1 for run, 2 for crouch, 3 for jump
 	private int prevState;
 	
-	private int direction = 0;  // 0 for facing right, 1 for facing left
+	public int direction = 0;  // 0 for facing right, 1 for facing left
 	private int prevDirection = direction;
 	private Vector velocity;
 	private Image current;
@@ -40,10 +41,16 @@ public class Char extends Entity{
 	private ConvexPolygon standingBox;
 	private ConvexPolygon crouchBox;
 	
-	private Weapon weapon;
+	public Weapon weapon;
+
+	public int playingCharacter;
 	
+	public int camX;
+	public int camY;
+
 	public Char(final float x, final float y, int character) {
 		super(x,y);
+		set = false;
 
 		switch(character){
 		case 0:
@@ -124,6 +131,7 @@ public class Char extends Entity{
 			weapon = new Weapon(x, y, character);
 			break;
 		}
+		playingCharacter = character;
 	}
 
 	public void changeDir(int d){ // used to change direction of char in relation to mouse location
@@ -179,7 +187,7 @@ public class Char extends Entity{
 		weapon.fire(this);
 	}
 	
-	private void changeImg(){
+	public void changeImg(){
 		
 		//System.out.println("state is: " + state);
 		
@@ -252,29 +260,30 @@ public class Char extends Entity{
 	public void renderWep(Graphics g){ //************* will need to create probaly a speperate method for rendering projectiles//
 		
 		if(weapon != null){
+			//Weapon wep = weapon;
 			weapon.render(g);
 			
-			if(UCGame.character == 0){
-				for(Mine m: weapon.getMines()){
-					m.render(g);
-				}
-			}
+//			if(UCGame.character == 0){
+//				for(Mine m: weapon.getMines()){
+//					m.render(g);
+//				}
+//			}
+//			
+//			if(UCGame.character == 1){
+//				for(Grenade gre: weapon.getGrenades()){
+//					gre.render(g);
+//				}
+//			}
 			
-			if(UCGame.character == 1){
-				for(Grenade gre: weapon.getGrenades()){
-					gre.render(g);
-				}
-			}
+//			if(UCGame.character == 2){
+//				for(Bomb b: weapon.getBombs()){
+//					b.render(g);
+//				}
+//			}
 			
-			if(UCGame.character == 2){
-				for(Bomb b: weapon.getBombs()){
-					b.render(g);
-				}
-			}
-			
-			for(Bullet b: weapon.getBullets()){
-				b.render(g);
-			}
+//			for(Bullet b: weapon.getBullets()){
+//				b.render(g);
+//			}
 		}		
 	}
 	
@@ -285,9 +294,9 @@ public class Char extends Entity{
 		
 		Collision collide = null;
 		while((collide = collides(PlayState.map)) != null){
-			System.out.println("collision test: " + collide.getMinPenetration());
-			System.out.println("this shape: " + collide.getThisShape());
-			System.out.println("other shape: " + collide.getOtherShape());
+//			System.out.println("collision test: " + collide.getMinPenetration());
+//			System.out.println("this shape: " + collide.getThisShape());
+//			System.out.println("other shape: " + collide.getOtherShape());
 			
 			translate(collide.getMinPenetration());
 			velocity = new Vector(velocity.getX(), 0.0f);
