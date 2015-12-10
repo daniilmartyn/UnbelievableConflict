@@ -17,6 +17,7 @@ public class Bullet extends Entity{
 	private Image bullet;
 	public int id;
 	public Float rotation;
+	private int damage = 10;
 	
 	public Bullet(final float x, final float y, final Vector v) {
 		super(x,y);
@@ -27,6 +28,10 @@ public class Bullet extends Entity{
 		active = true;
 	}
 
+	public int getDamage(){
+		return damage;
+	}
+	
 	public void update(int delta){
 		translate(velocity.scale(delta));
 		if(getX() < 0 || getX() > PlayState.map.getImg().getWidth()  //////////////////change this when map creating is updated

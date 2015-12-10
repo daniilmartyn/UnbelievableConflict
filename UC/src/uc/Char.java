@@ -10,7 +10,6 @@ import jig.Collision;
 import jig.ConvexPolygon;
 import jig.Entity;
 import jig.ResourceManager;
-import jig.Shape;
 import jig.Vector;
 
 public class Char extends Entity{
@@ -66,7 +65,7 @@ public class Char extends Entity{
 			runLeft = new Animation(ResourceManager.getSpriteSheet(UCGame.RUN_LIGHT_RSC, 118, 131),
 					0,1,7,1,true, 100, true);
 			
-			health = 100;
+			setHealth(100);
 			velocity = new Vector(0.0f, 0.0f);
 			current = standRight;
 			addImage(current);
@@ -91,7 +90,7 @@ public class Char extends Entity{
 			runLeft = new Animation(ResourceManager.getSpriteSheet(UCGame.RUN_MED_RSC, 92, 151),
 					0,1,7,1,true, 100, true);
 			
-			health = 150;
+			setHealth(150);
 			velocity = new Vector(0.0f, 0.0f);
 			current = standRight;
 			addImage(current);
@@ -116,12 +115,12 @@ public class Char extends Entity{
 			runLeft = new Animation(ResourceManager.getSpriteSheet(UCGame.RUN_HEV_RSC, 175, 131),
 					0,1,3,1,true, 100, true);
 			
-			health = 200;
+			setHealth(200);
 			velocity = new Vector(0.0f, 0.0f);
 			current = standRight;
 			addImage(current);
 			float[] stand = {87.5f,65 ,0, -65, -87.5f, 65};
-			float[] crouch = {88f,65 ,0, -45, -88f, 65};
+			float[] crouch = {88f, 50 ,0, -45, -88f, 50};
 			standingBox = new ConvexPolygon(stand);
 			crouchBox = new ConvexPolygon(crouch);
 			addShape(standingBox, Color.transparent, Color.red);
@@ -134,6 +133,14 @@ public class Char extends Entity{
 		playingCharacter = character;
 	}
 
+	public int getHealth() {
+		return health;
+	}
+
+	public void setHealth(int health) {
+		this.health = health;
+	}
+	
 	public void changeDir(int d){ // used to change direction of char in relation to mouse location
 		direction = d;
 	}
@@ -242,14 +249,14 @@ public class Char extends Entity{
 				removeImage(current);
 				removeAnimation(running);
 				current = crouchRight;
-				addImage(current, new Vector(0.0f, 3.0f));
+				addImage(current);
 				prevDirection = direction;
 				prevState = state;
 			}else if( direction == 1 && (prevDirection != direction || prevState != state)){
 				removeImage(current);
 				removeAnimation(running);
 				current = crouchLeft;
-				addImage(current, new Vector(0.0f, 3.0f));
+				addImage(current);
 				prevDirection = direction;
 				prevState = state;
 			}	
@@ -260,30 +267,7 @@ public class Char extends Entity{
 	public void renderWep(Graphics g){ //************* will need to create probaly a speperate method for rendering projectiles//
 		
 		if(weapon != null){
-			//Weapon wep = weapon;
 			weapon.render(g);
-			
-//			if(UCGame.character == 0){
-//				for(Mine m: weapon.getMines()){
-//					m.render(g);
-//				}
-//			}
-//			
-//			if(UCGame.character == 1){
-//				for(Grenade gre: weapon.getGrenades()){
-//					gre.render(g);
-//				}
-//			}
-			
-//			if(UCGame.character == 2){
-//				for(Bomb b: weapon.getBombs()){
-//					b.render(g);
-//				}
-//			}
-			
-//			for(Bullet b: weapon.getBullets()){
-//				b.render(g);
-//			}
 		}		
 	}
 	
@@ -292,20 +276,31 @@ public class Char extends Entity{
 		changeImg();
 		translate(velocity.scale(delta));
 		
-		Collision collide = null;
-		while((collide = collides(PlayState.map)) != null){
-//			System.out.println("collision test: " + collide.getMinPenetration());
-//			System.out.println("this shape: " + collide.getThisShape());
-//			System.out.println("other shape: " + collide.getOtherShape());
+		Collision initial = collides(PlayState.map);
+		Collision resolve = null;
+		
+		
+		if(initial != null){
+			while((resolve = collides(PlayState.map)) != null){ // collision resolution
+				
+				if(resolve.getMinPenetration().getX() != 0){		// need to move dude horizontally
+					if(velocity.getX() != 0)
+						setPosition(getX()+ (velocity.getX()* -delta),getY());
+					else
+						setPosition(getX()+ resolve.getMinPenetration().getX()*10,getY());
+				}
+				if(Math.abs(resolve.getMinPenetration().getY()) != 0)		// need to move dude vertically
+					setPosition(getX(),getY()+(velocity.getY()* -delta));
+			}
 			
-			translate(collide.getMinPenetration());
+			
 			velocity = new Vector(velocity.getX(), 0.0f);
 			isJumped = false;
 		}
+			
 		
 		weapon.setPosition(getX(), getY());
 		weapon.update(container, camX, camY, this, delta);
 		velocity = velocity.add(new Vector(0.0f, (PlayState.gravity*delta)));
-	}
-	
+	}	
 }

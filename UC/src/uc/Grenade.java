@@ -11,11 +11,13 @@ import jig.Vector;
 
 public class Grenade extends Entity{
 
-private boolean active;
+	public int id;
+	
+	private boolean active;
 	
 	private Vector velocity;
-	public int id;
 	private Image grenade;
+	private int damage = 35;
 	
 	public Grenade(final float x, final float y, Vector v) {
 		super(x,y);
@@ -25,6 +27,10 @@ private boolean active;
 		addShape(new ConvexPolygon(grenade.getHeight()), Color.transparent, Color.green);
 		active = true;	}
 
+	public int getDamage(){
+		return damage;
+	}
+	
 	public void update(int delta){
 		translate(velocity.scale(delta));
 		velocity = velocity.add(new Vector(0.0f, (PlayState.gravity*delta)));
@@ -34,14 +40,14 @@ private boolean active;
 			active = false;
 		
 		
-		Collision collide = null;
-		while((collide = collides(PlayState.map)) != null){
-			System.out.println("collision test: " + collide.getMinPenetration());
-			System.out.println("this shape: " + collide.getThisShape());
-			System.out.println("other shape: " + collide.getOtherShape());
+		Collision collide = collides(PlayState.map);
+		if(collide!= null){
+			//System.out.println("collision test: " + collide.getMinPenetration());
+			//System.out.println("this shape: " + collide.getThisShape());
+			//System.out.println("other shape: " + collide.getOtherShape());
 			
-			translate(collide.getMinPenetration());
-			velocity = new Vector(velocity.getX(), 0.0f);
+			active = false;
+			System.out.println("Grenade EXPLODES!");
 		}
 		
 	}

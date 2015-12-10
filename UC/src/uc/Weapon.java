@@ -328,7 +328,7 @@ public class Weapon extends Entity{
 			bomb.id = dude.id;
 			UCGame.bombs.add(bomb);
 			
-			System.out.println("array of bombs: " + UCGame.bombs);
+			//System.out.println("array of bombs: " + UCGame.bombs);
 			ResourceManager.getSound(UCGame.PLAYER_BOMBSOUND_RSC).play();
 
 			break;
