@@ -119,6 +119,7 @@ public class PlayState extends BasicGameState {
 			dude.setState(3);
 			dude.justjumped = true;
 			ResourceManager.getSound(UCGame.PLAYER_JUMPSOUND_RSC).play();
+
 		}
 				
 		if((input.isKeyDown(Input.KEY_A) || input.isKeyDown(Input.KEY_D))){
@@ -245,7 +246,8 @@ public class PlayState extends BasicGameState {
 //		packetB.grenadex.size()>0 ||
 //		packetB.minex.size()>0 ||
 //		packetB.bombx.size()>0){
-			UCGame.client.sendTCP(packetB);
+
+			UCGame.client.sendUDP(packetB);
 //		}
 		
 	
@@ -346,6 +348,7 @@ public class PlayState extends BasicGameState {
 		packetX.player = UCGame.character;
 		packetX.x = map.getImg().getWidth()/2;
 		packetX.y = map.getImg().getHeight()/2;
+
 		packetX.id = UCGame.id;
 		UCGame.client.sendTCP(packetX);
 		

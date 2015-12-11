@@ -17,7 +17,8 @@ public class Bullet extends Entity{
 	private Image bullet;
 	public int id;
 	public Float rotation;
-	private int damage = 10;
+
+	private int damage;
 	
 	public Bullet(final float x, final float y, final Vector v) {
 		super(x,y);
@@ -26,6 +27,17 @@ public class Bullet extends Entity{
 		addImage(bullet);
 		addShape(new ConvexPolygon(bullet.getHeight()), Color.transparent, Color.green);
 		active = true;
+		switch(UCGame.character){
+		case 0:
+			damage = 10;
+			break;
+		case 1:
+			damage = 10;
+			break;
+		case 2:
+			damage = 15;
+			break;
+		}
 	}
 
 	public int getDamage(){
@@ -39,11 +51,11 @@ public class Bullet extends Entity{
 			active = false;
 		
 		
-		Collision collide = null;
-		if((collide = collides(PlayState.map)) != null){
-			System.out.println("collision test: " + collide.getMinPenetration());
-			System.out.println("this shape: " + collide.getThisShape());
-			System.out.println("other shape: " + collide.getOtherShape());
+		Collision collide = collides(PlayState.map);
+		if(collide!= null){
+			//System.out.println("collision test: " + collide.getMinPenetration());
+			//System.out.println("this shape: " + collide.getThisShape());
+			//System.out.println("other shape: " + collide.getOtherShape());
 			
 			active = false;
 		}
@@ -51,6 +63,10 @@ public class Bullet extends Entity{
 	
 	public boolean isActive(){
 		return active;
+	}
+	
+	public void notActive(){
+		active = false;
 	}
 	
 }

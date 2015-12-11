@@ -143,7 +143,7 @@ public class Char extends Entity{
 	public void setHealth(int health) {
 		this.health = health;
 	}
-
+	
 	public void changeDir(int d){ // used to change direction of char in relation to mouse location
 		direction = d;
 	}
@@ -298,6 +298,7 @@ public class Char extends Entity{
 				if(resolve.getMinPenetration().getY() != 0)		// need to move dude vertically
 					setY(getY()+resolve.getMinPenetration().getY()*10);
 				
+
 			}
 			
 			if(initial.getMinPenetration().getY() == -1.0f){
@@ -308,11 +309,23 @@ public class Char extends Entity{
 				velocity = new Vector(0.0f, velocity.getY());
 			else
 				velocity = new Vector(velocity.getX(), 0.0f);
+
 		}
+		
+		/////////////////////////////////////collision detection with bullets
+		
+		for(Bullet b : UCGame.bullets){
+			if(collides(b) != null){
+				health -= b.getDamage();
+				if(health < 0)
+					System.out.println("THIS PERSON IS DEAD!");
+			}
+		}
+		
+		
 		
 		weapon.setPosition(getX(), getY());
 		weapon.update(container, camX, camY, this, delta);
 		velocity = velocity.add(new Vector(0.0f, (PlayState.gravity*delta)));
-	}
-	
+	}	
 }

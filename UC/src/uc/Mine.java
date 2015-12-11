@@ -49,6 +49,7 @@ public class Mine extends Entity{
 				if(resolve.getMinPenetration().getX() != 0)		// need to move mine horizontally
 					setPosition(getX()+ resolve.getMinPenetration().getX(),getY());
 				if(resolve.getMinPenetration().getY() != 0)		// need to move mine vertically
+
 					setPosition(getX(),getY()+(velocity.getY()* -delta));
 			}
 			
