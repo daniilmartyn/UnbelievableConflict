@@ -46,9 +46,9 @@ public class Mine extends Entity{
 		if(initial != null){
 			
 			while((resolve = collides(PlayState.map)) != null){ // collision resolution
-				if(resolve.getMinPenetration().getX() != 0)		// need to move bomb horizontally
+				if(resolve.getMinPenetration().getX() != 0)		// need to move mine horizontally
 					setPosition(getX()+ resolve.getMinPenetration().getX(),getY());
-				if(resolve.getMinPenetration().getY() != 0)		// need to move bomb vertically
+				if(resolve.getMinPenetration().getY() != 0)		// need to move mine vertically
 					setPosition(getX(),getY()+(velocity.getY()* -delta));
 			}
 			

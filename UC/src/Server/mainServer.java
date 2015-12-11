@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
-//import javax.swing.JOptionPane;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-//import javax.swing.text.Position;
+import javax.swing.text.Position;
 
 import uc.playerChar;
 //import Client.BounceGameClient;
@@ -18,7 +18,7 @@ import NetworkClasses.LoginResponse;
 import NetworkClasses.Message;
 
 import com.esotericsoftware.kryo.Kryo;
-//import com.esotericsoftware.kryo.Serializer;
+import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryonet.*;
 import com.esotericsoftware.minlog.Log;
 

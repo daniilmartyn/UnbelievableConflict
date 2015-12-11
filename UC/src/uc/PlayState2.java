@@ -252,13 +252,13 @@ public class PlayState2 extends BasicGameState {
 		
 		switch(UCGame.character){
 		case 0:
-			dude = new Char(map.getImg().getWidth()/2, map.getImg().getHeight()/2, 0);
+			dude = new Char(map.getImg().getWidth()/2, map.getImg().getHeight()/3*4, 0);
 			break;
 		case 1: 
-			dude = new Char(map.getImg().getWidth()/2, map.getImg().getHeight()/2, 1);
+			dude = new Char(map.getImg().getWidth()/2, map.getImg().getHeight()/3*4, 1);
 			break;
 		case 2:
-			dude = new Char(map.getImg().getWidth()/2, map.getImg().getHeight()/2, 2);
+			dude = new Char(map.getImg().getWidth()/2, map.getImg().getHeight()/3*4, 2);
 			break;
 		}
 		

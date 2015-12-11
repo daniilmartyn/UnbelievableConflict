@@ -135,7 +135,7 @@ public class Char extends Entity{
 		}
 		playingCharacter = character;
 	}
-
+	
 	public int getHealth() {
 		return health;
 	}
@@ -143,7 +143,7 @@ public class Char extends Entity{
 	public void setHealth(int health) {
 		this.health = health;
 	}
-	
+
 	public void changeDir(int d){ // used to change direction of char in relation to mouse location
 		direction = d;
 	}
@@ -286,24 +286,33 @@ public class Char extends Entity{
 		if(initial != null){
 			while((resolve = collides(PlayState.map)) != null){ // collision resolution
 				
+				System.out.println("id: " + id + " resolving collision: " + resolve.getMinPenetration());
+				
 				if(resolve.getMinPenetration().getX() != 0){		// need to move dude horizontally
 					if(velocity.getX() != 0)
 						setPosition(getX()+ (velocity.getX()* -delta),getY());
 					else
 						setPosition(getX()+ resolve.getMinPenetration().getX()*10,getY());
 				}
-				if(Math.abs(resolve.getMinPenetration().getY()) != 0)		// need to move dude vertically
-					setPosition(getX(),getY()+(velocity.getY()* -delta));
+				
+				if(resolve.getMinPenetration().getY() != 0)		// need to move dude vertically
+					setY(getY()+resolve.getMinPenetration().getY()*10);
+				
 			}
 			
-			
-			velocity = new Vector(velocity.getX(), 0.0f);
-			isJumped = false;
+			if(initial.getMinPenetration().getY() == -1.0f){
+				setY(initial.getOtherShape().getLocation().getY() - initial.getOtherShape().getHeight()/2 - initial.getThisShape().getHeight()/2);
+				isJumped = false;
+			}
+			if(initial.getMinPenetration().getX() == 1.0f || initial.getMinPenetration().getX() == -1.0)
+				velocity = new Vector(0.0f, velocity.getY());
+			else
+				velocity = new Vector(velocity.getX(), 0.0f);
 		}
-			
 		
 		weapon.setPosition(getX(), getY());
 		weapon.update(container, camX, camY, this, delta);
 		velocity = velocity.add(new Vector(0.0f, (PlayState.gravity*delta)));
-	}	
+	}
+	
 }
