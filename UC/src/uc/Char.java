@@ -280,7 +280,7 @@ public class Char extends Entity{
 		Collision resolve = null;
 		
 		
-		if(initial != null){
+		if(initial != null){///////////collision detection stuff with the platforms
 			while((resolve = collides(PlayState.map)) != null){ // collision resolution
 				
 				if(resolve.getMinPenetration().getX() != 0){		// need to move dude horizontally
@@ -297,7 +297,18 @@ public class Char extends Entity{
 			velocity = new Vector(velocity.getX(), 0.0f);
 			isJumped = false;
 		}
-			
+		
+		/////////////////////////////////////collision detection with bullets
+		
+		for(Bullet b : UCGame.bullets){
+			if(collides(b) != null){
+				health -= b.getDamage();
+				if(health < 0)
+					System.out.println("THIS PERSON IS DEAD!");
+			}
+		}
+		
+		
 		
 		weapon.setPosition(getX(), getY());
 		weapon.update(container, camX, camY, this, delta);
