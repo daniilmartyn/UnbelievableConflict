@@ -56,4 +56,8 @@ public class Grenade extends Entity{
 		return active;
 	}
 	
+	public void notActive(){
+		active = false;
+	}
+	
 }

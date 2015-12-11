@@ -82,4 +82,7 @@ public class Bomb extends Entity{
 		return active;
 	}
 	
+	public void notActive(){
+		active = false;
+	}
 }

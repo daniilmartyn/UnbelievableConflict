@@ -21,6 +21,8 @@ public class Char extends Entity{
 	public boolean fired = false;
 	public boolean justjumped = false;
 	private int health;
+	private int kills = 0;
+	private int deaths = 0;
 	private float speed;
 	private float jump = 1.0f;
 	private boolean isJumped = true;
@@ -68,7 +70,7 @@ public class Char extends Entity{
 			runLeft = new Animation(ResourceManager.getSpriteSheet(UCGame.RUN_LIGHT_RSC, 118, 131),
 					0,1,7,1,true, 100, true);
 			
-			setHealth(100);
+			health = 100;
 			velocity = new Vector(0.0f, 0.0f);
 			current = standRight;
 			addImage(current);
@@ -93,7 +95,7 @@ public class Char extends Entity{
 			runLeft = new Animation(ResourceManager.getSpriteSheet(UCGame.RUN_MED_RSC, 92, 151),
 					0,1,7,1,true, 100, true);
 			
-			setHealth(150);
+			health = 150;
 			velocity = new Vector(0.0f, 0.0f);
 			current = standRight;
 			addImage(current);
@@ -118,7 +120,7 @@ public class Char extends Entity{
 			runLeft = new Animation(ResourceManager.getSpriteSheet(UCGame.RUN_HEV_RSC, 175, 131),
 					0,1,3,1,true, 100, true);
 			
-			setHealth(200);
+			health = 200;
 			velocity = new Vector(0.0f, 0.0f);
 			current = standRight;
 			addImage(current);
@@ -136,12 +138,20 @@ public class Char extends Entity{
 		playingCharacter = character;
 	}
 	
-	public int getHealth() {
-		return health;
+	public int getKills(){
+		return kills;
 	}
-
-	public void setHealth(int health) {
-		this.health = health;
+	
+	public void setKills(int k){
+		kills = k;
+	}
+	
+	public int getDeaths(){
+		return deaths;
+	}
+	
+	public void setDeaths(int d){
+		deaths = d;
 	}
 	
 	public void changeDir(int d){ // used to change direction of char in relation to mouse location
@@ -154,7 +164,7 @@ public class Char extends Entity{
 		else if( d == 1)
 			velocity = new Vector(-speed, velocity.getY());
 		else
-			velocity = new Vector(0.0f, velocity.getY());
+			velocity = new Vector(velocity.getX(), velocity.getY());
 	}
 	
 	public boolean isJumped(){
@@ -286,7 +296,7 @@ public class Char extends Entity{
 		if(initial != null){
 			while((resolve = collides(PlayState.map)) != null){ // collision resolution
 				
-				System.out.println("id: " + id + " resolving collision: " + resolve.getMinPenetration());
+				//System.out.println("id: " + id + " resolving collision: " + resolve.getMinPenetration());
 				
 				if(resolve.getMinPenetration().getX() != 0){		// need to move dude horizontally
 					if(velocity.getX() != 0)
@@ -304,6 +314,7 @@ public class Char extends Entity{
 			if(initial.getMinPenetration().getY() == -1.0f){
 				setY(initial.getOtherShape().getLocation().getY() - initial.getOtherShape().getHeight()/2 - initial.getThisShape().getHeight()/2);
 				isJumped = false;
+				velocity = velocity.setX(0.0f);
 			}
 			if(initial.getMinPenetration().getX() == 1.0f || initial.getMinPenetration().getX() == -1.0)
 				velocity = new Vector(0.0f, velocity.getY());
@@ -317,11 +328,74 @@ public class Char extends Entity{
 		for(Bullet b : UCGame.bullets){
 			if(collides(b) != null){
 				health -= b.getDamage();
-				if(health < 0)
+				b.notActive();
+				if(health <= 0){
 					System.out.println("THIS PERSON IS DEAD!");
+					setDeaths(getDeaths() + 1);
+					UCGame.players.get(b.id).setKills(getKills() + 1);
+				}
 			}
 		}
-		
+		/////////////////////////////////////collision detection with mines
+		for(Mine m : UCGame.mines){
+			if(collides(m) != null){
+				if((weapon.hit != null && !weapon.hit.isStopped()) && id == m.id) // this if statement unique to light class
+					continue;
+				health -= m.getDamage();
+				m.notActive();
+				if(health <= 0){
+					setDeaths(getDeaths() + 1);
+					if(m.id != id){
+						UCGame.players.get(m.id).setKills(getKills() + 1);
+						System.out.println("PERSON " + id+ " IS KILLED BY " + m.id);
+					}else{
+						System.out.println("PERSON " + id + " KILLED THEMSELVES");
+					}
+				}else{
+					velocity = Vector.getUnit(m.getPosition().angleTo(getPosition())).scale(1.5f);
+					isJumped = true;
+				}
+			}
+		}
+		/////////////////////////////////////collision detection with grenades
+		for(Grenade g : UCGame.grenades){
+			if(collides(g) != null){
+				health -= g.getDamage();
+				g.notActive();
+				if(health <= 0){
+					setDeaths(getDeaths() + 1);
+					if(g.id != id){
+						UCGame.players.get(g.id).setKills(getKills() + 1);
+						System.out.println("PERSON " + id+ " IS KILLED BY " + g.id);
+					}else{
+						System.out.println("PERSON " + id + " KILLED THEMSELVES");
+					}
+				}else{
+					velocity = Vector.getUnit(g.getPosition().angleTo(getPosition())).scale(1.5f);
+					isJumped = true;
+				}
+			}
+		}
+		/////////////////////////////////////collision detection with bombs
+		for(Bomb b : UCGame.bombs){
+			if(collides(b) != null){
+				health -= b.getDamage();
+				b.notActive();
+				if(health <= 0){
+					setDeaths(getDeaths() + 1);
+					if(b.id != id){
+						UCGame.players.get(b.id).setKills(getKills() + 1);
+						System.out.println("PERSON " + id+ " IS KILLED BY " + b.id);
+					}else{
+						System.out.println("PERSON " + id + " KILLED THEMSELVES");
+					}
+				}else{
+					velocity = Vector.getUnit(b.getPosition().angleTo(getPosition())).scale(1.5f);
+					isJumped = true;
+				}
+			}
+		}
+
 		
 		
 		weapon.setPosition(getX(), getY());

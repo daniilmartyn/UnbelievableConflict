@@ -62,4 +62,8 @@ public class Mine extends Entity{
 	public boolean isActive(){
 		return active;
 	}
+	
+	public void notActive(){
+		active = false;
+	}
 }

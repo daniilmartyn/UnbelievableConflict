@@ -213,7 +213,7 @@ public class Weapon extends Entity{
 			for(int i = 0; i<3; i++){
 				bulletOffSet = Vector.getUnit(angle).scale(87);
 
-				float rnAngle = (rn.nextFloat() - 0.5f)*10;
+				float rnAngle = (rn.nextFloat() - 0.5f)*20;
 
 				if(direction == 0){
 					bulletOffSet = bulletOffSet.add(Vector.getUnit(angle).getPerpendicular().scale(-10));
