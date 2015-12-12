@@ -80,6 +80,14 @@ public class playerClientListener extends Listener {
 				if(packet.fired){
 					UCGame.players.get(packet.id).readytofire = true;
 				}
+				if(packet.hurt){
+					if(UCGame.players.get(packet.id).playingCharacter == 2){
+						ResourceManager.getSound(UCGame.PLAYER_HEAVYHURTSOUND_RSC).play();
+					}
+					else{
+						ResourceManager.getSound(UCGame.PLAYER_LIGHTHURTSOUND_RSC).play();
+					}
+				}
 				if(UCGame.players.get(packet.id).weapon.select != (packet.weapon)){
 					UCGame.players.get(packet.id).weapon.changeWeapon(packet.weapon);
 					UCGame.players.get(packet.id).weapon.select =(packet.weapon);

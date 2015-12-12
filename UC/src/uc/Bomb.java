@@ -42,6 +42,7 @@ public class Bomb extends Entity{
 		
 		if(boom < 0){
 			active = false;
+			ResourceManager.getSound(UCGame.PLAYER_KABOOMSOUND_RSC).play();
 			System.out.println("BOOM!");
 		}
 		else

@@ -45,6 +45,12 @@ public class UCGame extends StateBasedGame{
 	public static final String PLAYER_HEAVYMELEESOUND_RSC = "uc/sound/heavy melee sound.wav";
 	public static final String PLAYER_MEDIUMMELEESOUND_RSC = "uc/sound/medium melee sound.wav";
 	public static final String PLAYER_LIGHTMELEESOUND_RSC = "uc/sound/light melee sound.wav";
+	
+	public static final String PLAYER_LIGHTHURTSOUND_RSC = "uc/sound/pain3.wav";
+	public static final String PLAYER_HEAVYHURTSOUND_RSC = "uc/sound/cyborg_hurt2.wav";
+	public static final String PLAYER_MEDIUMHURTSOUND_RSC = "uc/sound/pain3.wav";
+
+	public static final String PLAYER_KABOOMSOUND_RSC = "uc/sound/kaboom.wav";
 
 //	public static final String PLAYER_LASERSOUND_RSC = "BounceShootBounce/soundResource/LaserShot.wav";
 //	public static final String PLAYER_NOLASERSOUND_RSC = "BounceShootBounce/soundResource/noLaserSound.wav";
@@ -289,6 +295,12 @@ public class UCGame extends StateBasedGame{
 		ResourceManager.loadSound(PLAYER_MEDIUMMELEESOUND_RSC);
 		ResourceManager.loadSound(PLAYER_HEAVYMELEESOUND_RSC);
 		ResourceManager.loadSound(PLAYER_LIGHTMELEESOUND_RSC);
+		
+		ResourceManager.loadSound(PLAYER_LIGHTHURTSOUND_RSC);
+		ResourceManager.loadSound(PLAYER_HEAVYHURTSOUND_RSC);
+		ResourceManager.loadSound(PLAYER_MEDIUMHURTSOUND_RSC);
+
+		ResourceManager.loadSound(PLAYER_KABOOMSOUND_RSC);
 
 	}
 	

@@ -314,6 +314,13 @@ public class PlayState extends BasicGameState {
 			else{
 				packet.fired = false;
 			}
+			if(Player.hurt){
+				packet.hurt = true;
+				Player.hurt = false;
+			}
+			else{
+				packet.hurt = false;
+			}
 			packet.weapon = Player.weapon.select;
 			packet.rotate = Player.weapon.angle;
 			packet.id = Player.id;

@@ -20,6 +20,7 @@ public class Char extends Entity{
 	public String name;
 	public boolean set;
 	
+	public boolean hurt = false;
 	public boolean readytofire = false;
 	public boolean fired = false;
 	public boolean justjumped = false;
@@ -390,6 +391,13 @@ public class Char extends Entity{
 			if(collides(b) != null){
 				health -= b.getDamage();
 				b.notActive();
+				if(playingCharacter == 2){
+					ResourceManager.getSound(UCGame.PLAYER_HEAVYHURTSOUND_RSC).play();
+				}
+				else{
+					ResourceManager.getSound(UCGame.PLAYER_LIGHTHURTSOUND_RSC).play();
+				}
+				hurt = true;
 				if(health <= 0){
 					System.out.println("PLAYER " + b.id +" KILLED " + id );
 					setDeaths(getDeaths() + 1);
@@ -405,6 +413,13 @@ public class Char extends Entity{
 					continue;
 				health -= m.getDamage();
 				m.notActive();
+				if(playingCharacter == 2){
+					ResourceManager.getSound(UCGame.PLAYER_HEAVYHURTSOUND_RSC).play();
+				}
+				else{
+					ResourceManager.getSound(UCGame.PLAYER_LIGHTHURTSOUND_RSC).play();
+				}
+				hurt = true;
 				if(health <= 0){
 					setDeaths(getDeaths() + 1);
 					if(m.id != id){
@@ -425,6 +440,13 @@ public class Char extends Entity{
 			if(collides(g) != null){
 				health -= g.getDamage();
 				g.notActive();
+				if(playingCharacter == 2){
+					ResourceManager.getSound(UCGame.PLAYER_HEAVYHURTSOUND_RSC).play();
+				}
+				else{
+					ResourceManager.getSound(UCGame.PLAYER_LIGHTHURTSOUND_RSC).play();
+				}
+				hurt = true;
 				if(health <= 0){
 					setDeaths(getDeaths() + 1);
 					if(g.id != id){
@@ -444,7 +466,15 @@ public class Char extends Entity{
 		for(Bomb b : UCGame.bombs){
 			if(collides(b) != null){
 				health -= b.getDamage();
+				ResourceManager.getSound(UCGame.PLAYER_KABOOMSOUND_RSC).play();
 				b.notActive();
+				if(playingCharacter == 2){
+					ResourceManager.getSound(UCGame.PLAYER_HEAVYHURTSOUND_RSC).play();
+				}
+				else{
+					ResourceManager.getSound(UCGame.PLAYER_LIGHTHURTSOUND_RSC).play();
+				}
+				hurt = true;
 				if(health <= 0){
 					setDeaths(getDeaths() + 1);
 					if(b.id != id){
@@ -471,6 +501,13 @@ public class Char extends Entity{
 //
 //				if (collides(dude.weapon) != null) {
 //					health -= dude.getDamage();
+//			if(playingCharacter == 2){
+//			ResourceManager.getSound(UCGame.PLAYER_HEAVYHURTSOUND_RSC).play();
+//		}
+//		else{
+//			ResourceManager.getSound(UCGame.PLAYER_LIGHTHURTSOUND_RSC).play();
+//		}
+//		hurt = true;
 //					dude.weapon.meleeHit();
 //					if (health <= 0) {
 //						setDeaths(getDeaths() + 1);

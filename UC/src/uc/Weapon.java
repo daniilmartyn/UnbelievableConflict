@@ -39,6 +39,9 @@ public class Weapon extends Entity{
 	public int direction = 0;
 	private int prevDirection = direction;
 	
+	private int coolDownTime;	// the coolDown time
+	private int coolDown;		// the counter
+	
 	private Shape lightWepBox = new ConvexPolygon(10.0f, 50.0f);
 	private Shape mediumWepBox = new ConvexPolygon(20.0f, 50.0f);
 	private Shape heavyWepBox = new ConvexPolygon(20.0f, 30.0f);
