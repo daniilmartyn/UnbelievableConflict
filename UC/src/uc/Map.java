@@ -36,7 +36,10 @@ public class Map extends Entity{
 		addShape(new ConvexPolygon(278f, 26f, new Vector(1487f, 413f)), new Vector(1487f, 413f), Color.transparent, Color.white);
 		addShape(new ConvexPolygon(190f, 42f, new Vector(1952f, 449f)), new Vector(1952f, 449f), Color.transparent, Color.white);	
 
-
+		
+		UCGame.items.add(new Item(1909f, 760f, 0));
+		UCGame.items.add(new Item(1682f, 883f, 1));
+		UCGame.items.add(new Item(1027f, 665f, 2));  
 	}
 
 	public Image getImg(){

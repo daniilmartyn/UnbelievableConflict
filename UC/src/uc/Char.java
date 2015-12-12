@@ -484,7 +484,8 @@ public class Char extends Entity{
 		//////////////////////////////////////////collision detection with items
 		
 		for(Item i : UCGame.items){
-			if(collides(i) != null){
+			if(collides(i) != null && i.isActive()){
+				System.out.println("collision with item");
 				i.respawn();
 				switch(i.getType()){
 				case 0:

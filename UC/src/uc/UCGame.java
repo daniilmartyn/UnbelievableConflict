@@ -118,7 +118,7 @@ public class UCGame extends StateBasedGame{
 	
 	
 	public static boolean set;
-	public static boolean canenter; 
+	public static boolean canenter = false; 
 	public static boolean isServer;
 	
 	private int tcpPort;
