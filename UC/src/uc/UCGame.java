@@ -126,7 +126,8 @@ public class UCGame extends StateBasedGame{
 	public Kryo kryo;
 	public static int id;
 	
-	public static Map<Integer,Char> players = new HashMap<Integer,Char>(); 
+	public static Map<Integer,Char> players = new HashMap<Integer,Char>();
+	public static boolean canenter; 
 	public final static List<Bullet> bullets = new ArrayList<Bullet>();
 	public final static List<Mine> mines = new ArrayList<Mine>();
 	public final static List<Bomb> bombs = new ArrayList<Bomb>();

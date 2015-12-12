@@ -40,7 +40,6 @@ public class MenuState extends BasicGameState {
 	
 	
 	
-	
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		menu = 0;
@@ -172,6 +171,10 @@ public class MenuState extends BasicGameState {
 		int mouseY = input.getMouseY();
 		UCGame uc = (UCGame) game;
 
+		if(uc.canenter){
+			uc.enterState(UCGame.PLAYSTATE2);
+
+		}
 		
 		switch(menu){
 		case 0:	// main menu
@@ -229,12 +232,12 @@ public class MenuState extends BasicGameState {
 					System.out.println("The IP/Hostname is: " + address.getText());
 					// This is where the client launching code will be called and all that jazz....
 					
-					uc.enterState(UCGame.PLAYSTATE2);
 										
 					UCGame.client = new Client();
 					uc.kryo = UCGame.client.getKryo();
 					uc.registerKryoClasses();
-					uc.connect("ecs225-15");
+					//uc.connect("ecs225-15");
+					uc.connect("127.0.0.1");
 
 				}
 			}

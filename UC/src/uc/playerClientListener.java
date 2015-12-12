@@ -24,7 +24,7 @@ public class playerClientListener extends Listener {
 			if(response.responseText.equalsIgnoreCase("ok")){
 				Log.info("Login ok");
 				UCGame.id = response.id;
-
+				UCGame.canenter = true;
 
 			}
 			else{

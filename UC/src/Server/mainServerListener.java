@@ -17,7 +17,6 @@ import NetworkClasses.LoginResponse;
 import NetworkClasses.NewPlayerRequest;
 import NetworkClasses.NewPlayerRequest;
 import NetworkClasses.SetXY;
-
 import NetworkClasses.PacketAddPlayer;
 
 import com.esotericsoftware.kryonet.Connection;
@@ -28,8 +27,7 @@ public class mainServerListener extends Listener  {
 	
 	public static Map<Integer, playerChar> players = new HashMap<Integer, playerChar>();
 	
-	List<playerChar> laserList = new ArrayList<playerChar>();
-
+	public static int maxPlayer;
 	public void connected(Connection connection){
 
 		mainServer.jTextArea.append(connection.getID() + " (ID) joined the server (Player.enity)");
@@ -52,19 +50,37 @@ public class mainServerListener extends Listener  {
 			LoginRequest request = (LoginRequest) object;
 			LoginResponse response = new LoginResponse();
 			response.id=connection.getID();
-			if(request.getUserName().equalsIgnoreCase("raLa") && request.getUserPassword().equalsIgnoreCase("test")){
+//			if(request.getUserName().equalsIgnoreCase("raLa") && request.getUserPassword().equalsIgnoreCase("test")){
+//				response.setResponseText("ok");
+//				mainServer.jTextArea.append(connection.getRemoteAddressTCP() + " connected.");
+//				mainServer.jTextArea.append("\n");
+//				mainServer.jTextArea.append("\n");
+//				
+//			}
+//			else 
+			if(request.maxplayer == 0){
+				if(players.size() < maxPlayer){
+					response.setResponseText("ok");
+					mainServer.jTextArea.append(connection.getRemoteAddressTCP() + " connected.");
+					mainServer.jTextArea.append("\n");
+					mainServer.jTextArea.append("\n");
+				}
+				else{
+					response.setResponseText("no");
+					mainServer.jTextArea.append(connection.getRemoteAddressTCP() + " connected, but with invalid userdata");
+					mainServer.jTextArea.append("\n");
+					mainServer.jTextArea.append("\n");
+					
+				}
+			}
+			else{
+				
+				maxPlayer = request.maxplayer;
+				System.out.println(maxPlayer);
 				response.setResponseText("ok");
 				mainServer.jTextArea.append(connection.getRemoteAddressTCP() + " connected.");
 				mainServer.jTextArea.append("\n");
 				mainServer.jTextArea.append("\n");
-				
-			}
-			else{
-				response.setResponseText("no");
-				mainServer.jTextArea.append(connection.getRemoteAddressTCP() + " connected, but with invalid userdata");
-				mainServer.jTextArea.append("\n");
-				mainServer.jTextArea.append("\n");
-				
 			}
 			//System.out.println("sent back");
 
