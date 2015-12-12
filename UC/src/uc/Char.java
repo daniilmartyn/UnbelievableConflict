@@ -17,12 +17,18 @@ import jig.Vector;
 public class Char extends Entity{
 
 	public int id;
+	public String name;
 	public boolean set;
 	
 	public boolean readytofire = false;
 	public boolean fired = false;
 	public boolean justjumped = false;
+	private int fullHealth;
 	private int health;
+	private int fullPrimaryAmmo;
+	public int primaryAmmo;
+	private int fullSecondaryAmmo;
+	public int secondaryAmmo;
 	private int kills = 0;
 	private int deaths = 0;
 	private float speed;
@@ -78,7 +84,9 @@ public class Char extends Entity{
 			runLeft = new Animation(ResourceManager.getSpriteSheet(UCGame.RUN_LIGHT_RSC, 118, 131),
 					0,1,7,1,true, 100, true);
 			
-			health = 100;
+			health = fullHealth = 100;
+			primaryAmmo = fullPrimaryAmmo = 30;
+			secondaryAmmo = fullSecondaryAmmo = 15;
 			velocity = new Vector(0.0f, 0.0f);
 			current = standRight;
 			addImage(current);
@@ -104,7 +112,9 @@ public class Char extends Entity{
 			runLeft = new Animation(ResourceManager.getSpriteSheet(UCGame.RUN_MED_RSC, 92, 151),
 					0,1,7,1,true, 100, true);
 			
-			health = 150;
+			health = fullHealth = 150;
+			primaryAmmo = fullPrimaryAmmo = 24;
+			secondaryAmmo = fullSecondaryAmmo = 15;
 			velocity = new Vector(0.0f, 0.0f);
 			current = standRight;
 			addImage(current);
@@ -130,7 +140,9 @@ public class Char extends Entity{
 			runLeft = new Animation(ResourceManager.getSpriteSheet(UCGame.RUN_HEV_RSC, 175, 131),
 					0,1,3,1,true, 100, true);
 			
-			health = 200;
+			health = fullHealth = 200;
+			primaryAmmo = fullPrimaryAmmo = 50;
+			secondaryAmmo = fullSecondaryAmmo = 10;
 			velocity = new Vector(0.0f, 0.0f);
 			current = standRight;
 			addImage(current);
@@ -230,6 +242,8 @@ public class Char extends Entity{
 		switch(playingCharacter){ ////////////will need to reset ammo as well!!! :<( alsfjls;fj
 		case 0:
 			health = 100;
+			primaryAmmo = fullPrimaryAmmo;
+			secondaryAmmo = fullSecondaryAmmo;
 			setY(0.0f);
 			int xLoc = (int) (rn.nextInt((int)Map.map.getWidth() - 40 - (int)standingBox.getWidth()) + 20 + standingBox.getWidth()/2);
 			setX(xLoc);
@@ -237,12 +251,16 @@ public class Char extends Entity{
 			break;
 		case 1:
 			health = 150;
+			primaryAmmo = fullPrimaryAmmo;
+			secondaryAmmo = fullSecondaryAmmo;
 			setY(0.0f);
 			xLoc = (int) (rn.nextInt((int)Map.map.getWidth() - 40 - (int)standingBox.getWidth()) + 20 + standingBox.getWidth()/2);
 			setX(xLoc);
 			break;
 		case 2:
 			health = 200;
+			primaryAmmo = fullPrimaryAmmo;
+			secondaryAmmo = fullSecondaryAmmo;
 			setY(0.0f);
 			xLoc = (int) (rn.nextInt((int)Map.map.getWidth() - 40 - (int)standingBox.getWidth()) + 20 + standingBox.getWidth()/2);
 			setX(xLoc);
@@ -443,6 +461,7 @@ public class Char extends Entity{
 			}
 		}
 		
+		
 //		if (UCGame.players != null) {
 //			////////////////////////////////////////collision detection with other player's melee weapons
 //			for (int i = 1; i < UCGame.players.size() + 1; i++) {
@@ -461,6 +480,26 @@ public class Char extends Entity{
 //				}
 //			}
 //		}
+		
+		//////////////////////////////////////////collision detection with items
+		
+		for(Item i : UCGame.items){
+			if(collides(i) != null){
+				i.respawn();
+				switch(i.getType()){
+				case 0:
+					health = fullHealth;
+					break;
+				case 1:
+					primaryAmmo = fullPrimaryAmmo;
+					secondaryAmmo = fullSecondaryAmmo;
+					break;
+				case 2:
+					health = fullHealth*2;
+					break;
+				}
+			}
+		}
 		
 		weapon.setPosition(getX(), getY());
 		weapon.update(container, camX, camY, this, delta);

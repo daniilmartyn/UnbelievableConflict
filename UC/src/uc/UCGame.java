@@ -32,7 +32,7 @@ public class UCGame extends StateBasedGame{
 
 	public static int maxPlayer = 2; //////////////////////update later thorugh the main menu screesenzzsdf
 	
-	// snd string stuff here
+	// soundnd string stuff here
 	public static final String GAME_STARTSOUND_RSC = "uc/sound/start.ogg";
 	public static final String GAME_MUSICSOUND_RSC = "uc/sound/boss.ogg";
 	public static final String PLAYER_PISTOLSOUND_RSC = "uc/sound/pistol1.wav";
@@ -62,6 +62,7 @@ public class UCGame extends StateBasedGame{
 	public static final String JOIN_RSC = "uc/resource/join.png";
 	public static final String HOST_RSC = "uc/resource/host.png";
 	public static final String OVER_RSC = "uc/resource/over.png";
+	public static final String STATS_RSC = "uc/resource/stats.png";
 	public static final String ARROW_RSC = "uc/resource/arrow.png";
 
 	
@@ -103,6 +104,10 @@ public class UCGame extends StateBasedGame{
 	public static final String BULLET_RSC = "uc/resource/bullet.png";
 	public static final String BOMB_RSC = "uc/resource/bomb.png";
 	public static final String GRENADE_RSC = "uc/resource/grenade.png";
+	
+	public static final String HEALTH_RSC = "uc/resource/health.png";
+	public static final String AMMO_RSC = "uc/resource/ammo.png";
+	public static final String POWER_RSC = "uc/resource/overheal.png";
 
 	
 	public final int ScreenWidth;
@@ -113,7 +118,7 @@ public class UCGame extends StateBasedGame{
 	
 	
 	public static boolean set;
-	
+	public static boolean canenter; 
 	public static boolean isServer;
 	
 	private int tcpPort;
@@ -125,13 +130,14 @@ public class UCGame extends StateBasedGame{
 	public static Client client;
 	public Kryo kryo;
 	public static int id;
+	public static String dudeName;
 	
 	public static Map<Integer,Char> players = new HashMap<Integer,Char>();
-	public static boolean canenter; 
 	public final static List<Bullet> bullets = new ArrayList<Bullet>();
 	public final static List<Mine> mines = new ArrayList<Mine>();
 	public final static List<Bomb> bombs = new ArrayList<Bomb>();
 	public final static List<Grenade> grenades = new ArrayList<Grenade>();
+	public final static List<Item> items = new ArrayList<Item>(3);
 
 
 	public UCGame(String name, int width, int height,int tcpPort, int udpPort, int timeout) {
@@ -223,6 +229,7 @@ public class UCGame extends StateBasedGame{
 		ResourceManager.loadImage(JOIN_RSC);
 		ResourceManager.loadImage(HOST_RSC);
 		ResourceManager.loadImage(OVER_RSC);
+		ResourceManager.loadImage(STATS_RSC);
 		ResourceManager.loadImage(ARROW_RSC);
 
 
@@ -264,6 +271,11 @@ public class UCGame extends StateBasedGame{
 		ResourceManager.loadImage(BULLET_RSC);
 		ResourceManager.loadImage(BOMB_RSC);
 		ResourceManager.loadImage(GRENADE_RSC);
+		
+		ResourceManager.loadImage(HEALTH_RSC);
+		ResourceManager.loadImage(AMMO_RSC);
+		ResourceManager.loadImage(POWER_RSC);
+
 
 		ResourceManager.loadSound(GAME_STARTSOUND_RSC);
 		ResourceManager.loadSound(GAME_MUSICSOUND_RSC);

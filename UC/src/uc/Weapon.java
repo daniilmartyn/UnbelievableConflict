@@ -144,6 +144,10 @@ public class Weapon extends Entity{
 		
 		switch(dude.playingCharacter*3 + select){
 		case 0:
+			
+			if(dude.primaryAmmo <= 0)
+				break;
+			
 			Bullet bullet;
 			
 			Vector bulletOffSet = Vector.getUnit(angle).scale(50);
@@ -160,12 +164,16 @@ public class Weapon extends Entity{
 			bullet.id = dude.id;
 
 			UCGame.bullets.add(bullet);
-			ResourceManager.getSound(UCGame.PLAYER_PISTOLSOUND_RSC).play();
+			dude.primaryAmmo--;
 
+			ResourceManager.getSound(UCGame.PLAYER_PISTOLSOUND_RSC).play();
 			//System.out.println("array of bullets: " + UCGame.bullets);
 			
 			break;
 		case 1:
+			
+			if(dude.secondaryAmmo <= 0)
+				break;
 			
 			if(hit != null)
 				break;
@@ -186,6 +194,8 @@ public class Weapon extends Entity{
 			Mine mine = new Mine(getX() + mineOffSet.getX(), getY() + mineOffSet.getY(), Vector.getUnit(angle).add(dude.getVel()));
 			mine.id = dude.id;
 			UCGame.mines.add(mine);
+			dude.secondaryAmmo--;
+			
 			
 			ResourceManager.getSound(UCGame.PLAYER_MINELAYSOUND_RSC).play();
 
@@ -215,7 +225,9 @@ public class Weapon extends Entity{
 			
 			
 		case 3:
-							
+			
+			if(dude.primaryAmmo <= 0)
+				break;				
 			
 			for(int i = 0; i<3; i++){
 				bulletOffSet = Vector.getUnit(angle).scale(87);
@@ -241,11 +253,15 @@ public class Weapon extends Entity{
 				UCGame.bullets.add(bullet);
 			}
 			
+			dude.primaryAmmo--;
 			ResourceManager.getSound(UCGame.PLAYER_SHOTGUNSOUND_RSC).play();
 
 			//System.out.println("array of bullets: " + UCGame.bullets);
 			break;
 		case 4: 
+			
+			if(dude.secondaryAmmo <= 0)
+				break;
 			
 			Grenade grenade;
 			
@@ -262,6 +278,7 @@ public class Weapon extends Entity{
 			grenade.setRotation(angle);
 			grenade.id = dude.id;
 			UCGame.grenades.add(grenade);
+			dude.secondaryAmmo--;
 			
 			ResourceManager.getSound(UCGame.PLAYER_BOMBSOUND_RSC).play();
 
@@ -289,6 +306,9 @@ public class Weapon extends Entity{
 			//removeImage(hit);
 			break;
 		case 6:
+			
+			if(dude.primaryAmmo <= 0)
+				break;
 			
 			if(hit != null)
 				break;
@@ -323,7 +343,7 @@ public class Weapon extends Entity{
 			bullet.setRotation(angle+rnAngle);
 			bullet.id = dude.id;
 			UCGame.bullets.add(bullet);
-			
+			dude.primaryAmmo--;
 			
 		//	System.out.println("array of bullets: " + UCGame.bullets);
 			ResourceManager.getSound(UCGame.PLAYER_RIFLESOUND_RSC).play();
@@ -332,12 +352,16 @@ public class Weapon extends Entity{
 			
 		case 7:
 						
+			if(dude.secondaryAmmo <= 0)
+				break;
+			
 			Vector bombOffSet = Vector.getUnit(angle).scale(50);
 			
 			Bomb bomb = new Bomb(getX() + bombOffSet.getX(), getY() + bombOffSet.getY(), Vector.getUnit(angle).add(dude.getVel()).scale(1.3f));
 			bomb.id = dude.id;
 			UCGame.bombs.add(bomb);
 			
+			dude.secondaryAmmo--;
 			//System.out.println("array of bombs: " + UCGame.bombs);
 			ResourceManager.getSound(UCGame.PLAYER_BOMBSOUND_RSC).play();
 

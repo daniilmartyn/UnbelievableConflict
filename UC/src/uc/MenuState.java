@@ -232,7 +232,8 @@ public class MenuState extends BasicGameState {
 					System.out.println("The IP/Hostname is: " + address.getText());
 					// This is where the client launching code will be called and all that jazz....
 					
-										
+					UCGame.dudeName = name.getText();
+					
 					UCGame.client = new Client();
 					uc.kryo = UCGame.client.getKryo();
 					uc.registerKryoClasses();
@@ -275,6 +276,8 @@ public class MenuState extends BasicGameState {
 					System.out.println("Begin/Host the Game!");
 					System.out.println("The player's name is: " + name.getText());
 					// This is where the server launching code will be called and all that jazz....
+					UCGame.dudeName = name.getText();
+					
 					uc.enterState(UCGame.PLAYSTATE);
 
 					UCGame.isServer =true;

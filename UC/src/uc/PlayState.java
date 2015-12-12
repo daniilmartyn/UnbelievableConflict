@@ -28,6 +28,7 @@ public class PlayState extends BasicGameState {
 	int camX;
 	int camY;
 	
+	private boolean showStat;
 	
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
@@ -83,9 +84,20 @@ public class PlayState extends BasicGameState {
 			grenade.render(g);
 		}		
 		
+		for(Item item: UCGame.items){
+			item.render(g);
+		}
+		
 		g.setColor(Color.green);
 		g.drawString("Health: " + dude.getHealth(), 100 + camX, uc.getHeight()-50 + camY);
-		g.drawString("Ammo: ", 250 + camX, uc.getHeight()-50 + camY);
+		g.drawString("Primary Ammo: " + dude.primaryAmmo, 250 + camX, uc.getHeight()-50 + camY);
+		g.drawString("Secondary Ammo: " + dude.secondaryAmmo, 250 + camX, uc.getHeight()-25 + camY);
+
+		if(showStat){
+			g.drawImage(ResourceManager.getImage(UCGame.STATS_RSC), 0f + camX, 0f + camY);
+			
+			// then render out all of the stats for the players and stuff!
+		}
 	}
 
 	
@@ -109,6 +121,9 @@ public class PlayState extends BasicGameState {
 		
 		if(input.isKeyPressed(Input.KEY_ESCAPE))
 			uc.enterState(UCGame.MENUSTATE);
+		
+		if(input.isKeyPressed(Input.KEY_TAB))
+			showStat = !showStat;
 		
 		if(input.isKeyPressed(Input.KEY_1)){
 			dude.switchWep(0);
@@ -250,6 +265,9 @@ public class PlayState extends BasicGameState {
 		}
 		
 		
+		for(Item i : UCGame.items)
+			i.update(delta);
+		
 //		if(packetB.bulletx.size()>0 ||
 //		packetB.grenadex.size()>0 ||
 //		packetB.minex.size()>0 ||
@@ -317,6 +335,7 @@ public class PlayState extends BasicGameState {
 		ResourceManager.getSound(UCGame.GAME_MUSICSOUND_RSC).loop();
 
 		map = new Map(0,0);
+		showStat = false;
 		
 		switch(UCGame.character){
 		case 0:
