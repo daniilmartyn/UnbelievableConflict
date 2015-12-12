@@ -1,5 +1,7 @@
 package uc;
 
+import java.util.Random;
+
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -25,6 +27,7 @@ public class Char extends Entity{
 	private int deaths = 0;
 	private float speed;
 	private float jump = 1.0f;
+	private int meleeDamage;
 	private boolean isJumped = true;
 	public int state; // 0 for stand, 1 for run, 2 for crouch, 3 for jump
 	private int prevState;
@@ -51,15 +54,20 @@ public class Char extends Entity{
 	
 	public int camX;
 	public int camY;
+	
+	private Random rn;
 
 	public Char(final float x, final float y, int character) {
 		super(x,y);
 		set = false;
-
+		
+		rn = new Random();
+		
 		switch(character){
 		case 0:
 			speed = 0.5f;
 			jump = 1.0f;
+			meleeDamage = 10;
 			standRight = ResourceManager.getImage(UCGame.STAND_LIGHT_RSC);
 			standLeft = standRight.getFlippedCopy(true, false);
 			crouchRight = ResourceManager.getImage(UCGame.CROUCH_LIGHT_RSC);
@@ -85,6 +93,7 @@ public class Char extends Entity{
 		case 1:
 			speed = 0.3f;
 			jump = 1.0f;
+			meleeDamage = 15;
 			standRight = ResourceManager.getImage(UCGame.STAND_MED_RSC);
 			standLeft = standRight.getFlippedCopy(true, false);
 			crouchRight = ResourceManager.getImage(UCGame.CROUCH_MED_RSC);
@@ -110,6 +119,7 @@ public class Char extends Entity{
 		case 2:
 			speed = 0.1f;
 			jump = 1.0f;
+			meleeDamage = 20;
 			standRight = ResourceManager.getImage(UCGame.STAND_HEV_RSC);
 			standLeft = standRight.getFlippedCopy(true, false);
 			crouchRight = ResourceManager.getImage(UCGame.CROUCH_HEV_RSC);
@@ -138,6 +148,10 @@ public class Char extends Entity{
 		playingCharacter = character;
 	}
 	
+	public int getHealth(){
+		return health;
+	}
+	
 	public int getKills(){
 		return kills;
 	}
@@ -152,6 +166,10 @@ public class Char extends Entity{
 	
 	public void setDeaths(int d){
 		deaths = d;
+	}
+	
+	public int getDamage(){
+		return meleeDamage;
 	}
 	
 	public void changeDir(int d){ // used to change direction of char in relation to mouse location
@@ -196,7 +214,7 @@ public class Char extends Entity{
 	}
 	
 	public void jump(){
-		velocity = new Vector(velocity.getY(), -jump);
+		velocity = new Vector(velocity.getX(), -jump);
 	}
 	
 	public void switchWep(int i){
@@ -205,6 +223,31 @@ public class Char extends Entity{
 	
 	public void fire(){
 		weapon.fire(this);
+	}
+	
+	private void respawn(){
+		velocity = new Vector(0.0f, 0.0f);
+		switch(playingCharacter){ ////////////will need to reset ammo as well!!! :<( alsfjls;fj
+		case 0:
+			health = 100;
+			setY(0.0f);
+			int xLoc = (int) (rn.nextInt((int)Map.map.getWidth() - 40 - (int)standingBox.getWidth()) + 20 + standingBox.getWidth()/2);
+			setX(xLoc);
+			//System.out.println("respawning at: " + xLoc);
+			break;
+		case 1:
+			health = 150;
+			setY(0.0f);
+			xLoc = (int) (rn.nextInt((int)Map.map.getWidth() - 40 - (int)standingBox.getWidth()) + 20 + standingBox.getWidth()/2);
+			setX(xLoc);
+			break;
+		case 2:
+			health = 200;
+			setY(0.0f);
+			xLoc = (int) (rn.nextInt((int)Map.map.getWidth() - 40 - (int)standingBox.getWidth()) + 20 + standingBox.getWidth()/2);
+			setX(xLoc);
+			break;
+		}
 	}
 	
 	public void changeImg(){
@@ -330,9 +373,10 @@ public class Char extends Entity{
 				health -= b.getDamage();
 				b.notActive();
 				if(health <= 0){
-					System.out.println("THIS PERSON IS DEAD!");
+					System.out.println("PLAYER " + b.id +" KILLED " + id );
 					setDeaths(getDeaths() + 1);
 					UCGame.players.get(b.id).setKills(getKills() + 1);
+					respawn();
 				}
 			}
 		}
@@ -347,10 +391,11 @@ public class Char extends Entity{
 					setDeaths(getDeaths() + 1);
 					if(m.id != id){
 						UCGame.players.get(m.id).setKills(getKills() + 1);
-						System.out.println("PERSON " + id+ " IS KILLED BY " + m.id);
+						System.out.println("PERSON " + m.id+ " KILLED " + id);
 					}else{
 						System.out.println("PERSON " + id + " KILLED THEMSELVES");
 					}
+					respawn();
 				}else{
 					velocity = Vector.getUnit(m.getPosition().angleTo(getPosition())).scale(1.5f);
 					isJumped = true;
@@ -366,10 +411,11 @@ public class Char extends Entity{
 					setDeaths(getDeaths() + 1);
 					if(g.id != id){
 						UCGame.players.get(g.id).setKills(getKills() + 1);
-						System.out.println("PERSON " + id+ " IS KILLED BY " + g.id);
+						System.out.println("PERSON " + g.id+ " KILLED " + id);
 					}else{
 						System.out.println("PERSON " + id + " KILLED THEMSELVES");
 					}
+					respawn();
 				}else{
 					velocity = Vector.getUnit(g.getPosition().angleTo(getPosition())).scale(1.5f);
 					isJumped = true;
@@ -385,18 +431,36 @@ public class Char extends Entity{
 					setDeaths(getDeaths() + 1);
 					if(b.id != id){
 						UCGame.players.get(b.id).setKills(getKills() + 1);
-						System.out.println("PERSON " + id+ " IS KILLED BY " + b.id);
+						System.out.println("PERSON " + b.id+ " KILLED " + id);
 					}else{
 						System.out.println("PERSON " + id + " KILLED THEMSELVES");
 					}
+					respawn();
 				}else{
 					velocity = Vector.getUnit(b.getPosition().angleTo(getPosition())).scale(1.5f);
 					isJumped = true;
 				}
 			}
 		}
-
 		
+//		if (UCGame.players != null) {
+//			////////////////////////////////////////collision detection with other player's melee weapons
+//			for (int i = 1; i < UCGame.players.size() + 1; i++) {
+//				Char dude = UCGame.players.get(i);
+//				if (dude.id == id) // if comparing for collision again itself, skip over
+//					continue;
+//
+//				if (collides(dude.weapon) != null) {
+//					health -= dude.getDamage();
+//					dude.weapon.meleeHit();
+//					if (health <= 0) {
+//						setDeaths(getDeaths() + 1);
+//						UCGame.players.get(dude.id).setKills(getKills() + 1);
+//						System.out.println("PERSON " + dude.id + " KILLED " + id);
+//					}
+//				}
+//			}
+//		}
 		
 		weapon.setPosition(getX(), getY());
 		weapon.update(container, camX, camY, this, delta);

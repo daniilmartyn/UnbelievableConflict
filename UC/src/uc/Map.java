@@ -11,7 +11,7 @@ import jig.Vector;
 
 public class Map extends Entity{
 
-	private Image map;
+	public static Image map;
 	
 	public Map(final float x, final float y) {
 		super(x,y);
@@ -31,7 +31,7 @@ public class Map extends Entity{
 		addShape(new ConvexPolygon(95f, 35f, new Vector(170f, 640f)), new Vector(170f, 640f), Color.transparent, Color.white);
 		addShape(new ConvexPolygon(70f, 23f, new Vector(705f, 650f)), new Vector(705f, 650f), Color.transparent, Color.white);
 		addShape(new ConvexPolygon(320f, 40f, new Vector(1020f, 585f)), new Vector(1020f, 585f), Color.transparent, Color.white);
-		addShape(new ConvexPolygon(166f, 62f, new Vector(1679f, 937f)), new Vector(1679f, 937f), Color.transparent, Color.white);
+		addShape(new ConvexPolygon(166f, 55f, new Vector(1679f, 935f)), new Vector(1679f, 935f), Color.transparent, Color.white);
 		addShape(new ConvexPolygon(266f, 28f, new Vector(1909f, 791f)), new Vector(1909f, 791f), Color.transparent, Color.white);
 		addShape(new ConvexPolygon(278f, 26f, new Vector(1487f, 413f)), new Vector(1487f, 413f), Color.transparent, Color.white);
 		addShape(new ConvexPolygon(190f, 42f, new Vector(1952f, 449f)), new Vector(1952f, 449f), Color.transparent, Color.white);	

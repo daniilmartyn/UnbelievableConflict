@@ -30,6 +30,8 @@ public class UCGame extends StateBasedGame{
 	public static final int PLAYSTATE2 = 2;
 	public static final int GAMEOVER = 3;
 
+	public static int maxPlayer = 2; //////////////////////update later thorugh the main menu screesenzzsdf
+	
 	// snd string stuff here
 	public static final String GAME_STARTSOUND_RSC = "uc/sound/start.ogg";
 	public static final String GAME_MUSICSOUND_RSC = "uc/sound/boss.ogg";
@@ -107,7 +109,7 @@ public class UCGame extends StateBasedGame{
 	public final int ScreenHeight;
 	
 	public static int character = 2; // 0 for light, 1 for medium, 2 for heavy
-	public static boolean sound = false;
+	public static boolean sound = true;
 	
 	
 	public static boolean set;
@@ -143,7 +145,16 @@ public class UCGame extends StateBasedGame{
 		Entity.setCoarseGrainedCollisionBoundary(Entity.CIRCLE);
 
 	}
-public void connect(String ip){
+	
+	public int getWidth(){
+		return ScreenWidth;
+	}
+	
+	public int getHeight(){
+		return ScreenHeight;
+	}
+	
+	public void connect(String ip){
 		
 		try {
 			Log.info("connecting..");
@@ -154,6 +165,11 @@ public void connect(String ip){
 			LoginRequest req = new LoginRequest();
 			req.setUserName("raLa");
 			req.setUserPassword("test");
+			if(UCGame.isServer){
+				req.maxplayer = maxPlayer;
+			}else
+				req.maxplayer = 0;
+			
 			client.sendTCP(req);
 			
 			

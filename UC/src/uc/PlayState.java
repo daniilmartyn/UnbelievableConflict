@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import jig.ResourceManager;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -54,6 +55,8 @@ public class PlayState extends BasicGameState {
 			throws SlickException {
 		// TODO Auto-generated method stub
 
+		UCGame uc = (UCGame) game;
+		
 		g.translate(-camX, -camY);
 		
 		g.drawImage(map.getImg(), 0, 0); // the actual map image
@@ -79,6 +82,10 @@ public class PlayState extends BasicGameState {
 		for(Grenade grenade : UCGame.grenades){
 			grenade.render(g);
 		}		
+		
+		g.setColor(Color.green);
+		g.drawString("Health: " + dude.getHealth(), 100 + camX, uc.getHeight()-50 + camY);
+		g.drawString("Ammo: ", 250 + camX, uc.getHeight()-50 + camY);
 	}
 
 	
@@ -144,6 +151,7 @@ public class PlayState extends BasicGameState {
 
 		if(input.isMousePressed(0)){
 			dude.fire();
+			dude.fired = true;
 		//	System.out.println("hey mouse is clicked");
 		}
 		
@@ -270,7 +278,8 @@ public class PlayState extends BasicGameState {
 			}
 			packet.state = Player.state;
 			packet.run = Player.direction;
-	
+			
+			
 //			if(Player.weapon.hit != null){
 //				packet.hit =true;
 //				packet.hitisStopped = Player.weapon.hit.isStopped();
@@ -292,27 +301,7 @@ public class PlayState extends BasicGameState {
 			packet.id = Player.id;
 	
 			UCGame.client.sendUDP(packet);
-		}
-		
-//		dude.update(container, camX, camY, delta);
-//		
-//		LinkedList<Shape> bounds = dude.getGloballyTransformedShapes();
-//		
-//		if(dude.getCoarseGrainedMinY() < 0){				// if dude is higher than than the map
-//			dude.setY(dude.getCoarseGrainedHeight()/2);
-//		}
-//		if(bounds.element().getMaxY() > map.getImg().getHeight()){	// if dude is lower than the map
-//			dude.setY(map.getImg().getHeight() - bounds.element().getHeight()/2);
-//			dude.cancelFall();
-//			dude.setJump(false);
-//		}
-//		if (bounds.element().getMinX() < bounds.element().getWidth()){			// if dude is too far left of map
-//			dude.setX(bounds.element().getWidth()*1.5f);
-//		}
-//		if (bounds.element().getMaxX() > map.getImg().getWidth() - bounds.element().getWidth()){ // if dude is too far right of map
-//			dude.setX(map.getImg().getWidth() - bounds.element().getWidth()*1.5f);
-//		}
-//			
+		}		
 		
 	}
 

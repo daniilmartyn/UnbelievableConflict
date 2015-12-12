@@ -62,22 +62,22 @@ public class PlayState2 extends BasicGameState {
 		g.drawImage(map.getImg(), 0, 0);
 		map.render(g);
 		
-//		for(Char Player : UCGame.players.values()){
-//			Player.render(g);
-//			Player.renderWep(g);
-//		}
-		
-
-		
-		for( int i =1; i< UCGame.players.size()+1; i++){
-			Char player = UCGame.players.get(i);
-			if(player != null){
-				player.render(g);
-				
-				player.renderWep(g);
-			}
-
+		for(Char Player : UCGame.players.values()){
+			Player.render(g);
+			Player.renderWep(g);
 		}
+		
+
+		
+//		for( int i =1; i< UCGame.players.size()+1; i++){
+//			Char player = UCGame.players.get(i);
+//			if(player != null){
+//				player.render(g);
+//				
+//				player.renderWep(g);
+//			}
+//
+//		}
 		
 		for( int i =0; i< UCGame.bullets.size(); i++){
 			if(UCGame.bullets.get(i) != null){

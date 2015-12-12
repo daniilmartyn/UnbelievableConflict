@@ -234,7 +234,7 @@ public class MenuState extends BasicGameState {
 					UCGame.client = new Client();
 					uc.kryo = UCGame.client.getKryo();
 					uc.registerKryoClasses();
-					uc.connect("127.0.0.1");
+					uc.connect("ecs225-15");
 
 				}
 			}

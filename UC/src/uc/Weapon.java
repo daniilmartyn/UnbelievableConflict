@@ -13,6 +13,7 @@ import org.newdawn.slick.Input;
 import jig.ConvexPolygon;
 import jig.Entity;
 import jig.ResourceManager;
+import jig.Shape;
 import jig.Vector;
 
 public class Weapon extends Entity{
@@ -37,6 +38,10 @@ public class Weapon extends Entity{
 	public float angle = 0;
 	public int direction = 0;
 	private int prevDirection = direction;
+	
+	private Shape lightWepBox = new ConvexPolygon(10.0f, 50.0f);
+	private Shape mediumWepBox = new ConvexPolygon(20.0f, 50.0f);
+	private Shape heavyWepBox = new ConvexPolygon(20.0f, 30.0f);
 	
 //	private ArrayList<Mine> mines;
 //	private ArrayList<Bullet> bullets;
@@ -67,7 +72,7 @@ public class Weapon extends Entity{
 			wepOffSetLeft = new Vector(-wepOffSetRight.getX(), wepOffSetRight.getY());
 			
 			addImage(weapon, wepOffSetRight);
-			addShape(new ConvexPolygon(50.0f, 10.0f), Color.transparent, Color.green);
+			//addShape(new ConvexPolygon(50.0f, 10.0f), Color.transparent, Color.green);
 //			mines = new ArrayList<Mine>(5);
 //			bullets = new ArrayList<Bullet>(5);
 			break;
@@ -86,7 +91,7 @@ public class Weapon extends Entity{
 			wepOffSetLeft = new Vector(-wepOffSetRight.getX(), wepOffSetRight.getY());
 			
 			addImage(weapon, wepOffSetRight);
-			addShape(new ConvexPolygon(50.0f, 10.0f), Color.transparent, Color.green);
+			//addShape(new ConvexPolygon(50.0f, 10.0f), Color.transparent, Color.green);
 			
 //			bullets = new ArrayList<Bullet>(5);
 //			grenades = new ArrayList<Grenade>(5);
@@ -108,7 +113,7 @@ public class Weapon extends Entity{
 			wepOffSetLeft = new Vector(-wepOffSetRight.getX(), wepOffSetRight.getY());
 			
 			addImage(weapon, wepOffSetRight);
-			addShape(new ConvexPolygon(50.0f, 10.0f), Color.transparent, Color.green);
+			//addShape(new ConvexPolygon(50.0f, 10.0f), Color.transparent, Color.green);
 			
 	//		bombs = new ArrayList<Bomb>(5);
 	//		bullets = new ArrayList<Bullet>(5);
@@ -197,9 +202,11 @@ public class Weapon extends Entity{
 			if(direction == 0){
 				hit = new Animation(ResourceManager.getSpriteSheet(UCGame.PIPE_HIT_RSC, 99, 80),0,0,6,0,true,50,true);
 				addAnimation(hit, new Vector(45f, -23.0f));
+				addShape(lightWepBox, new Vector(70.0f, -20.0f), Color.transparent, Color.green);
 			}else if(direction == 1){
 				hit = new Animation(ResourceManager.getSpriteSheet(UCGame.PIPE_HIT_RSC, 99, 80),0,1,6,1,true,50,true);
 				addAnimation(hit, new Vector(-45f, -23.0f));
+				addShape(lightWepBox, new Vector(-70.0f, -20.0f), Color.transparent, Color.green);
 			}
 			ResourceManager.getSound(UCGame.PLAYER_LIGHTMELEESOUND_RSC).play();
 
@@ -269,9 +276,11 @@ public class Weapon extends Entity{
 			if(direction == 0){
 				hit = new Animation(ResourceManager.getSpriteSheet(UCGame.SWORDCHOP_RSC, 149, 134),0,0,11,0,true,30,true);
 				addAnimation(hit, new Vector(38f, -12f));
+				addShape(mediumWepBox, new Vector(70.0f, -20.0f), Color.transparent, Color.green);
 			}else if(direction == 1){
 				hit = new Animation(ResourceManager.getSpriteSheet(UCGame.SWORDCHOP_RSC, 149, 134),0,1,11,1,true,30,true);
 				addAnimation(hit, new Vector(-38f, -12.0f));
+				addShape(mediumWepBox, new Vector(-70.0f, -20.0f), Color.transparent, Color.green);
 			}
 			ResourceManager.getSound(UCGame.PLAYER_MEDIUMMELEESOUND_RSC).play();
 
@@ -342,9 +351,11 @@ public class Weapon extends Entity{
 			if(direction == 0){
 				hit = new Animation(ResourceManager.getSpriteSheet(UCGame.HAMMERHIT_RSC, 126, 201),0,0,5,0,true,60,true);
 				addAnimation(hit, new Vector(55f, 0f));
+				addShape(heavyWepBox, new Vector(100f, 0f), Color.transparent, Color.green);
 			}else if(direction == 1){
 				hit = new Animation(ResourceManager.getSpriteSheet(UCGame.HAMMERHIT_RSC, 126, 201),0,1,5,1,true,60,true);
 				addAnimation(hit, new Vector(-63f, 0f));
+				addShape(heavyWepBox, new Vector(-100f, 0f), Color.transparent, Color.green);
 			}
 			ResourceManager.getSound(UCGame.PLAYER_HEAVYMELEESOUND_RSC).play();
 
@@ -521,6 +532,12 @@ public class Weapon extends Entity{
 		
 	}
 	
+	
+	public void meleeHit(){			// this removes all the shapes associated with the weapon
+		for(Shape s : getShapes())
+			removeShape(s);
+	}
+	
 	public void update(GameContainer container, int camX, int camY, Char dude, int delta){
 		Input input = container.getInput();
 		
@@ -550,6 +567,7 @@ public class Weapon extends Entity{
 		if(hit != null && hit.isStopped()){
 			removeAnimation(hit);
 			hit = null;
+			meleeHit();
 			changeWeapon(select);
 		}
 		
@@ -561,6 +579,7 @@ public class Weapon extends Entity{
 			removeImage(weapon);
 			removeAnimation(hit);
 			hit = null;
+			meleeHit();
 			weapon = weaponLeft;
 
 			offsetStand = offsetStand.setX(-1* offsetStand.getX());
@@ -573,6 +592,7 @@ public class Weapon extends Entity{
 			removeImage(weapon);
 			removeAnimation(hit);
 			hit = null;
+			meleeHit();
 			weapon = weaponRight;
 
 			offsetStand = offsetStand.setX(offsetStand.abs().getX());

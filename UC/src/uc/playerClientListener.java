@@ -88,9 +88,9 @@ public class playerClientListener extends Listener {
 				UCGame.players.get(packet.id).weapon.setRotation(packet.rotate);
 				UCGame.players.get(packet.id).weapon.angle = (packet.rotate);
 				UCGame.players.get(packet.id).setX(packet.x);
-				UCGame.players.get(packet.id).setY(packet.y+30);
+				UCGame.players.get(packet.id).setY(packet.y);
 				UCGame.players.get(packet.id).weapon.setX(packet.x);
-				UCGame.players.get(packet.id).weapon.setY(packet.y);
+				UCGame.players.get(packet.id).weapon.setY(packet.y-30);
 				UCGame.players.get(packet.id).setJump(packet.jumped);
 
 				if(packet.justjumped){
