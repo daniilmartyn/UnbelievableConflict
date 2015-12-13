@@ -35,8 +35,7 @@ public class Grenade extends Entity{
 		translate(velocity.scale(delta));
 		velocity = velocity.add(new Vector(0.0f, (PlayState.gravity*delta)));
 		
-		if(getX() < 0 || getX() > PlayState.map.getImg().getWidth()  //////////////////change this when map creating is updated
-				|| getY() < 0 || getY() > PlayState.map.getImg().getHeight())
+		if(getY() > PlayState.map.getImg().getHeight())
 			active = false;
 		
 		
@@ -45,8 +44,10 @@ public class Grenade extends Entity{
 			//System.out.println("collision test: " + collide.getMinPenetration());
 			//System.out.println("this shape: " + collide.getThisShape());
 			//System.out.println("other shape: " + collide.getOtherShape());
-			
+			ResourceManager.getSound(UCGame.PLAYER_KABOOMSOUND_RSC).play();
+			UCGame.kaboom = true;
 			active = false;
+			UCGame.explosions.add(new Explosion(getX(), getY()));
 			System.out.println("Grenade EXPLODES!");
 		}
 		

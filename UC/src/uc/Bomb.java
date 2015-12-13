@@ -36,13 +36,14 @@ public class Bomb extends Entity{
 	public void update(int delta){
 		translate(velocity.scale(delta));
 		
-		if(getX() < 0 || getX() > PlayState.map.getImg().getWidth()  //////////////////change this when map creating is updated
-				|| getY() < 0 || getY() > PlayState.map.getImg().getHeight())
+		if(getY() > PlayState.map.getImg().getHeight())
 			active = false;
 		
 		if(boom < 0){
 			active = false;
 			ResourceManager.getSound(UCGame.PLAYER_KABOOMSOUND_RSC).play();
+			UCGame.kaboom = true;
+			UCGame.explosions.add(new Explosion(getX(), getY()));
 			System.out.println("BOOM!");
 		}
 		else

@@ -114,6 +114,7 @@ public class UCGame extends StateBasedGame{
 	public static final String HEALTH_RSC = "uc/resource/health.png";
 	public static final String AMMO_RSC = "uc/resource/ammo.png";
 	public static final String POWER_RSC = "uc/resource/overheal.png";
+	public static final String EXPLOSION_RSC = "uc/resource/explosion.png";
 
 	
 	public final int ScreenWidth;
@@ -126,6 +127,8 @@ public class UCGame extends StateBasedGame{
 	public static boolean set;
 	public static boolean canenter = false; 
 	public static boolean isServer;
+	
+	public static boolean kaboom;
 	
 	private int tcpPort;
 	private int udpPort;
@@ -144,6 +147,7 @@ public class UCGame extends StateBasedGame{
 	public final static List<Bomb> bombs = new ArrayList<Bomb>();
 	public final static List<Grenade> grenades = new ArrayList<Grenade>();
 	public final static List<Item> items = new ArrayList<Item>(3);
+	public final static List<Explosion> explosions = new ArrayList<Explosion>(10);
 
 
 	public UCGame(String name, int width, int height,int tcpPort, int udpPort, int timeout) {
@@ -281,6 +285,7 @@ public class UCGame extends StateBasedGame{
 		ResourceManager.loadImage(HEALTH_RSC);
 		ResourceManager.loadImage(AMMO_RSC);
 		ResourceManager.loadImage(POWER_RSC);
+		ResourceManager.loadImage(EXPLOSION_RSC);
 
 
 		ResourceManager.loadSound(GAME_STARTSOUND_RSC);

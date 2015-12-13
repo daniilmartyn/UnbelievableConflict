@@ -10,15 +10,19 @@ public class SetXY {
 	
 	public boolean jumped;
 	
+	public int health, priAmmo, secAmmo, kills, deaths;
+	
 	public int run, state;	// run is running direction. state is run/stand/crouch...
 	
 	public float rotate;
 	
 	public int weapon;
 	
+	public int wepDirection;
+	
 	public  boolean hit, hitisStopped;
 
-	public boolean fired, hurt;
+	public boolean fired, hurt, kaboom;
 
 	public boolean justjumped;
 }

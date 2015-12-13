@@ -29,7 +29,7 @@ public class Weapon extends Entity{
 	public Animation hit;
 	
 	public Vector offsetStand; // for offsetting weapon entity from char
-	private Vector offsetCrouch; // for offsetting weapon entity from char when crouched
+	public Vector offsetCrouch; // for offsetting weapon entity from char when crouched
 	public Vector wepOffSetRight;	// for offsetting the weapon image
 	public Vector wepOffSetLeft; // for offsetthing the weapon image
 	
@@ -565,6 +565,35 @@ public class Weapon extends Entity{
 			removeShape(s);
 	}
 	
+	public void changeWepDir(){
+		if(direction == 1 && prevDirection != direction){ // face weapon left
+			removeImage(weapon);
+			removeAnimation(hit);
+			hit = null;
+			meleeHit();
+			weapon = weaponLeft;
+
+			offsetStand = offsetStand.setX(-1* offsetStand.getX());
+			offsetCrouch = offsetCrouch.setX(-1* offsetCrouch.getX());
+			prevDirection = direction;
+
+			addImage(weapon, wepOffSetLeft);	
+			
+		}else if(direction == 0 && prevDirection != direction){
+			removeImage(weapon);
+			removeAnimation(hit);
+			hit = null;
+			meleeHit();
+			weapon = weaponRight;
+
+			offsetStand = offsetStand.setX(offsetStand.abs().getX());
+			offsetCrouch = offsetCrouch.setX(offsetCrouch.abs().getX());
+			prevDirection = direction;
+			
+			addImage(weapon, wepOffSetRight);	
+		}
+	}
+	
 	public void update(GameContainer container, int camX, int camY, Char dude, int delta){
 		Input input = container.getInput();
 		
@@ -602,32 +631,7 @@ public class Weapon extends Entity{
 		//System.out.println("weapon location x: " + (getX()-camX) + " and y: " + (getY() - camY));
 		//System.out.println("weapon directon: " + direction);
 		
-		if(direction == 1 && prevDirection != direction){ // face weapon left
-			removeImage(weapon);
-			removeAnimation(hit);
-			hit = null;
-			meleeHit();
-			weapon = weaponLeft;
-
-			offsetStand = offsetStand.setX(-1* offsetStand.getX());
-			offsetCrouch = offsetCrouch.setX(-1* offsetCrouch.getX());
-			prevDirection = direction;
-
-			addImage(weapon, wepOffSetLeft);	
-			
-		}else if(direction == 0 && prevDirection != direction){
-			removeImage(weapon);
-			removeAnimation(hit);
-			hit = null;
-			meleeHit();
-			weapon = weaponRight;
-
-			offsetStand = offsetStand.setX(offsetStand.abs().getX());
-			offsetCrouch = offsetCrouch.setX(offsetCrouch.abs().getX());
-			prevDirection = direction;
-			
-			addImage(weapon, wepOffSetRight);	
-		}
+		changeWepDir();
 		
 		
 		if(direction == 0)
@@ -636,43 +640,6 @@ public class Weapon extends Entity{
 			setRotation(angle + 180);
 		}
 		
-//		for(Iterator<Bullet> b = bullets.iterator(); b.hasNext();){
-//			Bullet bullet = b.next();
-//			if(!bullet.isActive())
-//				b.remove();
-//			else
-//				bullet.update(delta);
-//		}
-		
-//		if(UCGame.character == 0){
-//			for(Iterator<Mine> m = mines.iterator(); m.hasNext();){
-//				Mine mine = m.next();
-//				if(!mine.isActive())
-//					m.remove();
-//				else
-//					mine.update(delta);
-//			}
-//		}
-//		
-//		if(UCGame.character == 1){
-//			for(Iterator<Grenade> gre = grenades.iterator(); gre.hasNext();){
-//				Grenade grenade = gre.next();
-//				if(!grenade.isActive())
-//					gre.remove();
-//				else
-//					grenade.update(delta);
-//			}
-//		}
-//		
-//		if(UCGame.character == 2){
-//			for(Iterator<Bomb> b = bombs.iterator(); b.hasNext();){
-//				Bomb bomb = b.next();
-//				if(!bomb.isActive())
-//					b.remove();
-//				else
-//					bomb.update(delta);
-//			}
-//		}
 	}
 	
 }

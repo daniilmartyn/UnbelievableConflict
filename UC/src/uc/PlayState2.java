@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import jig.ResourceManager;
 import jig.Shape;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -31,6 +32,7 @@ public class PlayState2 extends BasicGameState {
 	int camX;
 	int camY;
 	
+	private boolean showStat;
 	
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
@@ -57,6 +59,8 @@ public class PlayState2 extends BasicGameState {
 			throws SlickException {
 		// TODO Auto-generated method stub
 
+		UCGame uc = (UCGame) game;
+		
 		g.translate(-camX, -camY);
 		
 		g.drawImage(map.getImg(), 0, 0);
@@ -78,6 +82,15 @@ public class PlayState2 extends BasicGameState {
 //			}
 //
 //		}
+		
+		for( int i =0; i< UCGame.items.size(); i++){
+			if(UCGame.items.get(i) != null){
+				Item items = UCGame.items.get(i);
+				if(items != null){
+					items.render(g);
+				}
+			}
+		}
 		
 		for( int i =0; i< UCGame.bullets.size(); i++){
 			if(UCGame.bullets.get(i) != null){
@@ -115,7 +128,15 @@ public class PlayState2 extends BasicGameState {
 					grenade.render(g);
 				}		
 			}
-		}		
+		}
+		
+		g.setColor(Color.green);
+		g.drawString("Health: " + dude.getHealth(), 100 + camX, uc.getHeight()-50 + camY);
+		g.drawString("Primary Ammo: " + dude.primaryAmmo, 250 + camX, uc.getHeight()-50 + camY);
+		g.drawString("Secondary Ammo: " + dude.secondaryAmmo, 250 + camX, uc.getHeight()-25 + camY);
+
+		if(showStat)
+			g.drawImage(ResourceManager.getImage(UCGame.STATS_RSC), 0f + camX, 0f + camY);
 	}
 
 	
@@ -152,6 +173,9 @@ public class PlayState2 extends BasicGameState {
 //			dude.changeDir(0);
 			packet.changeDir = 0;
 		}
+		
+		if(input.isKeyPressed(Input.KEY_TAB))
+			showStat = !showStat;
 		
 		if(input.isKeyPressed(Input.KEY_1)){
 			packet.switchWep = 0;
@@ -211,7 +235,7 @@ public class PlayState2 extends BasicGameState {
 		}
 
 		if(input.isMousePressed(0)){
-			dude.fire();
+			//dude.fire();
 			System.out.println("hey mouse is clicked");
 			packet.fire = true;
 			packet.angle=dude.weapon.angle;
@@ -248,6 +272,13 @@ public class PlayState2 extends BasicGameState {
 	public void enter(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		UCGame uc = (UCGame) game;
+		
+		container.setSoundOn(UCGame.sound);
+		
+		showStat = false;
+		
+		ResourceManager.getSound(UCGame.GAME_MUSICSOUND_RSC).loop();
+		
 		map = new Map(0,0);
 		
 		switch(UCGame.character){

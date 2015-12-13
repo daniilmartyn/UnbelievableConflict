@@ -88,6 +88,10 @@ public class PlayState extends BasicGameState {
 			item.render(g);
 		}
 		
+		for(Explosion explosion: UCGame.explosions){
+			explosion.render(g);
+		}
+		
 		g.setColor(Color.green);
 		g.drawString("Health: " + dude.getHealth(), 100 + camX, uc.getHeight()-50 + camY);
 		g.drawString("Primary Ammo: " + dude.primaryAmmo, 250 + camX, uc.getHeight()-50 + camY);
@@ -96,7 +100,9 @@ public class PlayState extends BasicGameState {
 		if(showStat){
 			g.drawImage(ResourceManager.getImage(UCGame.STATS_RSC), 0f + camX, 0f + camY);
 			
-			// then render out all of the stats for the players and stuff!
+			for(Char dude : UCGame.players.values()){
+			
+			}
 		}
 	}
 
@@ -196,7 +202,22 @@ public class PlayState extends BasicGameState {
 		packetB.miney = new ArrayList<Float>();
 		
 		packetB.rot = new ArrayList<Float>();
+		packetB.itemtype = new ArrayList<Integer>();
 
+		
+		for( int i =0; i< UCGame.explosions.size(); i++){
+			Explosion explosion = UCGame.explosions.get(i);
+			if(explosion.isFinished()){
+				UCGame.explosions.remove(i);
+				i--;
+			}
+			else{
+				explosion.update(delta);
+				//packetB.bulletx.add(bullet.getX());
+				//packetB.bullety.add(bullet.getY());
+				//packetB.rot.add(bullet.rotation);
+			}		
+		}
 		
 		for( int i =0; i< UCGame.bullets.size(); i++){
 			Bullet bullet = UCGame.bullets.get(i);
@@ -268,6 +289,13 @@ public class PlayState extends BasicGameState {
 		for(Item i : UCGame.items)
 			i.update(delta);
 		
+		for(int i = 0; i < UCGame.items.size(); i++){
+			Item item = UCGame.items.get(i);
+			
+			if(item.isActive())
+				packetB.itemtype.add(item.getType());
+		}
+		
 //		if(packetB.bulletx.size()>0 ||
 //		packetB.grenadex.size()>0 ||
 //		packetB.minex.size()>0 ||
@@ -285,6 +313,13 @@ public class PlayState extends BasicGameState {
 			Player.update( container, camX, camY, delta);
 		
 			NetworkClasses.SetXY packet = new NetworkClasses.SetXY();
+			
+			packet.health = Player.getHealth();
+			packet.priAmmo = Player.primaryAmmo;
+			packet.secAmmo = Player.secondaryAmmo;
+			packet.kills = Player.getKills();
+			packet.deaths = Player.getDeaths();
+			
 			packet.x=Player.getX();
 			packet.y=Player.getY();
 			packet.x1 = Player.weapon.getX();
@@ -293,6 +328,10 @@ public class PlayState extends BasicGameState {
 			if(Player.justjumped){
 				packet.justjumped =true;
 				Player.justjumped = false;
+			}
+			if(UCGame.kaboom){
+				packet.kaboom =true;
+				UCGame.kaboom = false;
 			}
 			packet.state = Player.state;
 			packet.run = Player.direction;
@@ -323,7 +362,9 @@ public class PlayState extends BasicGameState {
 			}
 			packet.weapon = Player.weapon.select;
 			packet.rotate = Player.weapon.angle;
+			packet.wepDirection = Player.weapon.direction;
 			packet.id = Player.id;
+				
 	
 			UCGame.client.sendUDP(packet);
 		}		

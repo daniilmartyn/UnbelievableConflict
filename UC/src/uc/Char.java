@@ -165,6 +165,10 @@ public class Char extends Entity{
 		return health;
 	}
 	
+	public void setHealth(int h){
+		health = h;
+	}
+	
 	public int getKills(){
 		return kills;
 	}
@@ -339,7 +343,7 @@ public class Char extends Entity{
 		
 	}
 	
-	public void renderWep(Graphics g){ //************* will need to create probaly a speperate method for rendering projectiles//
+	public void renderWep(Graphics g){ //************* will need to create probaly a separate method for rendering projectiles//
 		
 		if(weapon != null){
 			weapon.render(g);
@@ -413,6 +417,9 @@ public class Char extends Entity{
 					continue;
 				health -= m.getDamage();
 				m.notActive();
+				ResourceManager.getSound(UCGame.PLAYER_KABOOMSOUND_RSC).play();
+				UCGame.explosions.add(new Explosion(m.getX(), m.getY()));
+				UCGame.kaboom = true;
 				if(playingCharacter == 2){
 					ResourceManager.getSound(UCGame.PLAYER_HEAVYHURTSOUND_RSC).play();
 				}
@@ -440,6 +447,9 @@ public class Char extends Entity{
 			if(collides(g) != null){
 				health -= g.getDamage();
 				g.notActive();
+				ResourceManager.getSound(UCGame.PLAYER_KABOOMSOUND_RSC).play();
+				UCGame.kaboom = true;
+				UCGame.explosions.add(new Explosion(g.getX(), g.getY()));
 				if(playingCharacter == 2){
 					ResourceManager.getSound(UCGame.PLAYER_HEAVYHURTSOUND_RSC).play();
 				}
@@ -467,6 +477,8 @@ public class Char extends Entity{
 			if(collides(b) != null){
 				health -= b.getDamage();
 				ResourceManager.getSound(UCGame.PLAYER_KABOOMSOUND_RSC).play();
+				UCGame.kaboom = true;
+				UCGame.explosions.add(new Explosion(b.getX(), b.getY()));
 				b.notActive();
 				if(playingCharacter == 2){
 					ResourceManager.getSound(UCGame.PLAYER_HEAVYHURTSOUND_RSC).play();
@@ -492,31 +504,32 @@ public class Char extends Entity{
 		}
 		
 		
-//		if (UCGame.players != null) {
-//			////////////////////////////////////////collision detection with other player's melee weapons
-//			for (int i = 1; i < UCGame.players.size() + 1; i++) {
-//				Char dude = UCGame.players.get(i);
-//				if (dude.id == id) // if comparing for collision again itself, skip over
-//					continue;
-//
-//				if (collides(dude.weapon) != null) {
-//					health -= dude.getDamage();
-//			if(playingCharacter == 2){
-//			ResourceManager.getSound(UCGame.PLAYER_HEAVYHURTSOUND_RSC).play();
-//		}
-//		else{
-//			ResourceManager.getSound(UCGame.PLAYER_LIGHTHURTSOUND_RSC).play();
-//		}
-//		hurt = true;
-//					dude.weapon.meleeHit();
-//					if (health <= 0) {
-//						setDeaths(getDeaths() + 1);
-//						UCGame.players.get(dude.id).setKills(getKills() + 1);
-//						System.out.println("PERSON " + dude.id + " KILLED " + id);
-//					}
-//				}
-//			}
-//		}
+		if (UCGame.players != null) {
+			////////////////////////////////////////collision detection with other player's melee weapons
+			for (int i = 1; i < UCGame.players.size() + 1; i++) {
+				Char dude = UCGame.players.get(i);
+				if (dude.id == id) // if comparing for collision again itself, skip over
+					continue;
+
+				if (collides(dude.weapon) != null) {
+					health -= dude.getDamage();
+					if(playingCharacter == 2){
+						ResourceManager.getSound(UCGame.PLAYER_HEAVYHURTSOUND_RSC).play();
+					}
+					else{
+						ResourceManager.getSound(UCGame.PLAYER_LIGHTHURTSOUND_RSC).play();
+					}
+					hurt = true;
+					dude.weapon.meleeHit();
+					if (health <= 0) {
+						respawn();
+						setDeaths(getDeaths() + 1);
+						UCGame.players.get(dude.id).setKills(getKills() + 1);
+						System.out.println("PERSON " + dude.id + " KILLED " + id);
+					}
+				}
+			}
+		}
 		
 		//////////////////////////////////////////collision detection with items
 		
