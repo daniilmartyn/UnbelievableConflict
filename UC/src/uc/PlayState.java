@@ -1,15 +1,19 @@
 package uc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 import jig.ResourceManager;
+import jig.Vector;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -27,6 +31,9 @@ public class PlayState extends BasicGameState {
 	
 	int camX;
 	int camY;
+	
+	private Font font =  new TrueTypeFont(new java.awt.Font("Rockwell Extra Bold", java.awt.Font.PLAIN , 20), true);
+	private Font fontTime = new TrueTypeFont(new java.awt.Font("Rockwell Extra Bold", java.awt.Font.PLAIN , 36), true);
 	
 	private boolean showStat;
 	
@@ -88,7 +95,7 @@ public class PlayState extends BasicGameState {
 			item.render(g);
 		}
 		
-		for(Explosion explosion: UCGame.explosions){
+		for(Explosion explosion: UCGame.explosions.values()){
 			explosion.render(g);
 		}
 		
@@ -97,11 +104,31 @@ public class PlayState extends BasicGameState {
 		g.drawString("Primary Ammo: " + dude.primaryAmmo, 250 + camX, uc.getHeight()-50 + camY);
 		g.drawString("Secondary Ammo: " + dude.secondaryAmmo, 250 + camX, uc.getHeight()-25 + camY);
 
+		
+		int min = UCGame.timer / 1000 / 60;
+		int sec = (UCGame.timer / 1000) % 60;
+		fontTime.drawString(450f + camX, 10f + camY, min + " : " + String.format("%02d", sec), Color.white);
+		
 		if(showStat){
 			g.drawImage(ResourceManager.getImage(UCGame.STATS_RSC), 0f + camX, 0f + camY);
 			
-			for(Char dude : UCGame.players.values()){
-				
+			g.setColor(Color.yellow);
+			
+			float offset = 0.0f;
+			
+			ArrayList<Char> sorted = new ArrayList<Char>(UCGame.players.size());
+			
+			for(Char dude: UCGame.players.values()){
+				sorted.add(dude);
+			}
+			
+			Collections.sort(sorted);
+			
+			for(Char dude : sorted){
+				font.drawString(225f + camX, 200f + camY + offset, "" + dude.id, Color.yellow);
+				font.drawString(540f + camX, 200f + camY + offset, "" + dude.getKills(), Color.yellow);
+				font.drawString(745f + camX, 200f + camY + offset, "" + dude.getDeaths(), Color.yellow);
+				offset += 50.0f;
 			}
 		}
 	}
@@ -114,6 +141,12 @@ public class PlayState extends BasicGameState {
 		Input input = container.getInput();
 		UCGame uc = (UCGame) game;
 		
+		UCGame.timer -= delta;			// update the countdown timer for the game
+		if(UCGame.timer < 0){			// check if the round is over
+			System.out.println("GameOver!");
+			uc.enterState(UCGame.GAMEOVER);
+		}
+		
 		setCam(input, uc);
 		if(dude.id == 1){
 			dude.camX =camX;
@@ -125,9 +158,11 @@ public class PlayState extends BasicGameState {
 		else
 			dude.changeDir(0);
 		
-		if(input.isKeyPressed(Input.KEY_ESCAPE))
+		if(input.isKeyPressed(Input.KEY_ESCAPE)){
+			uc.disconnect();				
 			uc.enterState(UCGame.MENUSTATE);
-		
+			uc.canenter = false;
+		}
 		if(input.isKeyPressed(Input.KEY_TAB))
 			showStat = !showStat;
 		
@@ -186,6 +221,9 @@ public class PlayState extends BasicGameState {
 				Player.readytofire = false;
 				Player.fired = true;
 			}
+			
+			if(Player.getKills() >= UCGame.scoreLimit)		// strange place to check for win condition, but w/e
+				uc.enterState(UCGame.GAMEOVER);
 		}
 		
 		NetworkClasses.UpdateBullet packetB = new NetworkClasses.UpdateBullet();
@@ -201,22 +239,21 @@ public class PlayState extends BasicGameState {
 		packetB.minex = new ArrayList<Float>();
 		packetB.miney = new ArrayList<Float>();
 		
+		packetB.explodeX = new ArrayList<Float>();
+		packetB.explodeY = new ArrayList<Float>();
+		
 		packetB.rot = new ArrayList<Float>();
 		packetB.itemtype = new ArrayList<Integer>();
 
 		
-		for( int i =0; i< UCGame.explosions.size(); i++){
-			Explosion explosion = UCGame.explosions.get(i);
+		for(Iterator<Explosion> e = UCGame.explosions.values().iterator(); e.hasNext();){
+			Explosion explosion = e.next();
 			if(explosion.isFinished()){
-				UCGame.explosions.remove(i);
-				i--;
+				e.remove();
+			}else{
+				packetB.explodeX.add(explosion.getX());
+				packetB.explodeY.add(explosion.getY());
 			}
-			else{
-				explosion.update(delta);
-				//packetB.bulletx.add(bullet.getX());
-				//packetB.bullety.add(bullet.getY());
-				//packetB.rot.add(bullet.rotation);
-			}		
 		}
 		
 		for( int i =0; i< UCGame.bullets.size(); i++){
@@ -232,20 +269,6 @@ public class PlayState extends BasicGameState {
 				packetB.rot.add(bullet.rotation);
 			}		
 		}
-		
-		
-//		for(Iterator<Bullet> b = UCGame.bullets.iterator(); b.hasNext();){
-//			Bullet bullet = b.next();
-//			if(!bullet.isActive()){
-//				b.remove();
-//			}
-//			else{
-//				bullet.update(delta);
-//				packetB.bulletx.add(bullet.getX());
-//				packetB.bullety.add(bullet.getY());
-//				packetB.rot.add(bullet.rotation);
-//			}
-//		}
 		
 		for(Iterator<Bomb> b = UCGame.bombs.iterator(); b.hasNext();){
 			Bomb bomb = b.next();
@@ -301,6 +324,7 @@ public class PlayState extends BasicGameState {
 //		packetB.minex.size()>0 ||
 //		packetB.bombx.size()>0){
 
+		//if(Server.mainServer.server != null)
 			UCGame.client.sendUDP(packetB);
 //		}
 		
@@ -400,13 +424,15 @@ public class PlayState extends BasicGameState {
 		dude.id = 1;
 		UCGame.players.put(UCGame.id, dude);
 		
-		NetworkClasses.NewPlayerRequest packetX = new NetworkClasses.NewPlayerRequest();
-		packetX.player = UCGame.character;
-		packetX.x = map.getImg().getWidth()/2;
-		packetX.y = map.getImg().getHeight()/2;
-
-		packetX.id = UCGame.id;
-		UCGame.client.sendTCP(packetX);
+		if (Server.mainServer.server != null) {
+			NetworkClasses.NewPlayerRequest packetX = new NetworkClasses.NewPlayerRequest();
+			packetX.player = UCGame.character;
+			packetX.x = map.getImg().getWidth() / 2;
+			packetX.y = map.getImg().getHeight() / 2;
+			packetX.id = UCGame.id;
+			UCGame.client.sendTCP(packetX);
+		}
+		
 		
 		UCGame.set = true;
 

@@ -20,5 +20,8 @@ public class UpdateBullet {
 	public ArrayList<Float> minex;
 	public ArrayList<Float> miney;
 
+	public ArrayList<Float> explodeX;
+	public ArrayList<Float> explodeY;
+	
 	public ArrayList<Integer> itemtype;
 }

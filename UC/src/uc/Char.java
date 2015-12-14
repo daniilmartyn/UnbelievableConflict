@@ -14,7 +14,7 @@ import jig.Entity;
 import jig.ResourceManager;
 import jig.Vector;
 
-public class Char extends Entity{
+public class Char extends Entity implements Comparable{
 
 	public int id;
 	public String name;
@@ -372,7 +372,7 @@ public class Char extends Entity{
 				}
 				
 				if(resolve.getMinPenetration().getY() != 0)		// need to move dude vertically
-					setY(getY()+resolve.getMinPenetration().getY()*10);
+					setY(getY()+resolve.getMinPenetration().getY()*5);
 				
 
 			}
@@ -418,7 +418,7 @@ public class Char extends Entity{
 				health -= m.getDamage();
 				m.notActive();
 				ResourceManager.getSound(UCGame.PLAYER_KABOOMSOUND_RSC).play();
-				UCGame.explosions.add(new Explosion(m.getX(), m.getY()));
+				UCGame.explosions.put(new Vector(m.getX(), m.getY()),new Explosion(m.getX(), m.getY()));
 				UCGame.kaboom = true;
 				if(playingCharacter == 2){
 					ResourceManager.getSound(UCGame.PLAYER_HEAVYHURTSOUND_RSC).play();
@@ -449,7 +449,7 @@ public class Char extends Entity{
 				g.notActive();
 				ResourceManager.getSound(UCGame.PLAYER_KABOOMSOUND_RSC).play();
 				UCGame.kaboom = true;
-				UCGame.explosions.add(new Explosion(g.getX(), g.getY()));
+				UCGame.explosions.put(new Vector(g.getX(), g.getY()),new Explosion(g.getX(), g.getY()));
 				if(playingCharacter == 2){
 					ResourceManager.getSound(UCGame.PLAYER_HEAVYHURTSOUND_RSC).play();
 				}
@@ -478,7 +478,7 @@ public class Char extends Entity{
 				health -= b.getDamage();
 				ResourceManager.getSound(UCGame.PLAYER_KABOOMSOUND_RSC).play();
 				UCGame.kaboom = true;
-				UCGame.explosions.add(new Explosion(b.getX(), b.getY()));
+				UCGame.explosions.put(new Vector(b.getX(), b.getY()), new Explosion(b.getX(), b.getY()));
 				b.notActive();
 				if(playingCharacter == 2){
 					ResourceManager.getSound(UCGame.PLAYER_HEAVYHURTSOUND_RSC).play();
@@ -508,10 +508,12 @@ public class Char extends Entity{
 			////////////////////////////////////////collision detection with other player's melee weapons
 			for (int i = 1; i < UCGame.players.size() + 1; i++) {
 				Char dude = UCGame.players.get(i);
+
 				if (dude.id == id) // if comparing for collision again itself, skip over
 					continue;
-
+				
 				if (collides(dude.weapon) != null) {
+										
 					health -= dude.getDamage();
 					if(playingCharacter == 2){
 						ResourceManager.getSound(UCGame.PLAYER_HEAVYHURTSOUND_RSC).play();
@@ -555,5 +557,10 @@ public class Char extends Entity{
 		weapon.setPosition(getX(), getY());
 		weapon.update(container, camX, camY, this, delta);
 		velocity = velocity.add(new Vector(0.0f, (PlayState.gravity*delta)));
+	}
+
+	public int compareTo(Object o) {
+		Char dude = (Char) o;
+		return dude.getKills() - this.getKills();
 	}	
 }

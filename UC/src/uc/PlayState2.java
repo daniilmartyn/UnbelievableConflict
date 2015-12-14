@@ -1,16 +1,21 @@
 package uc;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import jig.ResourceManager;
 import jig.Shape;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -31,6 +36,9 @@ public class PlayState2 extends BasicGameState {
 	
 	int camX;
 	int camY;
+	
+	private Font font =  new TrueTypeFont(new java.awt.Font("Rockwell Extra Bold", java.awt.Font.PLAIN , 20), true);
+	private Font fontTime = new TrueTypeFont(new java.awt.Font("Rockwell Extra Bold", java.awt.Font.PLAIN , 36), true);
 	
 	private boolean showStat;
 	
@@ -135,8 +143,28 @@ public class PlayState2 extends BasicGameState {
 		g.drawString("Primary Ammo: " + dude.primaryAmmo, 250 + camX, uc.getHeight()-50 + camY);
 		g.drawString("Secondary Ammo: " + dude.secondaryAmmo, 250 + camX, uc.getHeight()-25 + camY);
 
-		if(showStat)
+		if(showStat){
 			g.drawImage(ResourceManager.getImage(UCGame.STATS_RSC), 0f + camX, 0f + camY);
+			
+			g.setColor(Color.yellow);
+			
+			float offset = 0.0f;
+			
+			ArrayList<Char> sorted = new ArrayList<Char>(UCGame.players.size());
+			
+			for(Char dude: UCGame.players.values()){
+				sorted.add(dude);
+			}
+			
+			Collections.sort(sorted);
+			
+			for(Char dude : sorted){
+				font.drawString(225f + camX, 200f + camY + offset, "" + dude.id, Color.yellow);
+				font.drawString(540f + camX, 200f + camY + offset, "" + dude.getKills(), Color.yellow);
+				font.drawString(745f + camX, 200f + camY + offset, "" + dude.getDeaths(), Color.yellow);
+				offset += 50.0f;
+			}
+		}
 	}
 
 	
@@ -227,7 +255,6 @@ public class PlayState2 extends BasicGameState {
 //				dude.changeRunDir(-1);
 			
 			packet.state=2;
-			packet.runDir=9;
 			packet.id = uc.id;
 			if(!dude.isJumped()){
 				packet.runDir=-1;
@@ -250,6 +277,13 @@ public class PlayState2 extends BasicGameState {
 			}
 			
 
+		}
+		
+		for(Iterator<Explosion> e = UCGame.explosions.values().iterator(); e.hasNext();){
+			Explosion explosion = e.next();
+			if(explosion.isFinished()){
+				e.remove();
+			}			
 		}
 		
 		packet.id = uc.id;
@@ -317,7 +351,6 @@ public class PlayState2 extends BasicGameState {
 	}
 
 	public int getID() {
-		// TODO Auto-generated method stub
 		return UCGame.PLAYSTATE2;
 	}
 }

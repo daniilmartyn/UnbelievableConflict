@@ -8,6 +8,7 @@ import java.util.Map;
 
 import jig.Entity;
 import jig.ResourceManager;
+import jig.Vector;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
@@ -30,9 +31,13 @@ public class UCGame extends StateBasedGame{
 	public static final int PLAYSTATE2 = 2;
 	public static final int GAMEOVER = 3;
 
-	public static int maxPlayer = 2; //////////////////////update later thorugh the main menu screesenzzsdf
+	public static int maxPlayer = 2;  // these are default values, they are able to be changed through the host menu
+	public static int scoreLimit = 10;
+	public static int timer = 5*60000;
+	public static String dudeName;
 	
-	// soundnd string stuff here
+	
+	// sound string stuff here
 	public static final String GAME_STARTSOUND_RSC = "uc/sound/start.ogg";
 	public static final String GAME_MUSICSOUND_RSC = "uc/sound/boss.ogg";
 	public static final String PLAYER_PISTOLSOUND_RSC = "uc/sound/pistol1.wav";
@@ -139,7 +144,6 @@ public class UCGame extends StateBasedGame{
 	public static Client client;
 	public Kryo kryo;
 	public static int id;
-	public static String dudeName;
 	
 	public static Map<Integer,Char> players = new HashMap<Integer,Char>();
 	public final static List<Bullet> bullets = new ArrayList<Bullet>();
@@ -147,7 +151,7 @@ public class UCGame extends StateBasedGame{
 	public final static List<Bomb> bombs = new ArrayList<Bomb>();
 	public final static List<Grenade> grenades = new ArrayList<Grenade>();
 	public final static List<Item> items = new ArrayList<Item>(3);
-	public final static List<Explosion> explosions = new ArrayList<Explosion>(10);
+	public final static Map<Vector, Explosion> explosions = new HashMap<Vector, Explosion>();
 
 
 	public UCGame(String name, int width, int height,int tcpPort, int udpPort, int timeout) {

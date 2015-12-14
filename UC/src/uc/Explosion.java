@@ -12,7 +12,7 @@ public class Explosion extends Entity{
 	public Explosion(final float x, final float y){
 		super(x,y);
 		
-		explosion = new Animation(ResourceManager.getSpriteSheet(UCGame.EXPLOSION_RSC, 100 ,100 ),
+		explosion = new Animation(ResourceManager.getSpriteSheet(UCGame.EXPLOSION_RSC, 150 ,150 ),
 									0,0,8,8,true, 20, true);
 		addAnimation(explosion);
 		explosion.setLooping(false);
@@ -21,9 +21,4 @@ public class Explosion extends Entity{
 	public boolean isFinished(){
 		return explosion.isStopped();
 	}
-	
-	public void update(int delta){
-		
-	}
-	
 }

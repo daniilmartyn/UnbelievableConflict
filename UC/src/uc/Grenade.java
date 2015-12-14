@@ -47,7 +47,7 @@ public class Grenade extends Entity{
 			ResourceManager.getSound(UCGame.PLAYER_KABOOMSOUND_RSC).play();
 			UCGame.kaboom = true;
 			active = false;
-			UCGame.explosions.add(new Explosion(getX(), getY()));
+			UCGame.explosions.put(new Vector(getX(), getY()), new Explosion(getX(), getY()));
 			System.out.println("Grenade EXPLODES!");
 		}
 		

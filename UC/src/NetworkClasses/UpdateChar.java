@@ -13,6 +13,6 @@ public class UpdateChar {
 	public boolean fire;
 	public float angle, mousey,mousex ;
 	public int direction;
-	public int select;;
+	public int select;
 	public boolean setJump,jump;
 }

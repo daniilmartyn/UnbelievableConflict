@@ -173,7 +173,6 @@ public class MenuState extends BasicGameState {
 
 		if(uc.canenter){
 			uc.enterState(UCGame.PLAYSTATE2);
-
 		}
 		
 		switch(menu){
@@ -280,12 +279,15 @@ public class MenuState extends BasicGameState {
 					
 					uc.enterState(UCGame.PLAYSTATE);
 
-					UCGame.isServer =true;
-					
-					UCGame.client = new Client();
-					uc.kryo = UCGame.client.getKryo();
-					uc.registerKryoClasses();
-					uc.connect("127.0.0.1");
+					//System.out.println("what is the server? " + Server.mainServer.server);
+					//if(Server.mainServer.server != null){
+						UCGame.isServer =true;
+
+						UCGame.client = new Client();
+						uc.kryo = UCGame.client.getKryo();
+						uc.registerKryoClasses();
+						uc.connect("127.0.0.1");
+					//}
 				}
 			}
 			
@@ -311,48 +313,57 @@ public class MenuState extends BasicGameState {
 			if((mouseX > 395 && mouseX < 505) && (mouseY < 230 && mouseY > 200)){
 				if(input.isMousePressed(0)){
 					timeLim = 0;
+					UCGame.timer = 1 * 5000;
 				}
 			}
 			if((mouseX > 520 && mouseX < 620) && (mouseY < 230 && mouseY > 200)){
 				if(input.isMousePressed(0)){
 					timeLim = 1;
+					UCGame.timer = 5 * 60000;
 				}
 			}
 			if((mouseX > 630 && mouseX < 730) && (mouseY < 230 && mouseY > 200)){
 				if(input.isMousePressed(0)){
 					timeLim = 2;
+					UCGame.timer = 10 * 60000;
 				}
 			}
 			
 			if((mouseX > 395 && mouseX < 505) && (mouseY < 320 && mouseY > 295)){
 				if(input.isMousePressed(0)){
 					maxPlayer = 0;
+					UCGame.maxPlayer = 2;
 				}
 			}
 			if((mouseX > 520 && mouseX < 620) && (mouseY < 320 && mouseY > 295)){
 				if(input.isMousePressed(0)){
 					maxPlayer = 1;
+					UCGame.maxPlayer = 3;
 				}
 			}
 			if((mouseX > 630 && mouseX < 730) && (mouseY < 320 && mouseY > 295)){
 				if(input.isMousePressed(0)){
 					maxPlayer = 2;
+					UCGame.maxPlayer = 4;
 				}
 			}
 			
 			if((mouseX > 380 && mouseX < 505) && (mouseY < 385 && mouseY > 360)){
 				if(input.isMousePressed(0)){
 					scoreLim = 0;
+					UCGame.scoreLimit = 10;
 				}
 			}
 			if((mouseX > 500 && mouseX < 620) && (mouseY < 385 && mouseY > 360)){
 				if(input.isMousePressed(0)){
 					scoreLim = 1;
+					UCGame.scoreLimit = 20;
 				}
 			}
 			if((mouseX > 630 && mouseX < 730) && (mouseY < 385 && mouseY > 360)){
 				if(input.isMousePressed(0)){
 					scoreLim = 2;
+					UCGame.scoreLimit = 30;
 				}
 			}
 			

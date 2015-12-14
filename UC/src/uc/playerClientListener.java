@@ -197,6 +197,14 @@ public class playerClientListener extends Listener {
 						UCGame.items.add(new Item(1027f, 665f, 2));
 				}
 				
+				for(int i = 0; i < packet.explodeX.size(); i++){
+					Vector v = new Vector(packet.explodeX.get(i), packet.explodeY.get(i));
+					if(UCGame.explosions.containsKey(v))
+						continue;
+					else
+						UCGame.explosions.put(v, new Explosion(v.getX(), v.getY()));
+				}
+				
 			}
 		}
 	}

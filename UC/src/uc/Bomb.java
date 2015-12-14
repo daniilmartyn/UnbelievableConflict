@@ -43,7 +43,7 @@ public class Bomb extends Entity{
 			active = false;
 			ResourceManager.getSound(UCGame.PLAYER_KABOOMSOUND_RSC).play();
 			UCGame.kaboom = true;
-			UCGame.explosions.add(new Explosion(getX(), getY()));
+			UCGame.explosions.put(new Vector(getX(), getY()), new Explosion(getX(), getY()));
 			System.out.println("BOOM!");
 		}
 		else
