@@ -101,7 +101,7 @@ public class PlayState extends BasicGameState {
 			g.drawImage(ResourceManager.getImage(UCGame.STATS_RSC), 0f + camX, 0f + camY);
 			
 			for(Char dude : UCGame.players.values()){
-			
+				
 			}
 		}
 	}
