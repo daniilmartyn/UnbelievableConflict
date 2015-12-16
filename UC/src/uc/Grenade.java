@@ -19,12 +19,14 @@ public class Grenade extends Entity{
 	private Image grenade;
 	private int damage = 35;
 	
+	public Float rotation;
+	
 	public Grenade(final float x, final float y, Vector v) {
 		super(x,y);
 		velocity = v;
 		grenade = ResourceManager.getImage(UCGame.GRENADE_RSC);
 		addImage(grenade);
-		addShape(new ConvexPolygon(grenade.getHeight()), Color.transparent, Color.green);
+		addShape(new ConvexPolygon(grenade.getHeight()), Color.transparent, Color.transparent);
 		active = true;	}
 
 	public int getDamage(){

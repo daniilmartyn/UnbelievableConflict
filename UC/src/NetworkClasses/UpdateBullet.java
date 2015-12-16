@@ -16,6 +16,7 @@ public class UpdateBullet {
 
 	public ArrayList<Float> grenadex;
 	public ArrayList<Float> grenadey;
+	public ArrayList<Float> grot;
 
 	public ArrayList<Float> minex;
 	public ArrayList<Float> miney;
@@ -24,4 +25,7 @@ public class UpdateBullet {
 	public ArrayList<Float> explodeY;
 	
 	public ArrayList<Integer> itemtype;
+	
+	public int time;
+	public boolean GameOver;
 }

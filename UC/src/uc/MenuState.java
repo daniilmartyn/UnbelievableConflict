@@ -32,6 +32,8 @@ public class MenuState extends BasicGameState {
 	private int maxPlayer;		// 0 for 2 player, 1 for 3 player,  2 for 4 player
 	private int scoreLim;		// 0 for 10 pts,   1 for 20 pts,    2 for 30 pts
 	
+	public static int timeSelection;
+	
 	private Image arrow;
 	
 	private TextField name;
@@ -230,14 +232,18 @@ public class MenuState extends BasicGameState {
 					System.out.println("The player's name is: " + name.getText());
 					System.out.println("The IP/Hostname is: " + address.getText());
 					// This is where the client launching code will be called and all that jazz....
-					
-					UCGame.dudeName = name.getText();
-					
+
+					if(address.getText().isEmpty())
+						return;
+
 					UCGame.client = new Client();
 					uc.kryo = UCGame.client.getKryo();
 					uc.registerKryoClasses();
 					//uc.connect("ecs225-15");
-					uc.connect("127.0.0.1");
+					uc.connect(address.getText());
+
+					if(!name.getText().isEmpty())
+						UCGame.dudeName = name.getText();
 
 				}
 			}
@@ -275,19 +281,18 @@ public class MenuState extends BasicGameState {
 					System.out.println("Begin/Host the Game!");
 					System.out.println("The player's name is: " + name.getText());
 					// This is where the server launching code will be called and all that jazz....
-					UCGame.dudeName = name.getText();
-					
+
 					uc.enterState(UCGame.PLAYSTATE);
 
-					//System.out.println("what is the server? " + Server.mainServer.server);
-					//if(Server.mainServer.server != null){
-						UCGame.isServer =true;
+					UCGame.isServer =true;
 
-						UCGame.client = new Client();
-						uc.kryo = UCGame.client.getKryo();
-						uc.registerKryoClasses();
-						uc.connect("127.0.0.1");
-					//}
+					UCGame.client = new Client();
+					uc.kryo = UCGame.client.getKryo();
+					uc.registerKryoClasses();
+					uc.connect("127.0.0.1");
+
+					if(!name.getText().isEmpty())
+						UCGame.dudeName = name.getText();
 				}
 			}
 			
@@ -313,7 +318,7 @@ public class MenuState extends BasicGameState {
 			if((mouseX > 395 && mouseX < 505) && (mouseY < 230 && mouseY > 200)){
 				if(input.isMousePressed(0)){
 					timeLim = 0;
-					UCGame.timer = 1 * 5000;
+					UCGame.timer = 1 * 60000;
 				}
 			}
 			if((mouseX > 520 && mouseX < 620) && (mouseY < 230 && mouseY > 200)){

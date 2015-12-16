@@ -40,7 +40,8 @@ public class PlayState2 extends BasicGameState {
 	private Font font =  new TrueTypeFont(new java.awt.Font("Rockwell Extra Bold", java.awt.Font.PLAIN , 20), true);
 	private Font fontTime = new TrueTypeFont(new java.awt.Font("Rockwell Extra Bold", java.awt.Font.PLAIN , 36), true);
 	
-	private boolean showStat;
+	private boolean showStat = false;
+	
 	
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
@@ -74,22 +75,13 @@ public class PlayState2 extends BasicGameState {
 		g.drawImage(map.getImg(), 0, 0);
 		map.render(g);
 		
+		
+		UCGame.isRendering = true;
 		for(Char Player : UCGame.players.values()){
 			Player.render(g);
 			Player.renderWep(g);
 		}
-		
-
-		
-//		for( int i =1; i< UCGame.players.size()+1; i++){
-//			Char player = UCGame.players.get(i);
-//			if(player != null){
-//				player.render(g);
-//				
-//				player.renderWep(g);
-//			}
-//
-//		}
+		UCGame.isRendering = false;
 		
 		for( int i =0; i< UCGame.items.size(); i++){
 			if(UCGame.items.get(i) != null){
@@ -138,11 +130,20 @@ public class PlayState2 extends BasicGameState {
 			}
 		}
 		
+		for(Explosion explosion: UCGame.explosions.values()){
+			if(explosion != null)
+				explosion.render(g);
+		}
+		
 		g.setColor(Color.green);
 		g.drawString("Health: " + dude.getHealth(), 100 + camX, uc.getHeight()-50 + camY);
 		g.drawString("Primary Ammo: " + dude.primaryAmmo, 250 + camX, uc.getHeight()-50 + camY);
 		g.drawString("Secondary Ammo: " + dude.secondaryAmmo, 250 + camX, uc.getHeight()-25 + camY);
 
+		int min = UCGame.timer / 1000 / 60;
+		int sec = (UCGame.timer / 1000) % 60;
+		fontTime.drawString(450f + camX, 10f + camY, min + " : " + String.format("%02d", sec), Color.white);
+		
 		if(showStat){
 			g.drawImage(ResourceManager.getImage(UCGame.STATS_RSC), 0f + camX, 0f + camY);
 			
@@ -159,7 +160,7 @@ public class PlayState2 extends BasicGameState {
 			Collections.sort(sorted);
 			
 			for(Char dude : sorted){
-				font.drawString(225f + camX, 200f + camY + offset, "" + dude.id, Color.yellow);
+				font.drawString(220f + camX, 200f + camY + offset, "" + dude.name, Color.yellow);
 				font.drawString(540f + camX, 200f + camY + offset, "" + dude.getKills(), Color.yellow);
 				font.drawString(745f + camX, 200f + camY + offset, "" + dude.getDeaths(), Color.yellow);
 				offset += 50.0f;
@@ -174,6 +175,9 @@ public class PlayState2 extends BasicGameState {
 		
 		Input input = container.getInput();
 		UCGame uc = (UCGame) game;
+		
+		if(UCGame.GameOver)
+			uc.enterState(UCGame.GAMEOVER);
 		
 		setCam(input, uc);
 		
@@ -226,7 +230,7 @@ public class PlayState2 extends BasicGameState {
 //			dude.setJump(true);
 //			dude.setState(3);
 			packet.setJump = true;
-			packet.state = 1;
+			packet.state = 3;
 			packet.jump = true;
 		}
 				
@@ -255,15 +259,16 @@ public class PlayState2 extends BasicGameState {
 //				dude.changeRunDir(-1);
 			
 			packet.state=2;
-			packet.id = uc.id;
 			if(!dude.isJumped()){
 				packet.runDir=-1;
 			}
+			
 		}
 
+		
 		if(input.isMousePressed(0)){
 			//dude.fire();
-			System.out.println("hey mouse is clicked");
+			//System.out.println("hey mouse is clicked");
 			packet.fire = true;
 			packet.angle=dude.weapon.angle;
 			packet.direction=dude.weapon.direction;
@@ -272,6 +277,17 @@ public class PlayState2 extends BasicGameState {
 		
 		for(Char Player : UCGame.players.values()){
 			if(Player.readytofire){
+				
+				Player.weapon.coolBomb = -1;
+				Player.weapon.coolPistol = -1;
+				Player.weapon.coolGrenade = -1;
+				Player.weapon.coolShotgun = -1;
+				
+				System.out.println("CoolPistol: " + Player.weapon.coolPistol);
+				System.out.println("CoolShotgun: " + Player.weapon.coolShotgun);
+				System.out.println("CoolGrenade: " + Player.weapon.coolGrenade);
+				System.out.println("CoolBomb: " + Player.weapon.coolBomb);
+				
 				Player.fire();
 				Player.readytofire = false;
 			}
@@ -294,19 +310,17 @@ public class PlayState2 extends BasicGameState {
 		packet.camy = camY;
 		
 		uc.client.sendTCP(packet);
-		
-		/*if(input.isMouseButtonDown(0)){
-			dude.fire();
-			System.out.println("hey mouse button is down");
-		}*/
-		
+				
 	}
 
 	@Override
 	public void enter(GameContainer container, StateBasedGame game)
 			throws SlickException {
-		UCGame uc = (UCGame) game;
 		
+		if(UCGame.Restart)
+			return;
+		
+		UCGame uc = (UCGame) game;
 		container.setSoundOn(UCGame.sound);
 		
 		showStat = false;
@@ -328,11 +342,19 @@ public class PlayState2 extends BasicGameState {
 		}
 		
 		dude.id = uc.id;
+		
+		if(UCGame.dudeName.equals("Player")){
+			dude.name = UCGame.dudeName + dude.id;
+			UCGame.dudeName = UCGame.dudeName + UCGame.id;
+		}else
+			dude.name = UCGame.dudeName;
+		
 		uc.players.put(uc.id, dude);
 		
 		NetworkClasses.NewPlayerRequest packetX = new NetworkClasses.NewPlayerRequest();
 		packetX.id = uc.id;
 		packetX.player = uc.character;
+		packetX.name = UCGame.dudeName;
 		packetX.x = map.getImg().getWidth()/2;
 		packetX.y = map.getImg().getHeight()/2;
 		uc.client.sendTCP(packetX);

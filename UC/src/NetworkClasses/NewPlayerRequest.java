@@ -7,4 +7,6 @@ public class NewPlayerRequest {
 	public int player;
 	
 	public int x, y;
+	
+	public String name;
 }

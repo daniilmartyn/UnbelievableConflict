@@ -104,6 +104,7 @@ public class mainServerListener extends Listener  {
 			playerChar player = new playerChar(packet.x,packet.y);
 			player.c = connection;
 			player.Char = packet.player;
+			player.playerName = packet.name;
 			players.put(connection.getID(), player);
 
 			for(playerChar p : players.values()){
@@ -115,6 +116,7 @@ public class mainServerListener extends Listener  {
 					addPacket2.y = p.y;
 					addPacket2.Char = p.Char;
 					addPacket2.id = p.c.getID();
+					addPacket2.name = p.playerName;
 					connection.sendTCP(addPacket2);
 				}
 			}
@@ -123,6 +125,7 @@ public class mainServerListener extends Listener  {
 			addPacket2.y = packet.y;
 			addPacket2.Char = packet.player;
 			addPacket2.id = connection.getID();
+			addPacket2.name = packet.name;
 			mainServer.server.sendToAllExceptTCP(connection.getID(),addPacket2);
 		}
 	}

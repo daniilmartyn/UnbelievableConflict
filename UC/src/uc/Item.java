@@ -35,21 +35,21 @@ public class Item extends Entity{
 			countDown = 0;
 			addImage(health);
 			healthBox = new ConvexPolygon((float)health.getWidth(), (float) health.getHeight());
-			addShape(healthBox, Color.transparent, Color.yellow);
+			addShape(healthBox, Color.transparent, Color.transparent);
 			break;
 		case 1:		// ammo pack
 			respawnTime = 15000;
 			countDown = 0;
 			addImage(ammo);
 			ammoBox = new ConvexPolygon((float)ammo.getWidth(), (float) ammo.getHeight());
-			addShape(ammoBox, Color.transparent, Color.yellow);
+			addShape(ammoBox, Color.transparent, Color.transparent);
 			break;
 		case 2:		// power up
 			respawnTime = 60000;
 			countDown = 0;
 			addImage(power);
 			powerBox = new ConvexPolygon((float)power.getWidth()/4);
-			addShape(powerBox, Color.transparent, Color.yellow);
+			addShape(powerBox, Color.transparent, Color.transparent);
 			break;
 		}
 		
@@ -91,15 +91,15 @@ public class Item extends Entity{
 			switch(type){
 			case 0:
 				addImage(health);
-				addShape(healthBox, Color.transparent, Color.yellow);
+				addShape(healthBox, Color.transparent, Color.transparent);
 				break;
 			case 1:
 				addImage(ammo);
-				addShape(ammoBox, Color.transparent, Color.yellow);
+				addShape(ammoBox, Color.transparent, Color.transparent);
 				break;
 			case 2:
 				addImage(power);
-				addShape(powerBox, Color.transparent, Color.yellow);
+				addShape(powerBox, Color.transparent, Color.transparent);
 				break;
 			}
 		}

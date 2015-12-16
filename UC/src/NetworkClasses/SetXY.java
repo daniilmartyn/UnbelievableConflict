@@ -25,4 +25,6 @@ public class SetXY {
 	public boolean fired, hurt, kaboom;
 
 	public boolean justjumped;
+	
+	public int coolPistol, coolShotgun, coolGrenade, coolBomb;
 }

@@ -93,7 +93,7 @@ public class Char extends Entity implements Comparable{
 			addImage(current);
 			standingBox = new ConvexPolygon((float) current.getWidth() - 2, (float) current.getHeight() - 2);
 			crouchBox = new ConvexPolygon((float) crouchRight.getWidth() - 20, (float) crouchRight.getHeight() - 5);
-			addShape(standingBox, Color.transparent, Color.red);
+			addShape(standingBox, Color.transparent, Color.transparent);
 			state = 0;
 			prevState = state;
 
@@ -121,7 +121,7 @@ public class Char extends Entity implements Comparable{
 			addImage(current);
 			standingBox = new ConvexPolygon((float) current.getWidth() - 2, (float) current.getHeight() - 2);
 			crouchBox = new ConvexPolygon((float) crouchRight.getWidth() - 5, (float) crouchRight.getHeight() - 5);
-			addShape(standingBox, Color.transparent, Color.red);
+			addShape(standingBox, Color.transparent, Color.transparent);
 			state = 0;
 			prevState = state;
 			
@@ -151,7 +151,7 @@ public class Char extends Entity implements Comparable{
 			float[] crouch = {88f, 50 ,0, -45, -88f, 50};
 			standingBox = new ConvexPolygon(stand);
 			crouchBox = new ConvexPolygon(crouch);
-			addShape(standingBox, Color.transparent, Color.red);
+			addShape(standingBox, Color.transparent, Color.transparent);
 			state = 0;
 			prevState = state;
 			
@@ -242,8 +242,9 @@ public class Char extends Entity implements Comparable{
 		weapon.fire(this);
 	}
 	
-	private void respawn(){
+	public void respawn(){
 		velocity = new Vector(0.0f, 0.0f);
+		isJumped = true;
 		switch(playingCharacter){ ////////////will need to reset ammo as well!!! :<( alsfjls;fj
 		case 0:
 			health = 100;
@@ -279,12 +280,12 @@ public class Char extends Entity implements Comparable{
 		
 		if(state == 2 && prevState != 2){
 			removeShape(standingBox);
-			addShape(crouchBox, Color.transparent, Color.red);
+			addShape(crouchBox, Color.transparent, Color.transparent);
 			if(prevState != 3)
 				setY(getY() + 20.0f);
 		}else if(state != 2 && prevState == 2){
 			removeShape(crouchBox);
-			addShape(standingBox, Color.transparent, Color.red);
+			addShape(standingBox, Color.transparent, Color.transparent);
 		}
 		
 		if(state == 0){ // if char is just standing still
@@ -346,6 +347,7 @@ public class Char extends Entity implements Comparable{
 	public void renderWep(Graphics g){ //************* will need to create probaly a separate method for rendering projectiles//
 		
 		if(weapon != null){
+			
 			weapon.render(g);
 		}		
 	}
@@ -405,7 +407,7 @@ public class Char extends Entity implements Comparable{
 				if(health <= 0){
 					System.out.println("PLAYER " + b.id +" KILLED " + id );
 					setDeaths(getDeaths() + 1);
-					UCGame.players.get(b.id).setKills(getKills() + 1);
+					UCGame.players.get(b.id).setKills(UCGame.players.get(b.id).getKills() + 1);
 					respawn();
 				}
 			}
@@ -430,7 +432,7 @@ public class Char extends Entity implements Comparable{
 				if(health <= 0){
 					setDeaths(getDeaths() + 1);
 					if(m.id != id){
-						UCGame.players.get(m.id).setKills(getKills() + 1);
+						UCGame.players.get(m.id).setKills(UCGame.players.get(m.id).getKills() + 1);
 						System.out.println("PERSON " + m.id+ " KILLED " + id);
 					}else{
 						System.out.println("PERSON " + id + " KILLED THEMSELVES");
@@ -460,7 +462,7 @@ public class Char extends Entity implements Comparable{
 				if(health <= 0){
 					setDeaths(getDeaths() + 1);
 					if(g.id != id){
-						UCGame.players.get(g.id).setKills(getKills() + 1);
+						UCGame.players.get(g.id).setKills(UCGame.players.get(g.id).getKills() + 1);
 						System.out.println("PERSON " + g.id+ " KILLED " + id);
 					}else{
 						System.out.println("PERSON " + id + " KILLED THEMSELVES");
@@ -490,7 +492,7 @@ public class Char extends Entity implements Comparable{
 				if(health <= 0){
 					setDeaths(getDeaths() + 1);
 					if(b.id != id){
-						UCGame.players.get(b.id).setKills(getKills() + 1);
+						UCGame.players.get(b.id).setKills(UCGame.players.get(b.id).getKills() + 1);
 						System.out.println("PERSON " + b.id+ " KILLED " + id);
 					}else{
 						System.out.println("PERSON " + id + " KILLED THEMSELVES");
@@ -506,13 +508,12 @@ public class Char extends Entity implements Comparable{
 		
 		if (UCGame.players != null) {
 			////////////////////////////////////////collision detection with other player's melee weapons
-			for (int i = 1; i < UCGame.players.size() + 1; i++) {
-				Char dude = UCGame.players.get(i);
+			for (Char dude: UCGame.players.values()) {
 
 				if (dude.id == id) // if comparing for collision again itself, skip over
 					continue;
 				
-				if (collides(dude.weapon) != null) {
+				if (collides(dude.weapon) != null && dude.weapon.isActive()) {
 										
 					health -= dude.getDamage();
 					if(playingCharacter == 2){
@@ -526,7 +527,7 @@ public class Char extends Entity implements Comparable{
 					if (health <= 0) {
 						respawn();
 						setDeaths(getDeaths() + 1);
-						UCGame.players.get(dude.id).setKills(getKills() + 1);
+						UCGame.players.get(dude.id).setKills(dude.getKills() + 1);
 						System.out.println("PERSON " + dude.id + " KILLED " + id);
 					}
 				}
@@ -541,7 +542,8 @@ public class Char extends Entity implements Comparable{
 				i.respawn();
 				switch(i.getType()){
 				case 0:
-					health = fullHealth;
+					if(health < fullHealth)
+						health = fullHealth;
 					break;
 				case 1:
 					primaryAmmo = fullPrimaryAmmo;

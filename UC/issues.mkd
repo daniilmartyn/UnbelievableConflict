@@ -8,9 +8,6 @@
 [6a] Map is in final version, collisions for server side are smooth.
 [6b] Game mechanics
 [7] Add object to map: health kits, ammo, power-ups
-
-
-# Open Issues ##
 [8] Add Polish to the game. Add stat screen, extra game features, fix bugs.
 	- Statistics Screen
 	- Graphics fix --server side
@@ -18,5 +15,8 @@
 	- networked explosion animations
 	- timer 
 	- game over checking
+
+# Open Issues ##
+
 
 /// font used: rockwell extra bold

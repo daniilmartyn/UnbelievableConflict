@@ -25,7 +25,7 @@ public class Bomb extends Entity{
 		boom = 3000;
 		bomb = new Animation(ResourceManager.getSpriteSheet(UCGame.BOMB_RSC, 24, 36), 0, 0, 3, 0, true, 100, true);
 		addAnimation(bomb);
-		addShape(new ConvexPolygon(11f), new Vector(0.0f, 7.0f), Color.transparent, Color.green);
+		addShape(new ConvexPolygon(11f), new Vector(0.0f, 7.0f), Color.transparent, Color.transparent);
 		active = true;
 	}
 

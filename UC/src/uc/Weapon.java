@@ -39,17 +39,21 @@ public class Weapon extends Entity{
 	public int direction = 0;
 	private int prevDirection = direction;
 	
-	private int coolDownTime;	// the coolDown time
-	private int coolDown;		// the counter
+	public int resetCoolShotgun = 1000;	// the coolDown time
+	public int coolShotgun = 0;		// the counter
+	public int resetCoolGrenade = 500;
+	public int coolGrenade = 0;
+	public int resetCoolBomb = 500;
+	public int coolBomb = 0;
+	public int resetCoolPistol = 300;
+	public int coolPistol = 0;
+	
 	
 	private Shape lightWepBox = new ConvexPolygon(10.0f, 50.0f);
 	private Shape mediumWepBox = new ConvexPolygon(20.0f, 50.0f);
 	private Shape heavyWepBox = new ConvexPolygon(20.0f, 30.0f);
 	
-//	private ArrayList<Mine> mines;
-//	private ArrayList<Bullet> bullets;
-//	private ArrayList<Bomb> bombs;
-//	private ArrayList<Grenade> grenades;
+	private boolean active = false;
 	
 	private Random rn;
 	
@@ -127,21 +131,9 @@ public class Weapon extends Entity{
 		
 	}
 
-//	public ArrayList<Mine> getMines(){
-//		return mines;
-//	}
-//	
-//	public ArrayList<Bomb> getBombs(){
-//		return bombs;
-//	}
-//	
-//	public ArrayList<Bullet> getBullets(){
-//		return bullets;
-//	}
-//	
-//	public ArrayList<Grenade> getGrenades(){
-//		return grenades;
-//	}
+	public boolean isActive(){
+		return active;
+	}
 	
 	public void fire(Char dude){
 		
@@ -151,14 +143,20 @@ public class Weapon extends Entity{
 			if(dude.primaryAmmo <= 0)
 				break;
 			
+			if(coolPistol > 0)
+				break;
+			else
+				coolPistol = resetCoolPistol;
+			
+			System.out.println("I'ma firin mah lazer");
 			Bullet bullet;
 			
 			Vector bulletOffSet = Vector.getUnit(angle).scale(50);
 			
 			if(direction == 0)
-				bullet = new Bullet(getX() + bulletOffSet.getX(), getY() + bulletOffSet.getY(), Vector.getUnit(angle).scale(.5f));
+				bullet = new Bullet(getX() + bulletOffSet.getX(), getY() + bulletOffSet.getY(), Vector.getUnit(angle).scale(1.2f));
 			else{
-				bullet = new Bullet(getX() + bulletOffSet.getX(), getY() + bulletOffSet.getY(), Vector.getUnit(angle).scale(.5f));
+				bullet = new Bullet(getX() + bulletOffSet.getX(), getY() + bulletOffSet.getY(), Vector.getUnit(angle).scale(1.2f));
 			}
 			bullet.setRotation(angle);
 					
@@ -170,6 +168,7 @@ public class Weapon extends Entity{
 			dude.primaryAmmo--;
 
 			ResourceManager.getSound(UCGame.PLAYER_PISTOLSOUND_RSC).play();
+			dude.fired = true;
 			//System.out.println("array of bullets: " + UCGame.bullets);
 			
 			break;
@@ -201,7 +200,7 @@ public class Weapon extends Entity{
 			
 			
 			ResourceManager.getSound(UCGame.PLAYER_MINELAYSOUND_RSC).play();
-
+			dude.fired = true;
 	//		System.out.println("array of mines: " + UCGame.mines);
 
 			break;
@@ -215,14 +214,16 @@ public class Weapon extends Entity{
 			if(direction == 0){
 				hit = new Animation(ResourceManager.getSpriteSheet(UCGame.PIPE_HIT_RSC, 99, 80),0,0,6,0,true,50,true);
 				addAnimation(hit, new Vector(45f, -23.0f));
-				addShape(lightWepBox, new Vector(70.0f, -20.0f), Color.transparent, Color.green);
+				addShape(lightWepBox, new Vector(70.0f, -20.0f), Color.transparent, Color.transparent);
+				active = true;
 			}else if(direction == 1){
 				hit = new Animation(ResourceManager.getSpriteSheet(UCGame.PIPE_HIT_RSC, 99, 80),0,1,6,1,true,50,true);
 				addAnimation(hit, new Vector(-45f, -23.0f));
-				addShape(lightWepBox, new Vector(-70.0f, -20.0f), Color.transparent, Color.green);
+				addShape(lightWepBox, new Vector(-70.0f, -20.0f), Color.transparent, Color.transparent);
+				active = true;
 			}
 			ResourceManager.getSound(UCGame.PLAYER_LIGHTMELEESOUND_RSC).play();
-
+			dude.fired = true;
 			hit.setLooping(false);
 			break;
 			
@@ -232,6 +233,11 @@ public class Weapon extends Entity{
 			if(dude.primaryAmmo <= 0)
 				break;				
 			
+			if(coolShotgun > 0)
+				break;
+			else
+				coolShotgun = resetCoolShotgun;
+			
 			for(int i = 0; i<3; i++){
 				bulletOffSet = Vector.getUnit(angle).scale(87);
 
@@ -239,10 +245,10 @@ public class Weapon extends Entity{
 
 				if(direction == 0){
 					bulletOffSet = bulletOffSet.add(Vector.getUnit(angle).getPerpendicular().scale(-10));
-					bullet = new Bullet(getX() + bulletOffSet.getX(), getY() + bulletOffSet.getY(), Vector.getUnit(angle+rnAngle).scale(.5f));
+					bullet = new Bullet(getX() + bulletOffSet.getX(), getY() + bulletOffSet.getY(), Vector.getUnit(angle+rnAngle).scale(.9f));
 				}else{
 					bulletOffSet = bulletOffSet.add(Vector.getUnit(angle).getPerpendicular().scale(10));
-					bullet = new Bullet(getX() + bulletOffSet.getX(), getY() + bulletOffSet.getY(), Vector.getUnit(angle+rnAngle).scale(.5f));
+					bullet = new Bullet(getX() + bulletOffSet.getX(), getY() + bulletOffSet.getY(), Vector.getUnit(angle+rnAngle).scale(.9f));
 				}
 
 //				bullet.setRotation(angle+rnAngle);
@@ -258,13 +264,18 @@ public class Weapon extends Entity{
 			
 			dude.primaryAmmo--;
 			ResourceManager.getSound(UCGame.PLAYER_SHOTGUNSOUND_RSC).play();
-
+			dude.fired = true;
 			//System.out.println("array of bullets: " + UCGame.bullets);
 			break;
 		case 4: 
 			
 			if(dude.secondaryAmmo <= 0)
 				break;
+			
+			if(coolGrenade > 0)
+				break;
+			else
+				coolGrenade = resetCoolGrenade;
 			
 			Grenade grenade;
 			
@@ -279,12 +290,13 @@ public class Weapon extends Entity{
 			}
 			
 			grenade.setRotation(angle);
+			grenade.rotation = angle;
 			grenade.id = dude.id;
 			UCGame.grenades.add(grenade);
 			dude.secondaryAmmo--;
 			
 			ResourceManager.getSound(UCGame.PLAYER_BOMBSOUND_RSC).play();
-
+			dude.fired = true;
 	//		System.out.println("array of grenades: " + UCGame.grenades);
 			break;
 		case 5:
@@ -296,17 +308,17 @@ public class Weapon extends Entity{
 			if(direction == 0){
 				hit = new Animation(ResourceManager.getSpriteSheet(UCGame.SWORDCHOP_RSC, 149, 134),0,0,11,0,true,30,true);
 				addAnimation(hit, new Vector(38f, -12f));
-				addShape(mediumWepBox, new Vector(70.0f, -20.0f), Color.transparent, Color.green);
+				addShape(mediumWepBox, new Vector(70.0f, -20.0f), Color.transparent, Color.transparent);
+				active = true;
 			}else if(direction == 1){
 				hit = new Animation(ResourceManager.getSpriteSheet(UCGame.SWORDCHOP_RSC, 149, 134),0,1,11,1,true,30,true);
 				addAnimation(hit, new Vector(-38f, -12.0f));
-				addShape(mediumWepBox, new Vector(-70.0f, -20.0f), Color.transparent, Color.green);
+				addShape(mediumWepBox, new Vector(-70.0f, -20.0f), Color.transparent, Color.transparent);
+				active = true;
 			}
 			ResourceManager.getSound(UCGame.PLAYER_MEDIUMMELEESOUND_RSC).play();
-
+			dude.fired = true;
 			hit.setLooping(false);
-			//removeAnimation(hit);
-			//removeImage(hit);
 			break;
 		case 6:
 			
@@ -333,10 +345,10 @@ public class Weapon extends Entity{
 			
 			if(direction == 0){
 				bulletOffSet = bulletOffSet.add(Vector.getUnit(angle).getPerpendicular().scale(-2));
-				bullet = new Bullet(getX() + bulletOffSet.getX(), getY() + bulletOffSet.getY(), Vector.getUnit(angle+rnAngle).scale(.5f));
+				bullet = new Bullet(getX() + bulletOffSet.getX(), getY() + bulletOffSet.getY(), Vector.getUnit(angle+rnAngle).scale(1f));
 			}else{
 				bulletOffSet = bulletOffSet.add(Vector.getUnit(angle).getPerpendicular().scale(2));
-				bullet = new Bullet(getX() + bulletOffSet.getX(), getY() + bulletOffSet.getY(), Vector.getUnit(angle+rnAngle).scale(.5f));
+				bullet = new Bullet(getX() + bulletOffSet.getX(), getY() + bulletOffSet.getY(), Vector.getUnit(angle+rnAngle).scale(1f));
 			}
 			
 //			bullet.setRotation(angle+rnAngle);
@@ -350,13 +362,18 @@ public class Weapon extends Entity{
 			
 		//	System.out.println("array of bullets: " + UCGame.bullets);
 			ResourceManager.getSound(UCGame.PLAYER_RIFLESOUND_RSC).play();
-
+			dude.fired = true;
 			break;
 			
 		case 7:
 						
 			if(dude.secondaryAmmo <= 0)
 				break;
+			
+			if(coolBomb > 0)
+				break;
+			else
+				coolBomb = resetCoolBomb;
 			
 			Vector bombOffSet = Vector.getUnit(angle).scale(50);
 			
@@ -367,7 +384,7 @@ public class Weapon extends Entity{
 			dude.secondaryAmmo--;
 			//System.out.println("array of bombs: " + UCGame.bombs);
 			ResourceManager.getSound(UCGame.PLAYER_BOMBSOUND_RSC).play();
-
+			dude.fired = true;
 			break;
 		case 8:
 			if(hit != null)
@@ -378,14 +395,16 @@ public class Weapon extends Entity{
 			if(direction == 0){
 				hit = new Animation(ResourceManager.getSpriteSheet(UCGame.HAMMERHIT_RSC, 126, 201),0,0,5,0,true,60,true);
 				addAnimation(hit, new Vector(55f, 0f));
-				addShape(heavyWepBox, new Vector(100f, 0f), Color.transparent, Color.green);
+				addShape(heavyWepBox, new Vector(100f, 0f), Color.transparent, Color.transparent);
+				active = true;
 			}else if(direction == 1){
 				hit = new Animation(ResourceManager.getSpriteSheet(UCGame.HAMMERHIT_RSC, 126, 201),0,1,5,1,true,60,true);
 				addAnimation(hit, new Vector(-63f, 0f));
-				addShape(heavyWepBox, new Vector(-100f, 0f), Color.transparent, Color.green);
+				addShape(heavyWepBox, new Vector(-100f, 0f), Color.transparent, Color.transparent);
+				active = true;
 			}
 			ResourceManager.getSound(UCGame.PLAYER_HEAVYMELEESOUND_RSC).play();
-
+			dude.fired = true;
 			hit.setLooping(false);
 			break;
 		}
@@ -396,6 +415,12 @@ public class Weapon extends Entity{
 			switch(UCGame.character*3 + w){
 			case 0:		// switch to primary weapon
 				removeImage(weapon);
+				
+				if(hit != null){
+					removeAnimation(hit);
+					hit = null;
+					meleeHit();
+				}
 				
 				weaponRight = primary;
 				weaponLeft = primary.getFlippedCopy(true, false);
@@ -413,7 +438,12 @@ public class Weapon extends Entity{
 				break;
 			case 1:		// switch to secondary weapon
 				removeImage(weapon);
-
+				if(hit != null){
+					removeAnimation(hit);
+					hit = null;
+					meleeHit();
+				}
+				
 				weaponRight = secondary;
 				weaponLeft = secondary.getFlippedCopy(true, false);
 
@@ -430,6 +460,11 @@ public class Weapon extends Entity{
 				break;
 			case 2:		// switch to melee weapon
 				removeImage(weapon);
+				if(hit != null){
+					removeAnimation(hit);
+					hit = null;
+					meleeHit();
+				}
 				
 				weaponRight = melee;
 				weaponLeft = melee.getFlippedCopy(true, false);
@@ -448,6 +483,11 @@ public class Weapon extends Entity{
 				
 			case 3:
 				removeImage(weapon);
+				if(hit != null){
+					removeAnimation(hit);
+					hit = null;
+					meleeHit();
+				}
 				
 				weaponRight = primary;
 				weaponLeft = primary.getFlippedCopy(true, false);
@@ -467,7 +507,11 @@ public class Weapon extends Entity{
 			case 4:
 				
 				removeImage(weapon);
-				
+				if(hit != null){
+					removeAnimation(hit);
+					hit = null;
+					meleeHit();
+				}
 				weaponRight = secondary;
 				weaponLeft = secondary.getFlippedCopy(true, false);
 				
@@ -484,6 +528,11 @@ public class Weapon extends Entity{
 				break;
 			case 5:
 				removeImage(weapon);
+				if(hit != null){
+					removeAnimation(hit);
+					hit = null;
+					meleeHit();
+				}
 				
 				weaponRight = melee;
 				weaponLeft = melee.getFlippedCopy(true, false);
@@ -502,6 +551,11 @@ public class Weapon extends Entity{
 			
 			case 6: 
 				removeImage(weapon);
+				if(hit != null){
+					removeAnimation(hit);
+					hit = null;
+					meleeHit();
+				}
 				
 				weaponRight = primary;
 				weaponLeft = primary.getFlippedCopy(true, false);
@@ -520,6 +574,11 @@ public class Weapon extends Entity{
 				break;
 			case 7: 
 				removeImage(weapon);
+				if(hit != null){
+					removeAnimation(hit);
+					hit = null;
+					meleeHit();
+				}
 				
 				weaponRight = secondary;
 				weaponLeft = secondary.getFlippedCopy(true, false);
@@ -538,6 +597,11 @@ public class Weapon extends Entity{
 				break;
 			case 8:
 				removeImage(weapon);
+				if(hit != null){
+					removeAnimation(hit);
+					hit = null;
+					meleeHit();
+				}
 				
 				weaponRight = melee;
 				weaponLeft = melee.getFlippedCopy(true, false);
@@ -563,6 +627,8 @@ public class Weapon extends Entity{
 	public void meleeHit(){			// this removes all the shapes associated with the weapon
 		for(Shape s : getShapes())
 			removeShape(s);
+		
+		active = false;
 	}
 	
 	public void changeWepDir(){
@@ -640,6 +706,14 @@ public class Weapon extends Entity{
 			setRotation(angle + 180);
 		}
 		
+		if(coolShotgun > 0)
+			coolShotgun -= delta;
+		if(coolGrenade > 0)
+			coolGrenade -= delta;
+		if(coolBomb > 0)
+			coolBomb -= delta;
+		if(coolPistol > 0)
+			coolPistol -= delta;
 	}
 	
 }

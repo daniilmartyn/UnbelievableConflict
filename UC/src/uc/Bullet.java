@@ -25,7 +25,7 @@ public class Bullet extends Entity{
 		velocity = v;
 		bullet = ResourceManager.getImage(UCGame.BULLET_RSC);
 		addImage(bullet);
-		addShape(new ConvexPolygon(bullet.getHeight()), Color.transparent, Color.green);
+		addShape(new ConvexPolygon(bullet.getHeight()), Color.transparent, Color.transparent);
 		active = true;
 		switch(UCGame.character){
 		case 0:
@@ -52,11 +52,7 @@ public class Bullet extends Entity{
 		
 		
 		Collision collide = collides(PlayState.map);
-		if(collide!= null){
-			//System.out.println("collision test: " + collide.getMinPenetration());
-			//System.out.println("this shape: " + collide.getThisShape());
-			//System.out.println("other shape: " + collide.getOtherShape());
-			
+		if(collide!= null){		
 			active = false;
 		}
 	}

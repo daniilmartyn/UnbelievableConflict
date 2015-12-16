@@ -23,7 +23,7 @@ public class Mine extends Entity{
 		velocity = v;
 		mine = ResourceManager.getImage(UCGame.THEMINE_RSC);
 		addImage(mine);
-		addShape(new ConvexPolygon((float)mine.getWidth(), (float)mine.getHeight()), Color.transparent, Color.green);
+		addShape(new ConvexPolygon((float)mine.getWidth(), (float)mine.getHeight()), Color.transparent, Color.transparent);
 		active = true;
 	}
 

@@ -45,7 +45,7 @@ public class GameOver extends BasicGameState {
 		Collections.sort(sorted);
 
 		for(Char dude : sorted){
-			font.drawString(225f, 200f + offset, "" + dude.id, Color.yellow);
+			font.drawString(220f, 200f + offset, "" + dude.name, Color.yellow);
 			font.drawString(540f, 200f + offset, "" + dude.getKills(), Color.yellow);
 			font.drawString(745f, 200f + offset, "" + dude.getDeaths(), Color.yellow);
 			offset += 50.0f;
@@ -63,20 +63,46 @@ public class GameOver extends BasicGameState {
 		int mouseX = input.getMouseX();
 		int mouseY = input.getMouseY();
 		
-		if(uc.canenter)
-			System.out.println("I can enter for some reason");
-		
 		if((mouseX > 568 && mouseY > 481) && ( mouseX < 845 && mouseY < 543)){ // exit to menu
 			if(input.isMousePressed(0)){
-				uc.disconnect();
-				uc.enterState(UCGame.MENUSTATE);
-				uc.canenter = false;
+				UCGame.GameOver = false;
+
+				if(!UCGame.isServer){
+					
+				}else{
+				}
 			}
 		}
 
 		if((mouseX > 136 && mouseY > 481) && (mouseX < 458 && mouseY < 543)){
-			if(input.isMousePressed(0))
+			if(input.isMousePressed(0)){
 				System.out.println("need to restart the round!");
+
+				UCGame.GameOver = false;
+				UCGame.Restart = true;
+
+				if(!UCGame.isServer){ // restarting the round on client side
+					uc.enterState(UCGame.PLAYSTATE2);
+				}else{				// restarting the round on server side
+					UCGame.timer = UCGame.timeSelection;
+					
+					for(Char dude : UCGame.players.values()){
+						dude.setKills(0);
+						dude.setDeaths(0);
+						dude.respawn();
+					}
+					
+					UCGame.bullets.clear();
+					UCGame.mines.clear();
+					UCGame.grenades.clear();
+					UCGame.bombs.clear();
+					UCGame.explosions.clear();
+					
+					System.out.println("scoreLImit: " + UCGame.scoreLimit);
+					
+					uc.enterState(UCGame.PLAYSTATE);
+				}
+			}
 		}
 	}
 

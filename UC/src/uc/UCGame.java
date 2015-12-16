@@ -34,8 +34,12 @@ public class UCGame extends StateBasedGame{
 	public static int maxPlayer = 2;  // these are default values, they are able to be changed through the host menu
 	public static int scoreLimit = 10;
 	public static int timer = 5*60000;
-	public static String dudeName;
+	public static int timeSelection = timer;
+	public static String dudeName = "Player";
+	public static boolean GameOver = false;
+	public static boolean Restart = false;
 	
+	public static boolean isRendering;
 	
 	// sound string stuff here
 	public static final String GAME_STARTSOUND_RSC = "uc/sound/start.ogg";
@@ -57,7 +61,7 @@ public class UCGame extends StateBasedGame{
 
 	public static final String PLAYER_KABOOMSOUND_RSC = "uc/sound/kaboom.wav";
 
-//	public static final String PLAYER_LASERSOUND_RSC = "BounceShootBounce/soundResource/LaserShot.wav";
+//	public static final String PLAYER_LASERSOUND_RSC = "BounceShootBounce/soundResource/LasearShot.wav";
 //	public static final String PLAYER_NOLASERSOUND_RSC = "BounceShootBounce/soundResource/noLaserSound.wav";
 //	public static final String ENEMY_SNIPERSOUND_RSC = "BounceShootBounce/soundResource/sniperShot.wav";
 //	public static final String ENEMY_LASERSOUND_RSC = "BounceShootBounce/soundResource/enemyLaser.wav";
@@ -224,7 +228,6 @@ public class UCGame extends StateBasedGame{
 		kryo.register(NetworkClasses.UpdateChar.class);
 		kryo.register(NetworkClasses.UpdateBullet.class);
 		kryo.register(ArrayList.class);
-
 	}
 	
 	public void initStatesList(GameContainer container) throws SlickException {

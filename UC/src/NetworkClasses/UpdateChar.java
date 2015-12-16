@@ -15,4 +15,5 @@ public class UpdateChar {
 	public int direction;
 	public int select;
 	public boolean setJump,jump;
+	
 }

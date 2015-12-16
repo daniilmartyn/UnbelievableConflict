@@ -5,5 +5,5 @@ public class PacketAddPlayer {
 	public float y;
 	public int id;
 	public int Char;
-
+	public String name;
 }

@@ -125,7 +125,7 @@ public class PlayState extends BasicGameState {
 			Collections.sort(sorted);
 			
 			for(Char dude : sorted){
-				font.drawString(225f + camX, 200f + camY + offset, "" + dude.id, Color.yellow);
+				font.drawString(220f + camX, 200f + camY + offset, "" + dude.name, Color.yellow);
 				font.drawString(540f + camX, 200f + camY + offset, "" + dude.getKills(), Color.yellow);
 				font.drawString(745f + camX, 200f + camY + offset, "" + dude.getDeaths(), Color.yellow);
 				offset += 50.0f;
@@ -140,11 +140,11 @@ public class PlayState extends BasicGameState {
 		
 		Input input = container.getInput();
 		UCGame uc = (UCGame) game;
-		
+				
 		UCGame.timer -= delta;			// update the countdown timer for the game
 		if(UCGame.timer < 0){			// check if the round is over
 			System.out.println("GameOver!");
-			uc.enterState(UCGame.GAMEOVER);
+			UCGame.GameOver = true;
 		}
 		
 		setCam(input, uc);
@@ -158,11 +158,17 @@ public class PlayState extends BasicGameState {
 		else
 			dude.changeDir(0);
 		
-		if(input.isKeyPressed(Input.KEY_ESCAPE)){
-			uc.disconnect();				
-			uc.enterState(UCGame.MENUSTATE);
-			uc.canenter = false;
+		if(input.isKeyPressed(Input.KEY_I) && input.isKeyPressed(Input.KEY_O) && input.isKeyPressed(Input.KEY_P)){
+			dude.weapon.resetCoolBomb = 0;
+			dude.weapon.resetCoolGrenade = 0;
+			dude.weapon.resetCoolShotgun = 0;
+			dude.weapon.resetCoolPistol = 0;
 		}
+		
+		if(input.isKeyPressed(Input.KEY_ESCAPE)){
+			uc.enterState(UCGame.MENUSTATE);
+		}
+		
 		if(input.isKeyPressed(Input.KEY_TAB))
 			showStat = !showStat;
 		
@@ -203,27 +209,32 @@ public class PlayState extends BasicGameState {
 			if(!dude.isJumped())
 				dude.changeRunDir(-1);
 			
+			System.out.println("S key is down! Should be crouching.");
+			System.out.println("state is: "+ dude.getState());
+			System.out.println("velocity is: " + dude.getVel());
+
 		}
 
+		
 		if(input.isMousePressed(0)){
 			dude.fire();
-			dude.fired = true;
-		//	System.out.println("hey mouse is clicked");
 		}
 		
 		/*if(input.isMouseButtonDown(0)){
 			dude.fire();
 			System.out.println("hey mouse button is down");
 		}*/
+		
 		for(Char Player : UCGame.players.values()){
 			if(Player.readytofire){
 				Player.fire();
 				Player.readytofire = false;
-				Player.fired = true;
+				//Player.fired = true;
 			}
 			
-			if(Player.getKills() >= UCGame.scoreLimit)		// strange place to check for win condition, but w/e
-				uc.enterState(UCGame.GAMEOVER);
+			if(Player.getKills() >= UCGame.scoreLimit){		// strange place to check for win condition, but w/e
+				UCGame.GameOver = true;
+			}
 		}
 		
 		NetworkClasses.UpdateBullet packetB = new NetworkClasses.UpdateBullet();
@@ -243,8 +254,12 @@ public class PlayState extends BasicGameState {
 		packetB.explodeY = new ArrayList<Float>();
 		
 		packetB.rot = new ArrayList<Float>();
+		packetB.grot = new ArrayList<Float>();
+		
 		packetB.itemtype = new ArrayList<Integer>();
 
+		packetB.GameOver = UCGame.GameOver;
+		
 		
 		for(Iterator<Explosion> e = UCGame.explosions.values().iterator(); e.hasNext();){
 			Explosion explosion = e.next();
@@ -305,6 +320,7 @@ public class PlayState extends BasicGameState {
 				grenade.update(delta);
 				packetB.grenadex.add(grenade.getX());
 				packetB.grenadey.add(grenade.getY());
+				packetB.grot.add(grenade.rotation);
 			}		
 		}
 		
@@ -318,6 +334,8 @@ public class PlayState extends BasicGameState {
 			if(item.isActive())
 				packetB.itemtype.add(item.getType());
 		}
+		
+		packetB.time = UCGame.timer;
 		
 //		if(packetB.bulletx.size()>0 ||
 //		packetB.grenadex.size()>0 ||
@@ -359,8 +377,10 @@ public class PlayState extends BasicGameState {
 			}
 			packet.state = Player.state;
 			packet.run = Player.direction;
-			
-			
+			packet.coolPistol = Player.weapon.coolPistol;
+			packet.coolShotgun = Player.weapon.coolShotgun;
+			packet.coolGrenade = Player.weapon.coolGrenade;
+			packet.coolBomb = Player.weapon.coolBomb;
 //			if(Player.weapon.hit != null){
 //				packet.hit =true;
 //				packet.hitisStopped = Player.weapon.hit.isStopped();
@@ -393,6 +413,8 @@ public class PlayState extends BasicGameState {
 			UCGame.client.sendUDP(packet);
 		}		
 		
+		if(UCGame.GameOver)
+			uc.enterState(UCGame.GAMEOVER);
 	}
 
 	@Override
@@ -400,6 +422,9 @@ public class PlayState extends BasicGameState {
 			throws SlickException {
 		// TODO Auto-generated method stub
 
+		if(UCGame.Restart)
+			return;
+		
 		UCGame uc = (UCGame) game;
 		
 		container.setSoundOn(UCGame.sound);
@@ -422,16 +447,23 @@ public class PlayState extends BasicGameState {
 		}
 		
 		dude.id = 1;
+		if(UCGame.dudeName.equals("Player")){
+			dude.name = UCGame.dudeName + UCGame.id;
+			UCGame.dudeName = UCGame.dudeName + UCGame.id;
+		}else
+			dude.name = UCGame.dudeName;
+		
 		UCGame.players.put(UCGame.id, dude);
 		
-		if (Server.mainServer.server != null) {
+		//if (Server.mainServer.server != null) {
 			NetworkClasses.NewPlayerRequest packetX = new NetworkClasses.NewPlayerRequest();
 			packetX.player = UCGame.character;
 			packetX.x = map.getImg().getWidth() / 2;
 			packetX.y = map.getImg().getHeight() / 2;
 			packetX.id = UCGame.id;
+			packetX.name = UCGame.dudeName;
 			UCGame.client.sendTCP(packetX);
-		}
+		//}
 		
 		
 		UCGame.set = true;

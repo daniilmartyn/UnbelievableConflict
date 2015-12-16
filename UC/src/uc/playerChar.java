@@ -10,6 +10,7 @@ public class playerChar  {
 	
 	public int Char;
 	public Connection c;
+	public String playerName;
 	
 	public playerChar(float x1, float y1){
 		
